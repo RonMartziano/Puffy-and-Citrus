@@ -556,7 +556,7 @@ function migrate(s){const f=freshGame();const g=Object.assign(f,s);
   g.hatsOwned=Object.assign({none:1},s.hatsOwned||{});g.bgsOwned=Object.assign({meadow:1},s.bgsOwned||{});
   for(const k of["puffy","citrus"])g.pets[k]=Object.assign(freshPet(k),s.pets&&s.pets[k]||{});
   return g;}
-function save(){const data=JSON.stringify(G);
+function save(){G.updatedAt=now();const data=JSON.stringify(G);
   try{localStorage.setItem(SAVE_KEY,data);}catch(e){}
   try{if(window.ReactNativeWebView)window.ReactNativeWebView.postMessage(data);}catch(e){}
   if(typeof cloudSave==="function")cloudSave();}
@@ -1323,19 +1323,21 @@ async function doAuth(mode){if(!sb)return;const u=$("#authUser").value,pw=$("#au
     else{const sess=res.data&&res.data.session;cloudUser=res.data&&(res.data.user||(sess&&sess.user));
       if(mode==="signup"&&!sess){authErr("Account created! Now tap Log in. 💚");}
       else if(!cloudUser){authErr("Please tap Log in.");}
-      else{hideAuth();await cloudLoad();toast("Welcome, "+u.trim()+"! ☁️");}}
+      else{hideAuth();await cloudLoad(false,true);toast("Welcome, "+u.trim()+"! ☁️");}}
   }catch(e){authErr("Connection problem — try again.");}
   $("#authLogin").disabled=$("#authSignup").disabled=false;}
-async function cloudLoad(silent){if(!sb||!cloudUser)return;
-  cloudLoading=true;clearTimeout(cloudTimer);
-  try{const {data,error}=await sb.from("saves").select("data,updated_at").eq("user_id",cloudUser.id).maybeSingle();
+async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
+  cloudLoading=true;if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}
+  try{const {data,error}=await sb.from("saves").select("data").eq("user_id",cloudUser.id).maybeSingle();
     if(error)throw error;
-    if(data&&data.data){G=migrate(data.data);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();if(!silent)toast("Progress loaded ☁️");}
-    else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud save created ☁️");}
-  }catch(e){if(!silent)toast("Could not reach the cloud — playing locally.");}
+    const remote=data&&data.data;
+    if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=(G.updatedAt||0))){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();if(!silent)toast("Progress loaded ☁️");}
+    else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud synced ☁️");}
+  }catch(e){if(!silent)toast("Cloud offline — playing locally.");}
   cloudLoading=false;render();
   try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
-function cloudSave(){if(!sb||!cloudUser||cloudLoading)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudSaveNow,1500);}
+function cloudSave(){if(!sb||!cloudUser||cloudLoading)return;if(cloudTimer)return;cloudTimer=setTimeout(function(){cloudTimer=null;cloudSaveNow();},1500);}
+function flushSave(){try{G.updatedAt=now();localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}if(sb&&cloudUser&&!cloudLoading){if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}cloudSaveNow();}}
 async function cloudSaveNow(){if(!sb||!cloudUser||cloudLoading)return;try{await sb.from("saves").upsert({user_id:cloudUser.id,data:G,updated_at:new Date().toISOString()});}catch(e){}}
 async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}cloudUser=null;closeModals();showAuth();}
 
@@ -1389,8 +1391,9 @@ if(_away>300)welcomeBack(_snap,_away);
 if(!G.introSeen){G.introSeen=true;G.tutorialSeen=true;save();setTimeout(()=>playCutscene(INTRO,()=>playCutscene(TUTORIAL)),2700);}
 else if(!G.tutorialSeen){G.tutorialSeen=true;save();setTimeout(()=>playCutscene(TUTORIAL),1200);}
 setInterval(()=>{ensureDaily();tickAll();G.lastSeen=now();},1000);
-document.addEventListener("visibilitychange",()=>{if(!document.hidden){ensureDaily();tickAll();G.lastSeen=now();if(cloudUser)cloudLoad(true);}});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){ensureDaily();tickAll();G.lastSeen=now();if(cloudUser)cloudLoad(true);}else{flushSave();}});
 cloudInit();
+window.addEventListener("pagehide",flushSave);window.addEventListener("beforeunload",flushSave);
 </script>
 </body>
 </html>
