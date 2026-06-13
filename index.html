@@ -92,6 +92,8 @@
   .act .badge{position:absolute;top:-4px;right:-2px;background:#ff5d8f;color:#fff;border-radius:50%;
     min-width:15px;height:15px;font-size:9px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
   .eventbanner{position:absolute;top:38px;left:50%;transform:translateX(-50%);z-index:6;background:#fff3c4;color:#7a5a10;border:1px solid #f0d98a;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:800;box-shadow:var(--shadow);cursor:pointer;white-space:nowrap;}
+  .menuhd{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:12px 2px 4px;text-align:left;}
+  body.rm *{animation-duration:.001s!important;animation-iteration-count:1!important;}
   .confetti{position:absolute;top:-12px;z-index:7;pointer-events:none;animation:conff 1.6s ease-in forwards;}
   @keyframes conff{to{transform:translateY(340px) rotate(420deg);opacity:0;}}
   .modal{position:absolute;inset:0;background:#00000066;display:none;align-items:flex-end;z-index:20;}
@@ -534,19 +536,27 @@
   <div class="modal" id="menuModal"><div class="sheet">
     <div class="closeRow"><h2>⚙️ Menu</h2><button class="iconbtn" data-close>✕</button></div>
     <div id="menuInfo" style="font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:8px"></div>
+    <div class="menuhd">Settings</div>
     <button class="btn" id="soundBtn">🔊 Sound: On</button>
     <button class="btn" id="musicBtn" style="background:#bfe0a0">🎵 Music: On</button>
     <button class="btn" id="notifyBtn" style="background:#f0c98a">🔕 Reminders: Off</button>
+    <button class="btn" id="motionBtn" style="background:#cfd8e0">🎞️ Motion: On</button>
+    <div class="menuhd">Pet &amp; progress</div>
+    <button class="btn" id="achBtn" style="background:#ffd27a">🏆 Achievements &amp; quests</button>
     <button class="btn" id="renameBtn" style="background:#9ad36b">✏️ Rename current pet</button>
+    <div class="menuhd">Story &amp; help</div>
     <button class="btn" id="introBtn" style="background:#b39cf0">📖 Replay intro</button>
     <button class="btn" id="howtoBtn" style="background:#7fc8d8">❓ How to play</button>
     <button class="btn" id="storyBtn" style="background:#e8a0c0">📖 Story so far</button>
+    <div class="menuhd">Go to</div>
     <button class="btn" id="wardrobeBtn" style="background:#c8a0e8">👗 Wardrobe</button>
     <button class="btn" id="journeyBtn" style="background:#9ad36b">🗺️ Belle’s Journey</button>
     <button class="btn" id="decorateBtn" style="background:#9ecae8">🛋️ Decorate habitat</button>
     <button class="btn" id="familyBtn" style="background:#f0b46c">✨ Ascension &amp; Legacy</button>
+    <div class="menuhd">Social &amp; account</div>
     <button class="btn" id="friendsBtn" style="background:#8fd0e8">👋 Friends &amp; visiting</button>
     <button class="btn" id="logoutBtn" style="background:#cbbfae;display:none">☁️ Log out</button>
+    <div class="menuhd">Danger zone</div>
     <button class="btn" id="hardReset" style="background:#ff7a7a">🥚 Reset everything</button>
   </div></div>
 </div>
@@ -568,6 +578,13 @@ const FOODS={
   berrysmoothie:{e:"🥤",nm:"Berry Smoothie",hunger:20,happy:30,health:20,energy:20,dish:true},
   bento:{e:"🍱",nm:"Garden Bento",hunger:58,happy:28,health:18,dish:true},
   tropical:{e:"🍹",nm:"Tropical Punch",hunger:24,happy:38,health:14,energy:24,dish:true},
+  ramen:{e:"🍜",nm:"Healing Ramen",hunger:42,happy:14,health:30,cure:true,dish:true},
+  powerbowl:{e:"🥣",nm:"Power Bowl",hunger:30,happy:12,health:8,energy:60,dish:true},
+  cupcake:{e:"🧁",nm:"Lucky Cupcake",hunger:14,happy:30,health:0,coins:45,dish:true},
+  friendpie:{e:"🥧",nm:"Friendship Pie",hunger:32,happy:20,health:10,bond:15,dish:true},
+  feast:{e:"🍛",nm:"Hearty Feast",hunger:60,happy:18,health:18,xp:45,dish:true},
+  sparklejam:{e:"🌈",nm:"Rainbow Parfait",hunger:26,happy:40,health:18,energy:18,dish:true},
+  spaclean:{e:"🥒",nm:"Cucumber Spa Plate",hunger:18,happy:16,health:6,hygiene:60,dish:true},
   apple:{e:"🍎",nm:"Apple",hunger:18,happy:2,health:4,cost:5},
   bread:{e:"🍞",nm:"Bread",hunger:30,happy:2,health:0,cost:8},
   sushi:{e:"🍣",nm:"Sushi",hunger:42,happy:10,health:5,cost:18},
@@ -774,8 +791,8 @@ function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
   ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null],maxPlots:6,sprinkler:false,beehive:false,greenhouse:false,order:null},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",lastChest:now(),hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
-  stats:{gamesPlayed:0,cooked:0,perfectCrops:0,cleans:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,ascensions:0,tricksUnlocked:{},legacy:{puffy:[],citrus:[]},
-  weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,music:true,notify:false,revealed:{},introSeen:false,tutorialSeen:false,storyCh:0,
+  stats:{gamesPlayed:0,cooked:0,perfectCrops:0,cleans:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,ascensions:0,tricksUnlocked:{},formsSeen:{},legacy:{puffy:[],citrus:[]},
+  weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,music:true,notify:false,revealed:{},friends:[],reducedMotion:false,introSeen:false,tutorialSeen:false,storyCh:0,
   pets:{puffy:freshPet("puffy"),citrus:freshPet("citrus")}};}
 let G;
 function loadGame(){
@@ -790,12 +807,15 @@ function migrate(s){const f=freshGame();const g=Object.assign(f,s);
   g.placedByBg=Object.assign({},s.placedByBg||{});if(s.placed&&s.placed.length&&!s.placedByBg)g.placedByBg.meadow=s.placed;
   g.garden=Object.assign({plots:[],maxPlots:6,sprinkler:false,beehive:false,greenhouse:false,order:null},s.garden||{});while(g.garden.plots.length<(g.garden.maxPlots||6))g.garden.plots.push(null);
   for(const k of["puffy","citrus"])g.pets[k]=Object.assign(freshPet(k),s.pets&&s.pets[k]||{});
+  g.dex=g.dex||{};for(const _lk in (g.legacy||{}))(g.legacy[_lk]||[]).forEach(function(ff){if(ff)g.dex[ff]=true;});["puffy","citrus"].forEach(function(_pk){if(g.pets[_pk]&&g.pets[_pk].form)g.dex[g.pets[_pk].form]=true;});
   return g;}
 function save(){G.updatedAt=now();const data=JSON.stringify(G);
   try{localStorage.setItem(SAVE_KEY,data);}catch(e){}
   try{if(window.ReactNativeWebView)window.ReactNativeWebView.postMessage(data);}catch(e){}
   if(typeof cloudSave==="function")cloudSave();}
 G=loadGame();
+let launchTs=(G&&G.updatedAt)||0,cloudFirst=true;
+try{if(G&&G.reducedMotion&&document.body)document.body.classList.add("rm");}catch(e){}
 const pet=()=>G.pets[G.active];
 const ageSec=p=>(now()-p.bornAt)/1000;
 
@@ -846,7 +866,7 @@ function xpMul(p){var ev=currentEvent(),m=1+ascBonus();if(ev&&ev.xp)m*=ev.xp;if(
 let musicTimer=null,musicStep=0;const MELODY=[523,587,659,784,880,784,659,587,659,587];
 function startMusic(){if(musicTimer||!G||!G.music||!G.sound)return;musicTimer=setInterval(()=>{if(document.hidden||!G.music||!G.sound)return;const f=MELODY[musicStep%MELODY.length];beep(f,.5,"sine",.016);if(musicStep%2===0)beep(f/2,.6,"triangle",.011);musicStep++;},640);}
 function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null;}}
-function confetti(){const sc=document.getElementById("scene");if(!sc)return;const c=["🎉","✨","⭐","💛","🎊","🌟"];for(let i=0;i<14;i++){const el=document.createElement("div");el.className="confetti";el.textContent=c[Math.floor(Math.random()*c.length)];el.style.left=(8+Math.random()*84)+"%";el.style.animationDelay=(Math.random()*0.3)+"s";el.style.fontSize=(12+Math.random()*14)+"px";sc.appendChild(el);setTimeout(()=>el.remove(),1700);}}
+function confetti(){if(G&&G.reducedMotion)return;const sc=document.getElementById("scene");if(!sc)return;const c=["🎉","✨","⭐","💛","🎊","🌟"];for(let i=0;i<14;i++){const el=document.createElement("div");el.className="confetti";el.textContent=c[Math.floor(Math.random()*c.length)];el.style.left=(8+Math.random()*84)+"%";el.style.animationDelay=(Math.random()*0.3)+"s";el.style.fontSize=(12+Math.random()*14)+"px";sc.appendChild(el);setTimeout(()=>el.remove(),1700);}}
 function notify(title,body){try{if(G.notify&&typeof Notification!=="undefined"&&Notification.permission==="granted"&&document.hidden)new Notification(title,{body:body});}catch(e){}}
 function maybeNotify(){if(!G.notify||typeof Notification==="undefined"||Notification.permission!=="granted"||!document.hidden)return;const t=now();
   if(G.exped&&expReady()&&!G.exped.notified){G.exped.notified=true;notify("🧭 Expedition complete!",petName(pet())+" is back with treasure.");}
@@ -1362,10 +1382,14 @@ function careGrade(p){const ratio=p.careGood/(p.careGood+p.careMistakes+1);
   if(score>=95&&p.level>=14&&p.discipline>=60)return "SSS";
   if(score>=90&&p.level>=8)return "SS";if(score>=80)return "S";if(score>=62)return "A";
   if(score>=44)return "B";if(score>=26)return "C";return "D";}
-function formAchievable(p,key){if(G.dex&&G.dex[key])return true;if(G.boughtForms&&(G.boughtForms[p.type]||[]).indexOf(key)>=0)return true;
+function formAchievable(p,key){if(G.dex&&G.dex[key])return true;if(G.formsSeen&&G.formsSeen[key])return true;if(G.boughtForms&&(G.boughtForms[p.type]||[]).indexOf(key)>=0)return true;
   const sp=SPECIALS[p.type].find(f=>f.k===key);if(sp)return sp.req(p);
   const ti=FORM_TIERS.find(t=>FORMS[p.type][t].k===key);if(ti)return FORM_TIERS.indexOf(careGrade(p))<=FORM_TIERS.indexOf(ti);
   return false;}
+function recordAchievable(p){if(!p||!p.hatched)return;G.formsSeen=G.formsSeen||{};
+  for(const f of SPECIALS[p.type])if(f.req(p))G.formsSeen[f.k]=true;
+  const ci=FORM_TIERS.indexOf(careGrade(p));for(let i=ci;i<FORM_TIERS.length;i++){const _t=FORM_TIERS[i];if(FORMS[p.type][_t])G.formsSeen[FORMS[p.type][_t].k]=true;}
+  (G.boughtForms&&G.boughtForms[p.type]||[]).forEach(k=>G.formsSeen[k]=true);}
 function autoForm(p){for(const f of SPECIALS[p.type]){if(f.req(p))return f.k;}return FORMS[p.type][careGrade(p)].k;}
 function chooseForm(p){if(p.targetForm&&formAchievable(p,p.targetForm))return p.targetForm;return autoForm(p);}
 function setEvoTarget(key){const p=pet();if(p.stage==="adult")return;
@@ -1401,6 +1425,7 @@ function simulate(p,dt,away){
   p.lastTick=now();}
 function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;
   while(dt>0){const step=Math.min(dt,30);simulate(p,step,away);dt-=step;}}
+  ["puffy","citrus"].forEach(function(_k){recordAchievable(G.pets[_k]);});
   if(pet().hunger>=100)unlock("fullbelly");if(G.coins>=200)unlock("rich");if(G.coins>=500)unlock("rich2");if(G.coins>=1000)unlock("rich3");
   if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();maybeSpawnFloat();} render();save();flushCutscenes();}
 
@@ -1478,8 +1503,8 @@ function openFeed(){if(!guard())return;const p=pet(),grid=$("#feedGrid");grid.in
   openModal("feedModal");}
 function feed(id){const p=pet();if(G.inv[id]<=0)return;if(p.hunger>=98){toast("Too full to eat! 🥴");return;}
   const f=FOODS[id];G.inv[id]--;const fav=FAVS[p.type].includes(id);
-  p.hunger=clamp(p.hunger+f.hunger);p.happy=clamp(p.happy+Math.round((f.happy+(fav?10:0))*(p.trait==="foodie"?1.3:1)));p.health=clamp(p.health+f.health);if(f.energy)p.energy=clamp(p.energy+f.energy);if(f.snack)p.health=clamp(p.health-2);if(f.cure&&p.sick){p.sick=false;p.health=clamp(p.health+10);toast("🍄 Cured the sickness!");}
-  p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,8);SFX.eat();petBounce();react(f.e);toast(f.nm+(fav?" — favorite! 💕":" — yum!"));
+  p.hunger=clamp(p.hunger+f.hunger);p.happy=clamp(p.happy+Math.round((f.happy+(fav?10:0))*(p.trait==="foodie"?1.3:1)));p.health=clamp(p.health+f.health);if(f.energy)p.energy=clamp(p.energy+f.energy);if(f.snack)p.health=clamp(p.health-2);if(f.cure&&p.sick){p.sick=false;p.health=clamp(p.health+10);toast("🍄 Cured the sickness!");}if(f.hygiene)p.hygiene=clamp(p.hygiene+f.hygiene);if(f.bond)addBond(f.bond);if(f.coins)G.coins+=f.coins;if(f.xp)addXP(p,f.xp);
+  p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,8);SFX.eat();petBounce();react(f.e);toast(f.nm+(fav?" — favorite! 💕":" — yum!")+(f.coins?" +"+f.coins+"🪙":"")+(f.bond?" +💞":"")+(f.xp?" +"+f.xp+"⭐":"")+(f.hygiene?" +🫧":""));
   questBump("feed",1);G.stats.feeds=(G.stats.feeds||0)+1;if(G.stats.feeds>=50)unlock("foodie");if(id==="bellpepper"){questBump("bell",1);G.stats.bellFed=(G.stats.bellFed||0)+1;if(G.stats.bellFed>=10)unlock("pepperlover");unlockSticker("pepper");}
   if(p.happy>=90)questBump("happy90",1);if(p.hunger>=100)unlock("fullbelly");
   render();save();if(G.inv[id]<=0)openFeed();}
@@ -1649,9 +1674,9 @@ function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to
     const foot=isAdult?(isW?"✓ achieved":""):(chosen?"🎯 your pick":(isW?"★ default":(unlocked?"tap to pick":reqTxt)));
     return `<div class="evoForm ${unlocked||isW?'on':'locked'}" ${click}><div class="fg">${tag}</div><div class="fa">${artFor(p.type,"adult",key)}</div><div class="fn">${unlocked||isW?name:"🔒 ???"}</div><div class="ft">${foot}</div></div>`;}
   let grid="";
-  SPECIALS[p.type].forEach(f=>{grid+=cell(f.k,"★",f.nm,f.req(p)||!!G.dex[f.k],f.reqText);});
+  SPECIALS[p.type].forEach(f=>{grid+=cell(f.k,"★",f.nm,f.req(p)||!!G.dex[f.k]||!!(G.formsSeen&&G.formsSeen[f.k]),f.reqText);});
   (G.boughtForms&&G.boughtForms[p.type]||[]).forEach(k=>{const m=SHOP_FORMS[p.type]&&SHOP_FORMS[p.type].find(x=>x.k===k);if(m)grid+=cell(k,"🛒",m.nm,true,"");});
-  FORM_TIERS.forEach(g=>{const f=FORMS[p.type][g];grid+=cell(f.k,g,f.nm,(cgi<=FORM_TIERS.indexOf(g))||!!G.dex[f.k],EVO_REQ[g]);});
+  FORM_TIERS.forEach(g=>{const f=FORMS[p.type][g];grid+=cell(f.k,g,f.nm,(cgi<=FORM_TIERS.indexOf(g))||!!G.dex[f.k]||!!(G.formsSeen&&G.formsSeen[f.k]),EVO_REQ[g]);});
   $("#evoForms").innerHTML=grid;$("#evoAuto").style.display=isAdult?"none":"block";
   $("#evoSub").innerHTML=isAdult?(petName(p)+" is fully grown as <b>"+FORMS[p.type][cur].nm+"</b>! 🎉"):("<b>"+petName(p)+"</b> · "+(FORMS[p.type][p.stage]||p.stage)+" · care grade <b>"+cur+"</b><div style='margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6;text-align:left'>To reach a better adult form, raise the care grade:<br>• keep 🍽️ Hunger, 😊 Happy &amp; 🫧 Hygiene above 50%<br>• feed ⭐ favorite foods and play every day<br>• clean messes &amp; heal sickness fast<br>• never let a stat hit zero<br>• 🏆 <b>SS</b>: near-full stats + Lv 8 · <b>SSS</b>: near-perfect + Lv 14 · <b>UR</b>: flawless + max discipline + Lv 20</div>");
   openModal("evoModal");}
@@ -1680,9 +1705,11 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="sunnyorange")unlock("sunny");
   if(Object.keys(G.dex).length>=8)unlock("explorer");if(Object.keys(G.dex).length>=16)unlock("collector16");if(Object.keys(G.dex).length>=(allForms("puffy").length+allForms("citrus").length))unlock("collectorall");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
-function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?"":formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
+function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"'+(got?' data-wear="'+type+'|'+fm.k+'" style="cursor:pointer"':'')+'><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?"tap to wear ✨":formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
+  $$("#collForms .evoForm[data-wear]").forEach(function(c){c.onclick=function(){var pr=c.dataset.wear.split("|");wearCollected(pr[0],pr[1]);};});
   $("#collStickers").innerHTML=STICKERS.map(s=>{const u=G.stickers[s.id];return '<div class="sticker '+(u?"":"lock")+'"><div class="se">'+(u?s.e:"❔")+'</div><div class="st">'+(u?s.t:(s.h||"???"))+'</div></div>';}).join("");
-  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(allForms("puffy").length+allForms("citrus").length)+" · Stickers: "+Object.keys(G.stickers).length+"/"+STICKERS.length;openModal("collModal");}
+  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(allForms("puffy").length+allForms("citrus").length)+" · tap a found form to wear it ✨";openModal("collModal");}
+function wearCollected(ty,key){const p=pet();const m=formMeta(ty,key);if(ty!==p.type){toast("Switch to your "+(ty==="puffy"?"Pufferfish":"Orange")+" tab to wear this look");return;}p.skin=key;SFX.coin();react("✨");toast("Now showing "+(m?m.nm:"that form")+"! ✨");render();save();}
 
 /* ---------- Bond ---------- */
 function addBond(n){G.bond=clamp(G.bond+n);checkBond();}
@@ -1718,7 +1745,14 @@ const RECIPES=[
  {id:"veggiestew",nm:"Veggie Stew",e:"🍲",need:{carrot:2,tomato:1,broccoli:1}},
  {id:"berrysmoothie",nm:"Berry Smoothie",e:"🥤",need:{berry:1,peach:1,watermelon:1}},
  {id:"bento",nm:"Garden Bento",e:"🍱",need:{seaweed:2,mushroom:1,corn:1}},
- {id:"tropical",nm:"Tropical Punch",e:"🍹",need:{pineapple:1,coconut:1,lemon:1}}
+ {id:"tropical",nm:"Tropical Punch",e:"🍹",need:{pineapple:1,coconut:1,lemon:1}},
+ {id:"ramen",nm:"Healing Ramen",e:"🍜",need:{mushroom:2,seaweed:1,chili:1}},
+ {id:"powerbowl",nm:"Power Bowl",e:"🥣",need:{corn:1,peach:1,grapes:1}},
+ {id:"cupcake",nm:"Lucky Cupcake",e:"🧁",need:{strawberry:2,lemon:1}},
+ {id:"friendpie",nm:"Friendship Pie",e:"🥧",need:{bellpepper:1,tomato:1,peach:1}},
+ {id:"feast",nm:"Hearty Feast",e:"🍛",need:{corn:1,broccoli:1,eggplant:1}},
+ {id:"sparklejam",nm:"Rainbow Parfait",e:"🌈",need:{watermelon:1,pineapple:1,grapes:1}},
+ {id:"spaclean",nm:"Cucumber Spa Plate",e:"🥒",need:{seaweed:2,watermelon:1}}
 ];
 function canCook(r){for(const k in r.need)if((G.inv[k]||0)<r.need[k])return false;return true;}
 function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
@@ -1726,7 +1760,7 @@ function openCook(){if(!guard())return;renderCook();openModal("cookModal");}
 function cropEmoji(k){const sd=SEEDS.find(s=>s.crop===k);return sd?sd.e:((FOODS[k]&&FOODS[k].e)||"❓");}
 function renderCook(){let h='<div class="sub">Combine crops you grew into hearty dishes, then feed them for a big boost! 🍽️</div><div class="grid">';
   RECIPES.forEach(r=>{const f=FOODS[r.id],ok=canCook(r);const need=Object.keys(r.need).map(k=>cropEmoji(k)+(G.inv[k]||0)+"/"+r.need[k]).join("  ");
-    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+'</div><div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div><div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
+    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+'</div><div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+(f.energy?' ⚡+'+f.energy:'')+(f.coins?' 🪙+'+f.coins:'')+(f.bond?' 💞bond':'')+(f.xp?' ⭐+'+f.xp:'')+(f.cure?' 💊cure':'')+(f.hygiene?' 🫧clean':'')+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div><div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
   h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));}
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function gardenLevel(){return Math.min(12,1+Math.floor((G.stats.harvests||0)/6));}
@@ -2031,7 +2065,7 @@ function checkStory(){let ch=G.storyCh||0;if(ch>=STORY.length)return;
 function playStory(){let slides=INTRO.slice();const n=G.storyCh||0;for(let i=0;i<n;i++)slides=slides.concat(STORY[i]);playCutscene(slides);}
 function chooseEvoPath(tier){const p=pet();if(p.stage==="adult")return;
   const ci=FORM_TIERS.indexOf(careGrade(p)),ti=FORM_TIERS.indexOf(tier);
-  if(ci<=ti||(G.dex&&G.dex[FORMS[p.type][tier].k])){p.targetForm=tier;SFX.coin();toast("🎯 Aiming for "+FORMS[p.type][tier].nm);save();openEvolution();}
+  if(ci<=ti||(G.dex&&G.dex[FORMS[p.type][tier].k])||(G.formsSeen&&G.formsSeen[FORMS[p.type][tier].k])){p.targetForm=tier;SFX.coin();toast("🎯 Aiming for "+FORMS[p.type][tier].nm);save();openEvolution();}
   else{toast("Raise the care grade first to unlock this path 💪");}}
 let csSlides=null,csIdx=0,csDone=null,csPlaying=false,csHoldT=null;const csQueue=[];
 const CS_DEFAULT_BG="radial-gradient(120% 90% at 50% 30%,#1a2a55,#0b1230)";
@@ -2083,10 +2117,11 @@ async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
   try{const {data,error}=await sb.from("saves").select("data").eq("user_id",cloudUser.id).maybeSingle();
     if(error)throw error;
     const remote=data&&data.data;
-    if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=(G.updatedAt||0))){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();if(!silent)toast("Progress loaded ☁️");}
+    const localTs=cloudFirst?launchTs:(G.updatedAt||0);
+    if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=localTs)){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();if(!silent)toast("Progress loaded ☁️");}
     else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud synced ☁️");}
   }catch(e){if(!silent)toast("Cloud offline — playing locally.");}
-  cloudLoading=false;render();
+  cloudLoading=false;cloudFirst=false;render();
   try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
 function cloudSave(){if(!sb||!cloudUser||cloudLoading)return;if(cloudTimer)return;cloudTimer=setTimeout(function(){cloudTimer=null;cloudSaveNow();},1500);}
 function flushSave(){try{G.updatedAt=now();localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}if(sb&&cloudUser&&!cloudLoading){if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}cloudSaveNow();}}
@@ -2111,14 +2146,27 @@ async function sendGift(g){if(!visitTarget)return;if(!sb||!cloudUser){toast("Log
     if(error)throw error;G.giftLog[key]=1;SFX.coin();react("🎁");toast("Sent "+g.e+" "+g.nm+" to "+visitTarget.name+"! 🎁");render();save();renderVisit();}
   catch(e){if(g.k==="coins")G.coins+=g.cost;else if(g.k==="seed")G.seeds.berry++;else G.inv[g.k]=(G.inv[g.k]||0)+1;toast("Couldn't send — try again");}}
 function miniPetSVG(sp){return petArt({type:sp.type,hatched:true,stage:sp.stage||"adult",form:sp.form||null,skin:sp.skin||null},"happy");}
+function agoText(ms){const m=Math.floor(ms/60000);if(m<1)return "just now";if(m<60)return m+"m ago";const h=Math.floor(m/60);if(h<24)return h+"h ago";return Math.floor(h/24)+"d ago";}
+function onlineStatus(updated){const t=updated?Date.parse(updated):0;if(!t)return {dot:"⚪",txt:"offline"};const d=Date.now()-t;return d<180000?{dot:"🟢",txt:"online now"}:{dot:"⚪",txt:"seen "+agoText(d)};}
+function isFriend(name){return (G.friends||[]).indexOf(name)>=0;}
+function addFriend(name){name=(name||"").trim().toLowerCase();if(!name)return;G.friends=G.friends||[];if(G.friends.indexOf(name)<0){G.friends.push(name);SFX.coin();react("👋");toast("Added "+name+" to friends!");save();}renderFriendList();if(visitTarget&&visitTarget.name===name)renderVisit();}
+async function renderFriendList(){const el=$("#frList");if(!el)return;const fr=G.friends||[];
+  if(!fr.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;padding:6px">No friends yet — visit someone and tap ➕ Add friend!</div>';return;}
+  if(!sb){el.innerHTML="";return;}
+  try{const r=await sb.from("profiles").select("username,data,updated_at").in("username",fr);const rows=(r&&r.data)||[];const map={};rows.forEach(x=>map[x.username]=x);
+    let h="";fr.forEach(name=>{const row=map[name],st=onlineStatus(row&&row.updated_at),d=(row&&row.data)||{};
+      h+='<div class="famrow"><div>'+st.dot+' <b>'+name+'</b> <span style="font-size:10px;color:var(--muted)">'+st.txt+(d.level?(" · ⭐"+d.level):"")+'</span></div><button class="ordbtn" data-visit="'+name+'">Visit</button></div>';});
+    el.innerHTML=h;$$("#frList [data-visit]").forEach(b=>b.onclick=()=>visitUser(b.dataset.visit));
+  }catch(e){el.innerHTML='<div style="color:var(--muted);font-size:12px;padding:6px">Couldn\u2019t load friends.</div>';}}
 function openFriends(){visitTarget=null;renderFriends();openModal("friendsModal");}
 function renderFriends(){const body=$("#friendsBody");
   if(!cloudConfigured()){$("#friendsSub").textContent="Visiting friends needs cloud play.";body.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;line-height:1.6">Friends &amp; visiting work when the game is hosted with cloud saves (Supabase) set up. Ask the host to enable it! ☁️</div>';return;}
   if(!cloudUser){$("#friendsSub").textContent="Log in to visit friends.";body.innerHTML='<button class="btn" id="frLogin">Log in / sign up ☁️</button>';$("#frLogin").onclick=()=>{closeModals();showAuth();};return;}
   $("#friendsSub").innerHTML="You are <b>"+(cloudUsername||"?")+"</b> — share your username so friends can visit you!";
-  body.innerHTML='<div style="display:flex;gap:6px;margin:6px 0 10px"><input id="frName" class="nameInput" placeholder="friend&#39;s username" autocapitalize="none" style="flex:1;margin:0"><button class="btn" id="frGo" style="width:auto;margin:0;padding:10px 16px">Visit</button></div><div id="frResult"></div>';
+  body.innerHTML='<div style="display:flex;gap:6px;margin:6px 0 10px"><input id="frName" class="nameInput" placeholder="friend&#39;s username" autocapitalize="none" style="flex:1;margin:0"><button class="btn" id="frGo" style="width:auto;margin:0;padding:10px 16px">Visit</button></div><div id="frResult"></div><div class="menuhd" style="margin-top:12px">Your friends</div><div id="frList"><div style="color:var(--muted);font-size:12px;padding:6px">Loading…</div></div>';
   $("#frGo").onclick=()=>visitUser($("#frName").value);
-  $("#frName").onkeydown=e=>{if(e.key==="Enter")visitUser($("#frName").value);};}
+  $("#frName").onkeydown=e=>{if(e.key==="Enter")visitUser($("#frName").value);};
+  renderFriendList();}
 async function visitUser(name){name=(name||"").trim().toLowerCase().replace(/[^a-z0-9_.-]/g,"");const res=$("#frResult");if(!name){toast("Type a username");return;}
   if(name===cloudUsername){toast("That's you! 😄");return;}
   if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Looking…</div>';
@@ -2128,6 +2176,7 @@ async function visitUser(name){name=(name||"").trim().toLowerCase().replace(/[^a
   catch(e){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Couldn&#39;t reach the cloud — try again.</div>';}}
 function renderVisit(){const res=$("#frResult");if(!res||!visitTarget)return;const d=visitTarget.data||{},pp=d.pets||{};
   let h='<div style="text-align:center;font-weight:800;margin:4px 0">🏡 '+visitTarget.name+"&#39;s place</div>";
+  h+='<div style="text-align:center;margin-bottom:6px"><button class="ordbtn" id="frAddBtn">'+(isFriend(visitTarget.name)?"✓ Friend":"➕ Add friend")+'</button></div>';
   h+='<div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px">';
   ["puffy","citrus"].forEach(k=>{const sp=pp[k];if(!sp)return;const fm=formMeta(sp.type,sp.form),tr=traitOf(sp);
     h+='<div style="text-align:center;background:var(--panel);border:1px solid #eadfce;border-radius:14px;padding:6px;width:46%"><div style="height:92px;display:flex;align-items:center;justify-content:center">'+miniPetSVG(sp)+'</div><div style="font-size:12px;font-weight:800">'+(sp.name||(k==="puffy"?"Puffy":"Citrus"))+'</div><div style="font-size:10px;color:var(--muted)">'+(fm?fm.nm:(sp.stage||"egg"))+(tr?" · "+tr.e+" "+tr.nm:"")+'</div></div>';});
@@ -2136,6 +2185,7 @@ function renderVisit(){const res=$("#frResult");if(!res||!visitTarget)return;con
   const key=dayKey()+"|"+visitTarget.name,sent=G.giftLog&&G.giftLog[key];
   h+='<div style="margin-top:10px;font-weight:800;font-size:13px">🎁 Send '+visitTarget.name+' a gift'+(sent?' <span style="font-weight:600;color:var(--muted);font-size:11px">(already sent today)</span>':'')+'</div><div class="grid" id="frGifts" style="margin-top:6px"></div>';
   res.innerHTML=h;
+  {var fa=$("#frAddBtn");if(fa)fa.onclick=()=>addFriend(visitTarget.name);}
   const gg=$("#frGifts");GIFTS.forEach(g=>{const c=document.createElement("div");c.className="card"+(sent?" locked":"");c.innerHTML='<div class="e">'+g.e+'</div><div class="nm">'+g.nm+'</div><div class="ft" style="font-size:9px">'+(g.k==="coins"?("costs "+g.cost+"🪙"):"from your stuff")+'</div>';c.onclick=()=>{if(sent){toast("One gift per friend per day 🎁");return;}sendGift(g);};gg.appendChild(c);});}
 
 /* ---------- Pet speech ---------- */
@@ -2196,13 +2246,15 @@ $("#nameConfirm").onclick=confirmName;
 $("#belleMascot").onclick=showNote;$("#chest").onclick=claimChest;$("#scene").addEventListener("click",placeFurn);$("#decorateBtn").onclick=openDecorate;$("#familyBtn").onclick=()=>{closeModals();openFamily();};$("#friendsBtn").onclick=()=>{closeModals();openFriends();};
 $("#coinChip").onclick=openQuests;$("#questsBtn").onclick=openQuests;$("#journeyChip").onclick=openJourney;$("#lvlChip").onclick=openCollection;
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
-$("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
+$("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
 $("#soundBtn").onclick=()=>{G.sound=!G.sound;$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";if(G.sound){SFX.happy();startMusic();}else stopMusic();save();};
 $("#musicBtn").onclick=()=>{G.music=!G.music;$("#musicBtn").textContent=musicLabel();if(G.music){startMusic();}else stopMusic();save();};
 $("#notifyBtn").onclick=toggleNotify;
 $("#eventBanner").onclick=()=>{var ev=currentEvent();if(ev)toast(ev.e+" "+ev.nm+" — "+ev.d);};
 document.addEventListener("click",()=>{startMusic();},{once:true});
 $("#renameBtn").onclick=()=>{closeModals();openNameModal(G.active);};
+$("#achBtn").onclick=()=>{closeModals();openQuests();};
+$("#motionBtn").onclick=()=>{G.reducedMotion=!G.reducedMotion;document.body.classList.toggle("rm",G.reducedMotion);$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";save();};
 $("#hardReset").onclick=()=>{if(confirm("Reset everything and start two new eggs?")){localStorage.removeItem(SAVE_KEY);G=freshGame();save();closeModals();render();toast("Fresh start! 🥚🥚");}};
 $("#reviveBtn").onclick=()=>{G.pets[G.active]=freshPet(G.active);render();save();toast("A new egg appears! 🥚");};
 $("#petWrap").onclick=()=>{const p=pet();if(p.dead)return;if(!p.hatched){p.bornAt-=8000;toast("*tap tap* the egg wiggles!");tickAll();return;}patPet();};
