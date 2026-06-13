@@ -449,6 +449,12 @@
     <div class="grid" id="hubList"></div>
   </div></div>
 
+  <div class="modal" id="prestigeModal"><div class="sheet">
+    <div class="closeRow"><h2>✨ Prestige</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub" id="prestigeSub"></div>
+    <div id="prestigeBody"></div>
+  </div></div>
+
   <div class="modal" id="friendsModal"><div class="sheet">
     <div class="closeRow"><h2>👋 Friends</h2><button class="iconbtn" data-close>✕</button></div>
     <div class="sub" id="friendsSub"></div>
@@ -846,7 +852,7 @@ function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
   ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null],maxPlots:6,sprinkler:false,beehive:false,greenhouse:false,order:null},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",lastChest:now(),hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
-  stats:{gamesPlayed:0,cooked:0,perfectCrops:0,cleans:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,ascensions:0,tricksUnlocked:{},formsSeen:{},legacy:{puffy:[],citrus:[]},
+  stats:{gamesPlayed:0,cooked:0,perfectCrops:0,cleans:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,ascensions:0,prestige:0,prestigeUp:{},tricksUnlocked:{},formsSeen:{},legacy:{puffy:[],citrus:[]},
   weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,music:true,notify:false,revealed:{},friends:[],reducedMotion:false,introSeen:false,tutorialSeen:false,storyCh:0,
   pets:{puffy:freshPet("puffy"),citrus:freshPet("citrus")}};}
 let G;
@@ -915,9 +921,20 @@ function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;const L=maxL
   default:return true;}}
 const REVEALS={fish:["🎣","Fishing"],wheel:["🎡","Daily Wheel"],tricks:["🎓","Tricks"],grow:["🧬","Evolution & Legacy"],home:["🏡","Home & Style"],exped:["🧭","Expeditions"],together:["🤝","Play Together"]};
 function checkReveals(){if(!G.revealed)G.revealed={};for(const id in REVEALS){if(featUnlocked(id)&&!G.revealed[id]){G.revealed[id]=true;toast("🎉 New unlocked: "+REVEALS[id][0]+" "+REVEALS[id][1]+"!");SFX.coin();}}}
+const PRESTIGE_UPGRADES=[
+ {id:"coinboost",e:"🪙",nm:"Golden Touch",desc:"+5% coins per level",max:10,cost:1},
+ {id:"xpboost",e:"⭐",nm:"Quick Learner",desc:"+5% XP per level",max:10,cost:1},
+ {id:"growth",e:"🌱",nm:"Green Fingers",desc:"+5% garden growth speed per level",max:6,cost:1},
+ {id:"tough",e:"💪",nm:"Hardy Spirit",desc:"-8% stat decay per level",max:5,cost:1},
+ {id:"luck",e:"🍀",nm:"Lucky Star",desc:"+3% perfect-crop chance per level",max:5,cost:1},
+ {id:"headstart",e:"🚀",nm:"Head Start",desc:"new generations begin +2 levels per level",max:5,cost:2}
+];
+function prestigeLevel(id){return (G.prestigeUp&&G.prestigeUp[id])||0;}
+function prestigeSpent(){var t=0;for(var id in (G.prestigeUp||{})){var u=PRESTIGE_UPGRADES.find(function(x){return x.id===id;});if(u)t+=u.cost*G.prestigeUp[id];}return t;}
+function prestigeAvail(){return (G.prestige||0)-prestigeSpent();}
 function ascBonus(){return Math.min(1,0.05*(G.ascensions||0));}
-function coinMul(p){var ev=currentEvent(),m=1+ascBonus();if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;return m;}
-function xpMul(p){var ev=currentEvent(),m=1+ascBonus();if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;return m;}
+function coinMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("coinboost");if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;return m;}
+function xpMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("xpboost");if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;return m;}
 let musicTimer=null,musicStep=0;const MELODY=[523,587,659,784,880,784,659,587,659,587];
 function startMusic(){if(musicTimer||!G||!G.music||!G.sound)return;musicTimer=setInterval(()=>{if(document.hidden||!G.music||!G.sound)return;const f=MELODY[musicStep%MELODY.length];beep(f,.5,"sine",.016);if(musicStep%2===0)beep(f/2,.6,"triangle",.011);musicStep++;},640);}
 function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null;}}
@@ -1634,7 +1651,7 @@ function simulate(p,dt,away){
   const days=Math.floor(a/86400);if(days>p.birthdays&&p.hatched){p.birthdays=days;unlock("birthday");unlockSticker("bday");if(days>=7)unlock("devoted");
     G.coins+=30;if(!away){react("🎂");SFX.level();toast("🎂 Happy birthday, "+petName(p)+"! Day "+days+". +30🪙");}}
   const wmul=G.weather.weather==="rainy"?1.1:(G.weather.weather==="snowy"?1.2:1);
-  const r=1/90/60*100*(away?0.6:1);
+  const r=1/90/60*100*(away?0.35:1)*(1-0.08*prestigeLevel("tough"));
   if(p.asleep){p.energy=clamp(p.energy+dt*0.7);p.hunger=clamp(p.hunger-dt*r*0.4);if(p.energy>=99)p.asleep=false;}
   else{p.hunger=clamp(p.hunger-dt*r);p.happy=clamp(p.happy-dt*r*0.9*(p.trait==="sunny"?0.7:1));p.energy=clamp(p.energy-dt*r*0.7*wmul*(p.trait==="sleepy"?0.6:1));}
   if(!p.asleep&&Math.random()<dt*0.006&&p.poops.length<4)p.poops.push({x:25+Math.random()*50});
@@ -1645,6 +1662,7 @@ function simulate(p,dt,away){
   p.health=clamp(p.health+dt*hd);
   if(p.hunger<8||p.happy<8||(p.sick&&p.health<25))p.careMistakes+=dt;
   else if(p.hunger>50&&p.happy>50&&p.hygiene>50)p.careGood+=dt;
+  if(away&&p.health<12)p.health=12;
   if(p.health<=0)p.dead=true;
   p.lastTick=now();}
 function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;
@@ -2021,7 +2039,7 @@ function renderCook(){let h='<div class="sub">Combine crops you grew into hearty
   h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));}
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function gardenLevel(){return Math.min(12,1+Math.floor((G.stats.harvests||0)/6));}
-function growTime(seed){if(seed.slow)return seed.t;return seed.t*(G.garden&&G.garden.sprinkler?0.7:1)*(G.garden&&G.garden.greenhouse?0.85:1)*(G.garden&&G.garden.sunlamp?0.8:1)*(1-Math.min(0.33,(gardenLevel()-1)*0.03));}
+function growTime(seed){if(seed.slow)return seed.t;return seed.t*(G.garden&&G.garden.sprinkler?0.7:1)*(G.garden&&G.garden.greenhouse?0.85:1)*(G.garden&&G.garden.sunlamp?0.8:1)*(1-Math.min(0.30,0.05*prestigeLevel("growth")))*(1-Math.min(0.33,(gardenLevel()-1)*0.03));}
 function gardenPetHop(){const g=$("#gardenPet");if(g){g.classList.remove("hop");void g.offsetWidth;g.classList.add("hop");}}
 function ensureGardenOrder(){const d=dayKey();if(G.garden.order&&G.garden.order.date===d)return;const pool=SEEDS.filter(s=>s.cost!=null);const sd=rnd(pool);const need=2+Math.floor(Math.random()*3);G.garden.order={crop:sd.crop,need:need,reward:need*Math.max(8,Math.round((sd.cost||10)*0.9)),date:d,done:false};}
 function renderGardenOrder(){const o=G.garden.order,el=$("#gardenOrder");if(!el)return;if(!o){el.innerHTML="";return;}
@@ -2057,7 +2075,7 @@ function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.fi
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.fert=true;pl.plantedAt=now()-gt*1000-1;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer used — ready now!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
 function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)*(G.garden.goldcan?1.4:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0));if(perf){coins=Math.round(coins*2.2);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)*(G.garden.goldcan?1.4:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0)+0.03*prestigeLevel("luck"));if(perf){coins=Math.round(coins*2.2);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
@@ -2155,8 +2173,21 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
   openHub("🧬 Grow &amp; Legacy","Shape who your pets become — then pass on the torch.",[
     ["🧬","Evolution",(p.stage==="adult"?"fully grown ✓":"care grade "+grade),openEvolution],
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
-    ["👪","Ascension & Legacy","ascend & carry on",openFamily]
+    ["👪","Ascension & Legacy","ascend & carry on",openFamily],
+    ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")+" to spend"),openPrestige]
   ]);}
+function openPrestige(){renderPrestige();openModal("prestigeModal");}
+function renderPrestige(){const body=$("#prestigeBody");
+  $("#prestigeSub").innerHTML="✨ <b>"+prestigeAvail()+"</b> prestige to spend · earned "+(G.prestige||0)+" total (1 per ascension). Upgrades are permanent and survive every ascension!";
+  let h='<div class="grid">';
+  PRESTIGE_UPGRADES.forEach(function(u){const lv=prestigeLevel(u.id),maxed=lv>=u.max,can=!maxed&&prestigeAvail()>=u.cost;
+    h+='<div class="card'+(can?"":" locked")+'" data-pu="'+u.id+'"><div class="e">'+u.e+'</div><div class="nm">'+u.nm+'</div><div class="ft" style="font-size:9px">'+u.desc+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(maxed?"#3b8b1f":"#b07415")+'">'+(maxed?("✓ MAX ("+u.max+")"):("Lv "+lv+"/"+u.max+" · "+u.cost+"✨"))+'</div></div>';});
+  h+='</div>';body.innerHTML=h;
+  $$("#prestigeBody .card[data-pu]").forEach(function(c){c.onclick=function(){buyPrestige(c.dataset.pu);};});}
+function buyPrestige(id){const u=PRESTIGE_UPGRADES.find(function(x){return x.id===id;});if(!u)return;const lv=prestigeLevel(id);
+  if(lv>=u.max){toast("Already maxed ✓");return;}
+  if(prestigeAvail()<u.cost){toast("Not enough prestige ✨ — ascend to earn more!");return;}
+  G.prestigeUp=G.prestigeUp||{};G.prestigeUp[id]=lv+1;SFX.level();react("✨");toast(u.e+" "+u.nm+" → Lv "+(lv+1)+"!");renderPrestige();render();save();}
 function openHome(){if(!guard())return;const p=pet();
   openHub("🏡 Home &amp; Style","Build your room, pick a habitat, dress up your pets.",[
     ["🛋️","Decorate Room","place furniture",openDecorate],
@@ -2278,7 +2309,7 @@ function nextGen(k){const p=G.pets[k];if(p.stage!=="adult"){toast("Only a grown-
   G.legacy=G.legacy||{};G.legacy[k]=G.legacy[k]||[];if(p.form){G.legacy[k].push(p.form);G.dex[p.form]=true;}
   const gen=(p.gen||1)+1,tricks=(p.tricks||[]).slice(),nm=p.name;
   G.pets[k]=freshPet(k);const np=G.pets[k];np.gen=gen;np.tricks=tricks;np.name=nm;np.needsName=false;np.careGood=1+gen*40;np.discipline=30+Math.min(45,gen*6);
-  G.ascensions=(G.ascensions||0)+1;unlock("legacy");unlock("ascend1");if((G.ascensions||0)>=3)unlock("ascend3");if((G.ascensions||0)>=5)unlock("ascend5");if((G.ascensions||0)>=10)unlock("ascend10");if(gen>=3)unlock("dynasty");
+  G.ascensions=(G.ascensions||0)+1;G.prestige=(G.prestige||0)+1;np.level=1+2*prestigeLevel("headstart");unlock("legacy");unlock("ascend1");if((G.ascensions||0)>=3)unlock("ascend3");if((G.ascensions||0)>=5)unlock("ascend5");if((G.ascensions||0)>=10)unlock("ascend10");if(gen>=3)unlock("dynasty");
   queueCutscene([{art:"✨",big:"Ascension!",text:(nm||"Your pet")+" ascends to Generation "+gen+"! They keep "+tricks.length+" tricks, their traits and a head start — and your coins, seeds, garden & items all carry over. Ascension bonus is now +"+Math.round(ascBonus()*100)+"% coins & XP.",bg:CS_LEVEL_BG}]);
   toast("✨ "+(nm||"New egg")+" ascended — Generation "+gen+"!");render();save();}
 function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")){toast("Both pets must be grown up!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("✨ Ascended both — bonus now +"+Math.round(ascBonus()*100)+"%!");renderFamily();save();}
