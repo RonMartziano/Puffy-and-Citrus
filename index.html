@@ -765,7 +765,7 @@ const ACHIEVEMENTS=[
   {id:"eternal_p",e:"♾️",t:"Eternal",d:"Evolve an Eternal Puffer"},
   {id:"gaia",e:"🌍",t:"Gaia",d:"Evolve a Gaia Orange"},
   {id:"titan",e:"🛡️",t:"Titan",d:"Evolve a Titan Puffer"},
-  {id:"cosmos",e:"🌠",t:"Cosmos",d:"Evolve a Cosmos Orange"}
+  {id:"cosmos",e:"💥",t:"Supernova",d:"Evolve a Supernova Orange"}
 ];
 const FORM_TIERS=["UR","SSS","SS","S","A","B","C","D"];
 const FORMS={
@@ -792,7 +792,7 @@ const SPECIALS={
     {k:"voidpuffer",nm:"Void Sovereign 🕳️",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
     {k:"krakenpuffer",nm:"Kraken Puffer 🐙",reqText:"20 expeditions · Lv 15",req:p=>(G.stats.expeditions||0)>=20&&p.level>=15},
     {k:"eternalpuffer",nm:"Eternal Puffer ♾️",reqText:"♾️ Lv 25 · 200 feeds · 100 games · 5 ascensions",req:p=>p.level>=25&&(G.stats.feeds||0)>=200&&(G.stats.gamesPlayed||0)>=100&&(G.ascensions||0)>=5},
-    {k:"titanpuffer",nm:"Titan Puffer 🛡️",reqText:"🛡️ Lv 30 · 20 dishes cooked · 20 perfect crops",req:p=>p.level>=30&&(G.stats.cooked||0)>=20&&(G.stats.perfectCrops||0)>=20}
+    {k:"titanpuffer",nm:"Titan Puffer 🛡️",reqText:"🛡️ Lv 30 · 50 dishes cooked · 60 perfect crops · 5 ascensions",req:p=>p.level>=30&&(G.stats.cooked||0)>=50&&(G.stats.perfectCrops||0)>=60&&(G.ascensions||0)>=5}
   ],
   citrus:[
     {k:"mageorange",nm:"Mage Orange 🧙",reqText:"Lv 12 · 18 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=18},
@@ -805,7 +805,7 @@ const SPECIALS={
     {k:"celestialorange",nm:"Demonic Orange 😈",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
     {k:"dragonorange",nm:"Dragon Orange 🐉",reqText:"50 harvests · bond 80% · Lv 15",req:p=>(G.stats.harvests||0)>=50&&G.bond>=80&&p.level>=15},
     {k:"gaiaorange",nm:"Gaia Orange 🌍",reqText:"🌍 Lv 25 · 150 harvests · 50 fish · bond 100%",req:p=>p.level>=25&&(G.stats.harvests||0)>=150&&(G.stats.fishCaught||0)>=50&&G.bond>=100},
-    {k:"cosmosorange",nm:"Cosmos Orange 🌠",reqText:"🌠 Lv 30 · 30 wheel spins · 20 orders · 24 forms",req:p=>p.level>=30&&(G.stats.spins||0)>=30&&(G.stats.orders||0)>=20&&Object.keys(G.dex).length>=24}
+    {k:"cosmosorange",nm:"Supernova Orange 💥",reqText:"💥 Lv 30 · 30 wheel spins · 20 orders · 24 forms",req:p=>p.level>=30&&(G.stats.spins||0)>=30&&(G.stats.orders||0)>=20&&Object.keys(G.dex).length>=24}
   ]
 };
 const SHOP_FORMS={puffy:[{k:"piratepuffer",nm:"Pirate Puffer 🏴‍☠️",cost:340},{k:"lavapuffer",nm:"Lava Puffer 🌋",cost:460},{k:"mechapuffer",nm:"Mecha Puffer 🤖",cost:580},{k:"ninjapuffer",nm:"Ninja Puffer 🥷",cost:680},{k:"angelpuffer",nm:"Angel Puffer 👼",cost:760}],citrus:[{k:"kingorange",nm:"King Orange 👑",cost:340},{k:"galaxyorange",nm:"Galaxy Orange 🌌",cost:460},{k:"pumpkinorange",nm:"Pumpkin Orange 🎃",cost:580},{k:"phoenixorange",nm:"Phoenix Orange 🔥",cost:680},{k:"fairyorange",nm:"Fairy Orange 🧚",cost:760}]};
@@ -988,26 +988,42 @@ function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){
 function svgWrap(inner,vb){return `<svg viewBox="${vb||'-150 -150 300 300'}"><g>${inner}</g></svg>`;}
 function puffAdult(form,m){
   if(form==="titanpuffer")return svgWrap(`
-    <ellipse cx="0" cy="124" rx="88" ry="15" fill="#00000026"/>
-    ${spikeRing("#8a939c",20,78,104,0.11)}
+    <ellipse cx="0" cy="128" rx="92" ry="15" fill="#00000030"/>
+    <circle cx="0" cy="0" r="124" fill="#ffcf5a" opacity=".08"/>
+    <g transform="rotate(-32)"><rect x="-4" y="-120" width="8" height="150" rx="2" fill="#cdd6df"/><polygon points="0,-130 -7,-118 7,-118" fill="#eef3f7"/><rect x="-16" y="18" width="32" height="11" rx="3" fill="#c0a030"/></g>
+    <g transform="rotate(32)"><rect x="-4" y="-26" width="8" height="150" rx="2" fill="#7a5a32"/><rect x="-28" y="-120" width="56" height="42" rx="9" fill="#6a7480"/><rect x="-28" y="-120" width="56" height="42" rx="9" fill="none" stroke="#c0a030" stroke-width="3"/></g>
+    ${spikeRing("#7a838c",20,78,106,0.11)}
+    <path d="M -78 16 q -36 -8 -48 28 q 32 -6 48 8 Z" fill="#5f6b78"/><path d="M 78 16 q 36 -8 48 28 q -32 -6 -48 8 Z" fill="#5f6b78"/>
+    <path d="M -78 16 q -36 -8 -48 28 q 32 -6 48 8 Z" fill="none" stroke="#c0a030" stroke-width="3"/><path d="M 78 16 q 36 -8 48 28 q -32 -6 -48 8 Z" fill="none" stroke="#c0a030" stroke-width="3"/>
     <circle cx="0" cy="0" r="84" fill="#9aa6b2"/>
+    <circle cx="0" cy="0" r="84" fill="none" stroke="#c0a030" stroke-width="3" opacity=".55"/>
     <path d="M -68 36 A 84 84 0 0 0 68 36 A 74 58 0 0 1 -68 36 Z" fill="#cdd6df"/>
-    <path d="M -84 -22 A 84 84 0 0 1 84 -22 L 84 -8 L -84 -8 Z" fill="#5f6b78"/>
-    <rect x="-86" y="-12" width="172" height="7" rx="3" fill="#c0a030"/>
-    <path d="M 0 -122 l 11 28 -22 0 Z" fill="#ffd24a"/><circle cx="0" cy="-120" r="6" fill="#e05a3a"/>
-    ${eyes(m)}${mouth(m)}`,'-165 -176 330 348');
+    <path d="M -52 -54 q -30 -16 -34 -52 q 28 12 42 46 Z" fill="#3a4450"/><path d="M 52 -54 q 30 -16 34 -52 q -28 12 -42 46 Z" fill="#3a4450"/>
+    <path d="M -86 -30 A 86 86 0 0 1 86 -30 L 86 -14 L -86 -14 Z" fill="#5f6b78"/>
+    <rect x="-86" y="-22" width="172" height="6" rx="3" fill="#c0a030"/>
+    <rect x="-4" y="-120" width="8" height="36" rx="3" fill="#7a5a32"/><path d="M 4 -116 q 28 -2 34 20 q -24 8 -38 -4 Z" fill="#e0473a"/>
+    <polygon points="0,-30 9,-13 -9,-13" fill="#ffd24a"/><circle cx="0" cy="-21" r="6" fill="#e0533a"/>
+    ${eyes(m)}<path d="M -40 -2 l 22 7 M 40 -2 l -22 7" stroke="#2B3A42" stroke-width="3.5" stroke-linecap="round"/>${mouth(m)}`,'-180 -188 360 376');
   if(form==="eternalpuffer")return svgWrap(`
-    <ellipse cx="0" cy="124" rx="86" ry="15" fill="#00000022"/>
-    <ellipse cx="0" cy="0" rx="128" ry="42" fill="none" stroke="#7fd0ff" stroke-width="2.5" opacity=".5" transform="rotate(20 0 0)"/>
-    <ellipse cx="0" cy="0" rx="128" ry="42" fill="none" stroke="#ffd24a" stroke-width="2.5" opacity=".5" transform="rotate(-20 0 0)"/>
-    ${spikeRing("#cfe6ff",20,80,108,0.10)}
-    <ellipse cx="-86" cy="28" rx="24" ry="16" fill="#5aa0e0" transform="rotate(-22 -86 28)"/><ellipse cx="86" cy="28" rx="24" ry="16" fill="#5aa0e0" transform="rotate(22 86 28)"/>
-    <circle cx="0" cy="0" r="84" fill="#1b2b5a"/>
-    <ellipse cx="-6" cy="-6" rx="52" ry="34" fill="#3a6fd0" opacity=".5" transform="rotate(-20 -6 -6)"/>
-    <g fill="#fff"><circle cx="-44" cy="-36" r="2.4"/><circle cx="40" cy="-42" r="2"/><circle cx="54" cy="-4" r="2.2"/><circle cx="-54" cy="8" r="2"/><circle cx="28" cy="30" r="2"/></g>
-    <path d="M -64 38 A 84 84 0 0 0 64 38 A 72 54 0 0 1 -64 38 Z" fill="#0e1740"/>
-    <text x="-14" y="-94" font-size="22">♾️</text>
-    ${eyes(m)}<path d="M -14 24 Q 0 40 14 24" fill="none" stroke="#ffe27a" stroke-width="4.5" stroke-linecap="round"/>`,'-170 -178 340 348');
+    <ellipse cx="0" cy="132" rx="86" ry="14" fill="#00000022"/>
+    <circle cx="0" cy="0" r="142" fill="#7fd0ff" opacity=".07"/>
+    <circle cx="0" cy="0" r="116" fill="#b98cff" opacity=".10"/>
+    <ellipse cx="0" cy="0" rx="138" ry="48" fill="none" stroke="#7fd0ff" stroke-width="3" opacity=".55" transform="rotate(24 0 0)"/>
+    <ellipse cx="0" cy="0" rx="138" ry="48" fill="none" stroke="#ffd24a" stroke-width="3" opacity=".55" transform="rotate(-24 0 0)"/>
+    <ellipse cx="0" cy="0" rx="134" ry="42" fill="none" stroke="#c79aff" stroke-width="2.5" opacity=".5" transform="rotate(88 0 0)"/>
+    <g fill="#cfe6ff"><circle cx="120" cy="-28" r="3"/><circle cx="-120" cy="-28" r="3"/><circle cx="98" cy="80" r="2.6"/><circle cx="-98" cy="80" r="2.6"/><circle cx="62" cy="-114" r="2.6"/><circle cx="-62" cy="-114" r="2.6"/><circle cx="0" cy="128" r="2.6"/></g>
+    ${spikeRing("#dff0ff",22,80,114,0.08)}
+    <ellipse cx="-88" cy="28" rx="24" ry="16" fill="#4a8fd0" transform="rotate(-22 -88 28)"/><ellipse cx="88" cy="28" rx="24" ry="16" fill="#4a8fd0" transform="rotate(22 88 28)"/>
+    <circle cx="0" cy="0" r="84" fill="#140e36"/>
+    <ellipse cx="-8" cy="-8" rx="58" ry="38" fill="#5a3fd0" opacity=".55" transform="rotate(-22 -8 -8)"/>
+    <ellipse cx="16" cy="14" rx="40" ry="24" fill="#3a7fd0" opacity=".45" transform="rotate(20 16 14)"/>
+    <circle cx="0" cy="2" r="28" fill="#b98cff" opacity=".35"/>
+    <g fill="#fff"><circle cx="-44" cy="-34" r="2.6"/><circle cx="40" cy="-40" r="2"/><circle cx="56" cy="-6" r="2.4"/><circle cx="-56" cy="10" r="2"/><circle cx="30" cy="32" r="2"/><circle cx="-22" cy="40" r="2.2"/><circle cx="10" cy="-20" r="1.6"/></g>
+    <path d="M -64 38 A 84 84 0 0 0 64 38 A 72 54 0 0 1 -64 38 Z" fill="#0a0826"/>
+    <path d="M -46 -78 L -46 -114 L -23 -92 L 0 -122 L 23 -92 L 46 -114 L 46 -78 Z" fill="#ffd24a" stroke="#e0a91f" stroke-width="2"/>
+    <circle cx="-46" cy="-114" r="5" fill="#e0533a"/><circle cx="0" cy="-122" r="6" fill="#5fd0ff"/><circle cx="46" cy="-114" r="5" fill="#e0533a"/>
+    ${eyes(m)}<path d="M -14 24 Q 0 40 14 24" fill="none" stroke="#ffe27a" stroke-width="4.5" stroke-linecap="round"/>
+    <text x="-100" y="-46" font-size="16">✨</text><text x="84" y="62" font-size="15">✨</text>`,'-178 -190 356 366');
   if(form==="krakenpuffer")return svgWrap(`
     <ellipse cx="0" cy="124" rx="86" ry="14" fill="#00000022"/>
     <g stroke="#3a6a86" stroke-width="12" fill="none" stroke-linecap="round" opacity=".9"><path d="M -40 70 q -20 40 -52 50"/><path d="M -14 80 q -6 44 -28 64"/><path d="M 14 80 q 6 44 28 64"/><path d="M 40 70 q 20 40 52 50"/></g>
@@ -1222,16 +1238,19 @@ function puffAdult(form,m){
 }
 function citrusAdult(form,m){
   if(form==="cosmosorange")return svgWrap(`
-    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000026"/>
-    <ellipse cx="0" cy="6" rx="124" ry="38" fill="none" stroke="#b98cff" stroke-width="2.5" opacity=".5" transform="rotate(16 0 6)"/>
+    <ellipse cx="0" cy="122" rx="80" ry="14" fill="#00000022"/>
+    <circle cx="0" cy="6" r="138" fill="#ffd24a" opacity=".10"/>
+    <circle cx="0" cy="6" r="108" fill="#ff7a1a" opacity=".14"/>
+    <g transform="translate(0,6)">${spikeRing("#ffe27a",20,84,144,0.05)}${spikeRing("#ff8c1a",10,84,118,0.10)}</g>
+    <circle cx="0" cy="6" r="124" fill="none" stroke="#ffd97a" stroke-width="2" opacity=".4"/>
     <path d="M 4 -82 Q 26 -100 44 -84 Q 26 -74 4 -64 Z" fill="#7CC24B"/>
-    <circle cx="0" cy="6" r="80" fill="#241a52"/>
-    <ellipse cx="-6" cy="0" rx="50" ry="32" fill="#7a4fd0" opacity=".5" transform="rotate(-20 -6 0)"/>
-    <ellipse cx="14" cy="16" rx="34" ry="20" fill="#c86fd6" opacity=".4" transform="rotate(20 14 16)"/>
-    <g fill="#fff"><circle cx="-42" cy="-30" r="2.4"/><circle cx="36" cy="-36" r="2"/><circle cx="52" cy="0" r="2.2"/><circle cx="-52" cy="14" r="2"/><circle cx="24" cy="34" r="2"/></g>
-    <path d="M -64 40 A 80 80 0 0 0 64 40 A 72 56 0 0 1 -64 40 Z" fill="#160f38"/>
-    <text x="-12" y="-88" font-size="20">🌠</text>
-    ${eyes(m)}<path d="M -14 24 Q 0 40 14 24" fill="none" stroke="#cdb8ff" stroke-width="4.5" stroke-linecap="round"/>`,'-170 -176 340 320');
+    <circle cx="0" cy="6" r="80" fill="#ff7a1a"/>
+    <circle cx="0" cy="6" r="80" fill="#ffd24a" opacity=".45"/>
+    <circle cx="0" cy="6" r="48" fill="#fff3c0" opacity=".75"/>
+    <path d="M -64 40 A 80 80 0 0 0 64 40 A 72 56 0 0 1 -64 40 Z" fill="#ffe6a0"/>
+    <g fill="#fff"><circle cx="-40" cy="-26" r="2.4"/><circle cx="38" cy="-30" r="2"/><circle cx="50" cy="6" r="2.2"/><circle cx="-50" cy="14" r="2"/></g>
+    ${eyes(m)}${mouth(m)}
+    <text x="-94" y="-30" font-size="16">💥</text><text x="80" y="56" font-size="15">✨</text>`,'-176 -178 352 320');
   if(form==="gaiaorange")return svgWrap(`
     <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000022"/>
     <ellipse cx="0" cy="6" rx="118" ry="36" fill="none" stroke="#bfe0ee" stroke-width="2.5" opacity=".5" transform="rotate(-12 0 6)"/>

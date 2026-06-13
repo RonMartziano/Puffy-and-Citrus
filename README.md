@@ -1,71 +1,62 @@
 # Puffy & Citrus 🐡🍊
 
-A cute browser-based virtual pet game. Raise two pets — Puffy the pufferfish and
-Citrus the orange — feed them, play, and watch them grow into one of six adult
-forms each, depending on how well you care for them.
+A cute virtual-pet game where you raise two little friends — **Puffy** the pufferfish
+and **Citrus** the orange — feeding them, playing with them, and watching them grow into
+dozens of different forms depending on how you care for them.
 
-The whole game is a single file, `index.html` — no build step, runs anywhere.
 Made with 💚 for Belle Pepper.
 
-## Features
+## The basics
 
-- Two pets with their own stats: hunger, happiness, energy, hygiene, health.
-- Branching evolution (egg → baby → child → teen → adult) with **six** adult
-  forms per pet — from Cosmic Puffer / Golden Orchard down to Blobfish / Sour
-  Lemon. Choose the path you're aiming for; each form lists what care it needs.
-- A continuing story set in Tuvalu that unfolds across five chapters as your
-  pets grow, plus cinematic intro, evolution reveals, and a tutorial.
-- Three mini-games, fishing, a garden, a daily prize wheel, and tricks.
-- Friendship bond between the pets, daily quests, levels, achievements, a
-  sticker album, and a collection log of every form you've discovered.
-- Shop with foods, scenes, and hats. Seasons, weather, and day/night.
-- Optional cloud saves + login (Supabase) so progress follows you anywhere.
+Each pet has stats you keep an eye on — hunger, happiness, energy, hygiene and health —
+and a mood face that changes with how it's feeling (happy, sad, sleepy, sick, tired).
+Feed them, clean up messes, let them nap, heal them when they're poorly, and give them
+the occasional pat. Look after a pet well and it grows from egg → baby → child → teen →
+adult, and the quality of your care decides which adult form it becomes.
 
-## Play
+Every pet also hatches with a **personality trait** (Foodie, Playful, Sleepyhead, Tidy,
+Hardy, Sunny or Curious) that gives it a little quirk.
 
-Open `index.html` in any browser. Progress saves automatically.
+## Growing & evolving
 
-On a phone: host it (below) and "Add to Home Screen", or run it through Expo Go —
-see [`expo-app/`](expo-app/README.md).
+Care grade runs from D all the way up to **SS, SSS and UR** — the higher you push it, the
+rarer the form your pet can become. On top of the grade-based forms there are loads of
+**special forms** unlocked by playing different ways: a Samurai, a Ghost, a Mage, a Chef,
+a Rainbow Puffer, a Golden Orchard and many more. Anything you've ever discovered (or
+even just qualified for) stays available to you forever.
 
-## Deploy to GitHub Pages
+When a pet is fully grown you can **ascend** it to start a stronger new generation — it
+keeps its tricks and traits, you keep all your coins, seeds, garden and items, and you
+earn a permanent bonus to coins and XP. Ascending again and again unlocks the rarest
+content in the game.
 
-```bash
-git init
-git add .
-git commit -m "Puffy & Citrus"
-git branch -M main
-git remote add origin https://github.com/<you>/<repo>.git
-git push -u origin main
-```
+## Things to do
 
-Then on GitHub: **Settings → Pages → Source: GitHub Actions**. The included
-workflow deploys on every push to `main`; your game goes live at
-`https://<you>.github.io/<repo>/`.
+- **Garden** — plant and grow a big variety of crops, fulfil market orders, and upgrade
+  with sprinklers, a greenhouse, bee hives and more. Cook your crops into hearty **dishes**
+  in the Kitchen, from simple Fruit Salads up to legendary multi-step feasts.
+- **Belle's Journey** — a chapter-by-chapter story quest line set in Tuvalu.
+- **Mini-games, fishing & a daily prize wheel** for coins and treats.
+- **Tricks** — teach your pets tricks, level them up with mastery stars, and put on
+  Talent Show combos.
+- **Expeditions** — send a pet off on an idle adventure and collect the loot later.
+- **Collection** — a dex of every form you've found, plus a sticker album and achievements.
+- **Wardrobe & habitats** — hats, scenes, and "Looks" (wear any collected form as a skin).
+- **Decorate** — build a cozy room with furniture, kept per habitat.
+- **Friends** — visit other players by username, send gifts, and add friends.
 
-## Cloud saves (optional)
+## The long game
 
-Skip this and the game still works — it just saves locally. To sync across
-devices with a username/password login:
+Beyond the everyday care loop there's a deep collection chase: **mythic crops** that take
+real time to grow, **master and mythic dishes** crafted from other dishes, and **legendary
+forms** like the Eternal Puffer ♾️, Gaia Orange 🌍, Titan Puffer 🛡️ and Cosmos Orange 🌠
+that ask for serious dedication — hundreds of feeds, dozens of harvests, many ascensions —
+to ever unlock.
 
-1. **Database** — in Supabase: SQL Editor → run [`supabase_setup.sql`](supabase_setup.sql).
-2. **Auth** — Authentication → Email: turn **off** "Confirm email".
-3. **Keys** — add two repo secrets (Settings → Secrets and variables → Actions):
+## Playing
 
-   | Secret | Where to find it |
-   |---|---|
-   | `SUPABASE_URL` | Project Settings → API → Project URL |
-   | `SUPABASE_ANON_KEY` | Project Settings → API → `anon` `public` key |
+Open the game and your progress saves automatically. There's gentle background music, a
+reduced-motion option, and optional reminders so you know when a pet needs you. Log in
+with a username to sync your progress across devices and play with friends.
 
-The anon key is safe to expose in a browser — Row Level Security protects each
-player's data. For local testing, copy `config.example.js` to `config.js`.
-
-## Project structure
-
-```
-index.html            the game
-config.example.js     template for local Supabase keys
-supabase_setup.sql    database + security setup
-expo-app/             optional Expo Go wrapper for phones
-.github/workflows/    GitHub Pages deploy
-```
+Now go say hi to Puffy and Citrus. 💛
