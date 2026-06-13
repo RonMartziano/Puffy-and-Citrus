@@ -626,6 +626,10 @@ const FOODS={
   phoenixroast:{e:"🌺",nm:"Phoenix Roast",hunger:100,happy:60,health:100,energy:80,xp:200,coins:180,cure:true,dish:true},
   voidstew:{e:"🪻",nm:"Abyssal Stew",hunger:100,happy:55,health:100,energy:90,xp:210,coins:190,cure:true,hygiene:100,dish:true},
   fortunefeast:{e:"🎰",nm:"Fortune Feast",hunger:100,happy:80,health:90,energy:100,xp:200,coins:400,bond:50,dish:true},
+  lunarfeast:{e:"🌝",nm:"Lunar Feast",hunger:100,happy:60,health:90,energy:90,xp:200,coins:170,cure:true,dish:true},
+  emberplatter:{e:"🔥",nm:"Ember Platter",hunger:100,happy:55,health:100,energy:70,xp:190,coins:180,dish:true},
+  crystalsushi:{e:"💠",nm:"Crystal Sushi",hunger:90,happy:60,health:90,energy:80,xp:210,coins:200,dish:true},
+  abyssbanquet:{e:"🌊",nm:"Abyssal Banquet",hunger:100,happy:70,health:100,energy:100,xp:240,coins:260,cure:true,hygiene:100,dish:true},
   apple:{e:"🍎",nm:"Apple",hunger:18,happy:2,health:4,cost:5},
   bread:{e:"🍞",nm:"Bread",hunger:30,happy:2,health:0,cost:8},
   sushi:{e:"🍣",nm:"Sushi",hunger:42,happy:10,health:5,cost:18},
@@ -1043,11 +1047,11 @@ const TRAITS=[
 function traitOf(p){return TRAITS.find(t=>t.id===(p&&p.trait))||null;}
 const EVENTS=[
  {id:"festival",e:"🎉",nm:"Island Festival",d:"Everything's brighter — +50% XP!",xp:1.5},
- {id:"harvestmoon",e:"🌕",nm:"Harvest Moon",d:"Crops are bountiful — double harvest!",harvest:2},
  {id:"goldrush",e:"🪙",nm:"Gold Rush",d:"Coins everywhere — +50% coins!",coin:1.5},
  {id:"belleday",e:"🫑",nm:"Belle's Day",d:"Belle sends love — XP & coins +25%!",xp:1.25,coin:1.25}
 ];
 function currentEvent(){const d=new Date(),dow=d.getDay();if(dow!==0&&dow!==6)return null;const day=Math.floor(d.getTime()/86400000);return EVENTS[day%EVENTS.length];}
+function harvestMoonActive(){return new Date().getHours()===19;}
 function maxLevel(){return Math.max(G.pets.puffy.level||1,G.pets.citrus.level||1);}
 function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;const L=maxLevel();switch(id){
   case "garden":case "journey":case "game":return true;
@@ -2323,7 +2327,8 @@ const FISH=[
  {id:"crab",e:"🦀",nm:"Crab",rar:"uncommon",val:18},{id:"squid",e:"🦑",nm:"Squid",rar:"uncommon",val:20},{id:"blowfish",e:"🐡",nm:"Blowfish",rar:"uncommon",val:24},
  {id:"octopus",e:"🐙",nm:"Octopus",rar:"rare",val:42},{id:"lobster",e:"🦞",nm:"Lobster",rar:"rare",val:48},{id:"shark",e:"🦈",nm:"Shark",rar:"rare",val:60},
  {id:"dolphin",e:"🐬",nm:"Dolphin",rar:"epic",val:100},{id:"whale",e:"🐋",nm:"Whale",rar:"epic",val:140},
- {id:"koi",e:"🎏",nm:"Golden Koi",rar:"mythic",val:280},{id:"jelly",e:"🪼",nm:"Crystal Jelly",rar:"mythic",val:240},{id:"seadragon",e:"🐉",nm:"Sea Dragon",rar:"mythic",val:340}
+ {id:"koi",e:"🎏",nm:"Golden Koi",rar:"mythic",val:280},{id:"jelly",e:"🪼",nm:"Crystal Jelly",rar:"mythic",val:240},{id:"seadragon",e:"🐉",nm:"Sea Dragon",rar:"mythic",val:340},
+ {id:"moonfish",e:"🌝",nm:"Moonfish",rar:"mythic",val:300},{id:"emberfish",e:"🔥",nm:"Ember Eel",rar:"mythic",val:340},{id:"crystalfin",e:"💠",nm:"Crystal Fin",rar:"mythic",val:300}
 ];
 const FISH_JUNK=[{e:"👢",nm:"an old boot"},{e:"🥫",nm:"a rusty can"},{e:"🧦",nm:"a soggy sock"},{e:"🍂",nm:"some seaweed scraps"}];
 const BAITS=[{id:"worm",e:"🪱",nm:"Worm",cost:10,meta:"a few more uncommon+ bites"},{id:"shrimpbait",e:"🦐",nm:"Shrimp Bait",cost:30,meta:"better rare chance"},{id:"lure",e:"✨",nm:"Shiny Lure",cost:80,meta:"big epic/mythic chance"},{id:"starlure",e:"🌟",nm:"Celestial Lure",cost:300,meta:"huge mythic chance",ach:"fish500"}];
@@ -2427,10 +2432,14 @@ const RECIPES=[
  {id:"sunfeast",nm:"Solar Banquet",e:"☀️",need:{royalfeast:1,sunpetal:3,eternalseed:2,moonberry:3}},
  {id:"phoenixroast",nm:"Phoenix Roast",e:"🌺",need:{phoenixbloom:2,chili:3,dragonfruit:2},ach:"verdant"},
  {id:"voidstew",nm:"Abyssal Stew",e:"🪻",need:{voidlotus:2,jelly:2,seadragon:1},ach:"abyssal"},
- {id:"fortunefeast",nm:"Fortune Feast",e:"🎰",need:{royalfeast:1,goldenapple:5,starfruit:3},ach:"jackpot"}
+ {id:"fortunefeast",nm:"Fortune Feast",e:"🎰",need:{royalfeast:1,goldenapple:5,starfruit:3},ach:"jackpot"},
+ {id:"lunarfeast",nm:"Lunar Feast",e:"🌝",need:{moonfish:1,jelly:1,koi:1}},
+ {id:"emberplatter",nm:"Ember Platter",e:"🔥",need:{emberfish:1,chili:2,seadragon:1}},
+ {id:"crystalsushi",nm:"Crystal Sushi",e:"💠",need:{crystalfin:2,seaweed:2,starfruit:1}},
+ {id:"abyssbanquet",nm:"Abyssal Banquet",e:"🌊",need:{moonfish:1,emberfish:1,crystalfin:1,seadragon:1}}
 ];
 function canCook(r){for(const k in r.need)if((G.inv[k]||0)<r.need[k])return false;return true;}
-function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");if(["ambrosia","elixirsupreme","timecake","oceanfeast","sunfeast","phoenixroast","voidstew","fortunefeast"].indexOf(id)>=0)unlock("mythicchef");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
+function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");if(["ambrosia","elixirsupreme","timecake","oceanfeast","sunfeast","phoenixroast","voidstew","fortunefeast","lunarfeast","emberplatter","crystalsushi","abyssbanquet"].indexOf(id)>=0)unlock("mythicchef");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
 function openCook(){if(!guard())return;renderCook();openModal("cookModal");}
 function cropEmoji(k){const sd=SEEDS.find(s=>s.crop===k);if(sd)return sd.e;const fz=FISH.find(x=>x.id===k);if(fz)return fz.e;return (FOODS[k]&&FOODS[k].e)||"❓";}
 function renderCook(){let h='<div class="sub">Combine crops you grew into hearty dishes, then feed them for a big boost! 🍽️</div><div class="grid">';
@@ -2453,7 +2462,7 @@ function renderGarden(){
   while(G.garden.plots.length<G.garden.maxPlots)G.garden.plots.push(null);
   const gp=$("#gardenPet");if(gp&&pet().hatched)gp.innerHTML=petArt(pet(),"happy");
   {const gl=gardenLevel(),h=G.stats.harvests||0,nxt=gl<12?(gl*6-h):0,gle=$("#gardenLevel");
-   if(gle)gle.innerHTML='<div class="gardlv">🌿 Garden Lv '+gl+' <span>'+(gl<12?('· '+nxt+' more harvest'+(nxt===1?'':'s')+' to Lv '+(gl+1)):'· max level!')+'</span><br><span style="font-size:10px">faster growth + '+Math.round(Math.min(55,5*gl))+'% double-harvest chance 🧺</span></div>';}
+   if(gle)gle.innerHTML='<div class="gardlv">🌿 Garden Lv '+gl+' <span>'+(gl<12?('· '+nxt+' more harvest'+(nxt===1?'':'s')+' to Lv '+(gl+1)):'· max level!')+'</span><br><span style="font-size:10px">faster growth + '+Math.round(Math.min(55,5*gl))+'% double-harvest chance 🧺</span>'+(harvestMoonActive()?'<br><span style="font-size:10px;color:#c47a00;font-weight:800">🌕 Harvest Moon! double crops this hour</span>':'')+'</div>';}
   ensureGardenOrder();renderGardenOrder();
   const owned=SEEDS.filter(sd=>(G.seeds[sd.crop]||0)>0);
   if(!owned.find(sd=>sd.crop===selSeed))selSeed=owned[0]?owned[0].crop:null;
@@ -2475,7 +2484,7 @@ function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.fi
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.fert=true;pl.plantedAt-=gt*1000*0.20;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer — grows 20% faster!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
 function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)*(G.garden.goldcan?1.4:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0)+0.03*prestigeLevel("luck"));if(perf){coins=Math.round(coins*2.2);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");fulfillReq("harvest");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;if(harvestMoonActive())amt*=2;G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(3,0.62*Math.sqrt(seed.t||60))*(G.garden.beehive?1.25:1)*(G.garden.goldcan?1.25:1)),bonus="";if(Math.random()<0.12){const bx=5+Math.floor(Math.random()*8);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0)+0.03*prestigeLevel("luck"));if(perf){coins=Math.round(coins*1.8);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");fulfillReq("harvest");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
