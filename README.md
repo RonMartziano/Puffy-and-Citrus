@@ -11,9 +11,10 @@ Made with 💚 for Belle Pepper.
 
 - Two pets with their own stats: hunger, happiness, energy, hygiene, health.
 - Branching evolution (egg → baby → child → teen → adult) with **six** adult
-  forms per pet based on your care grade — from Cosmic Puffer / Golden Orchard
-  down to Blobfish / Sour Lemon.
-- Story cutscenes: an intro and an animated reveal on every evolution.
+  forms per pet — from Cosmic Puffer / Golden Orchard down to Blobfish / Sour
+  Lemon. Choose the path you're aiming for; each form lists what care it needs.
+- A continuing story set in Tuvalu that unfolds across five chapters as your
+  pets grow, plus cinematic intro, evolution reveals, and a tutorial.
 - Three mini-games, fishing, a garden, a daily prize wheel, and tricks.
 - Friendship bond between the pets, daily quests, levels, achievements, a
   sticker album, and a collection log of every form you've discovered.
