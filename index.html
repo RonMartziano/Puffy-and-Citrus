@@ -52,7 +52,7 @@
   #petWrap.bob{animation:bob 3s ease-in-out infinite;}
   @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
   #petWrap svg{width:100%;height:100%;overflow:visible;}
-  .hat{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:38px;pointer-events:none;z-index:3;}
+  .hat{position:absolute;top:18px;left:50%;transform:translateX(-50%);font-size:32px;pointer-events:none;z-index:3;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
   .react{position:absolute;font-size:26px;pointer-events:none;animation:floatUp 1.1s ease-out forwards;z-index:5;}
   @keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.6);}30%{opacity:1;}100%{opacity:0;transform:translateY(-46px) scale(1.2);}}
   .poop{position:absolute;bottom:34px;font-size:22px;animation:plop .4s ease-out;cursor:pointer;z-index:4;}
@@ -191,10 +191,10 @@
   #cutscene.anim .csText{animation:csRise .9s .18s ease both;}
   @keyframes csKB{0%{transform:scale(.92) translateY(8px);opacity:0;}20%{opacity:1;}100%{transform:scale(1.06) translateY(-4px);}}
   @keyframes csRise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-  #cutscene .csDots{position:absolute;bottom:15px;left:0;right:0;display:flex;gap:6px;justify-content:center;z-index:4;}
+  #cutscene .csDots{position:absolute;bottom:70px;left:0;right:0;display:flex;gap:6px;justify-content:center;z-index:4;}
   #cutscene .csDots i{width:7px;height:7px;border-radius:50%;background:#ffffff3a;transition:.3s;}
   #cutscene .csDots i.on{background:#ffe6a8;transform:scale(1.2);}
-  #cutscene .csHint{position:absolute;bottom:30px;right:16px;font-size:11px;opacity:.5;z-index:4;}
+  #cutscene .csNextBtn{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:5;background:#ffe6a8;color:#3a2a10;border:none;font-size:15px;font-weight:800;padding:11px 30px;border-radius:18px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);}
   #cutscene .csSkip{position:absolute;top:10px;right:14px;z-index:5;background:#ffffff26;border:none;color:#fff;font-size:12px;font-weight:700;padding:6px 13px;border-radius:14px;cursor:pointer;}
   #authOverlay{position:absolute;inset:0;z-index:95;display:none;align-items:center;justify-content:center;background:radial-gradient(120% 90% at 50% 20%,#ffe6f0,#ffd9a0);padding:24px;}
   #authOverlay.show{display:flex;}
@@ -207,6 +207,10 @@
   #speech{position:absolute;left:50%;bottom:200px;transform:translateX(-50%);max-width:230px;background:#fff;color:#3a3340;font-size:13px;font-weight:600;padding:9px 13px;border-radius:16px;box-shadow:var(--shadow);z-index:6;text-align:center;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;}
   #speech.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
   #speech:after{content:"";position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#fff;border-bottom:0;}
+  @keyframes petpop{0%{transform:translateX(-50%) scale(1);}40%{transform:translateX(-50%) scale(1.13);}100%{transform:translateX(-50%) scale(1);}}
+  #petWrap.pop{animation:petpop .35s ease;}
+  .floatItem{position:absolute;font-size:26px;cursor:pointer;z-index:5;animation:floatRise 6s linear forwards;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
+  @keyframes floatRise{0%{transform:translateY(0);opacity:0;}12%{opacity:1;}86%{opacity:1;}100%{transform:translateY(-190px);opacity:0;}}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -218,6 +222,7 @@
     <div class="logo">Puffy &amp; Citrus<small>💚 for Belle Pepper</small></div>
     <div class="chip lvl" id="lvlChip">⭐ <span id="lvl">1</span></div>
     <div class="chip" id="coinChip">🪙 <span id="coins">0</span></div>
+    <button class="iconbtn" id="questsBtn" title="Quests" style="position:relative">📋<span class="badge" id="questBadge" style="display:none">0</span></button>
     <button class="iconbtn" id="resetBtn" title="Menu">⚙️</button>
   </div>
 
@@ -261,7 +266,7 @@
     <button class="act" data-act="play"><span class="e">🎮</span>Play</button>
     <button class="act" data-act="clean"><span class="e">🧼</span>Clean</button>
     <button class="act" data-act="sleep"><span class="e">💤</span>Sleep</button>
-    <button class="act" data-act="quests"><span class="e">📋</span>Quests<span class="badge" id="questBadge" style="display:none">0</span></button>
+    <button class="act" data-act="heal"><span class="e">💊</span>Heal<span class="badge" id="healBadge" style="display:none">!</span></button>
     <button class="act" data-act="shop"><span class="e">🛒</span>Shop</button>
   </div>
 
@@ -271,7 +276,7 @@
     <div class="csStage"><div class="csArt" id="csArt"></div><div class="csBig" id="csBig"></div><div class="csText" id="csText"></div></div>
     <button class="csSkip" id="csSkip">skip ›</button>
     <div class="csDots" id="csDots"></div>
-    <div class="csHint">tap to continue ›</div>
+    <button class="csNextBtn" id="csNextBtn">Next ›</button>
   </div>
   <div id="authOverlay"><div class="authCard">
     <div class="authLogo">🐡💚🍊</div><h2>Puffy &amp; Citrus</h2>
@@ -389,7 +394,7 @@
     <div class="sub" id="evoSub"></div>
     <div id="evoBody"></div>
     <h2 style="font-size:15px;margin-top:14px">Possible adult forms</h2>
-    <div class="sub">Tap a form to choose your pet's path — aim for any tier your care can reach. 🔒 = needs better care.</div>
+    <div class="sub">Your pet evolves from how you raise it. ★ = special forms with their own unlock conditions. 🔒 = not earned yet.</div>
     <div class="evoForms" id="evoForms"></div>
     <button class="btn" id="evoAuto" style="background:#9ad36b;margin-top:10px">✨ Auto — let my care decide</button>
   </div></div>
@@ -464,6 +469,26 @@ const ACHIEVEMENTS=[
   {id:"belle",e:"💌",t:"Belle's Sweetheart",d:"Read 5 notes from Belle"},
   {id:"decorator",e:"🖼️",t:"Decorator",d:"Buy a scene and a hat"},
   {id:"lvl10",e:"⭐",t:"Seasoned",d:"Reach level 10"},
+  {id:"warrior",e:"🛡️",t:"Warrior",d:"Evolve a Warrior Puffer"},
+  {id:"rainbow_p",e:"🌈",t:"Over the Rainbow",d:"Evolve a Rainbow Puffer"},
+  {id:"superhero",e:"🦸",t:"Super!",d:"Evolve a Super Orange"},
+  {id:"crystal",e:"💎",t:"Crystal Clear",d:"Evolve a Crystal Orange"},
+  {id:"cosmic",e:"🌌",t:"Cosmic",d:"Evolve a Cosmic Puffer"},
+  {id:"golden",e:"👑",t:"Golden",d:"Evolve a Golden Orchard"},
+  {id:"samurai",e:"🗡️",t:"Bushido",d:"Evolve a Samurai Puffer"},
+  {id:"ghost",e:"👻",t:"Spooky",d:"Evolve a Ghost Puffer"},
+  {id:"mage",e:"🧙",t:"Arcane",d:"Evolve a Mage Orange"},
+  {id:"shaman",e:"🪶",t:"Spirit Walker",d:"Evolve a Shaman Orange"},
+  {id:"storyteller",e:"📖",t:"Storyteller",d:"See the whole story"},
+  {id:"soulmates",e:"💞",t:"Soulmates",d:"Reach 100% friendship"},
+  {id:"trickster",e:"🤹",t:"Trickster",d:"Teach a pet all 4 tricks"},
+  {id:"centurion",e:"🏅",t:"Seasoned Pro",d:"Reach level 15"},
+  {id:"angler",e:"🎣",t:"Master Angler",d:"Catch 10 fish"},
+  {id:"greenthumb",e:"🧺",t:"Green Thumb",d:"Harvest 10 crops"},
+  {id:"lucky",e:"🎰",t:"Lucky",d:"Spin the wheel 7 times"},
+  {id:"foodie",e:"🍴",t:"Foodie",d:"Feed 50 times"},
+  {id:"explorer",e:"🗺️",t:"Explorer",d:"Discover 8 forms"},
+  {id:"devoted",e:"📅",t:"Devoted",d:"Care for a pet 7 days"},
 ];
 const FORM_TIERS=["SS","S","A","B","C","D"];
 const FORMS={
@@ -476,6 +501,23 @@ const FORMS={
     A:{k:"orangetree",nm:"Orange Tree"},B:{k:"clementinebush",nm:"Clementine Bush"},
     C:{k:"wiltedtree",nm:"Wilted Tree"},D:{k:"sourlemon",nm:"Sour Lemon"}},
 };
+const SPECIALS={
+  puffy:[
+    {k:"samuraipuffer",nm:"Samurai Puffer 🗡️",reqText:"Discipline 85 · Lv 12 · 3 tricks",req:p=>p.discipline>=85&&p.level>=12&&(p.tricks||[]).length>=3},
+    {k:"ghostpuffer",nm:"Ghost Puffer 👻",reqText:"Care at night ×15 · Lv 8",req:p=>(G.stats.nightCares||0)>=15&&p.level>=8},
+    {k:"warriorpuffer",nm:"Warrior Puffer 🛡️",reqText:"Lv 10 · 12 games · 2 tricks",req:p=>p.level>=10&&(G.stats.gamesPlayed||0)>=12&&(p.tricks||[]).length>=2},
+    {k:"rainbowpuffer",nm:"Rainbow Puffer 🌈",reqText:"Friendship 80% · Lv 8",req:p=>G.bond>=80&&p.level>=8}
+  ],
+  citrus:[
+    {k:"mageorange",nm:"Mage Orange 🧙",reqText:"Lv 12 · 18 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=18},
+    {k:"shamanorange",nm:"Shaman Orange 🪶",reqText:"8 harvests · bond 60% · Lv 8",req:p=>(G.stats.harvests||0)>=8&&G.bond>=60&&p.level>=8},
+    {k:"superorange",nm:"Super Orange 🦸",reqText:"Lv 10 · discipline 70 · bond 50%",req:p=>p.level>=10&&p.discipline>=70&&G.bond>=50},
+    {k:"crystalorange",nm:"Crystal Orange 💎",reqText:"Lv 12 · 12 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=12}
+  ]
+};
+function allForms(type){return SPECIALS[type].map(f=>({k:f.k,nm:f.nm,tag:"★"})).concat(FORM_TIERS.map(t=>({k:FORMS[type][t].k,nm:FORMS[type][t].nm,tag:t})));}
+function formMeta(type,key){for(const f of SPECIALS[type])if(f.k===key)return f;for(const t of FORM_TIERS)if(FORMS[type][t].k===key)return FORMS[type][t];return null;}
+function formName(p){const m=p.form?formMeta(p.type,p.form):null;if(m)return m.nm;const t=FORMS[p.type][careGrade(p)];return t?t.nm:"Adult";}
 const BELLE_NOTES=[
   "You're the sweetest thing in my garden. 🌶️💚",
   "Thinking of you — go give Puffy a little pat from me!",
@@ -499,7 +541,7 @@ function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
   ach:{},dex:{},stickers:{},bond:0,bondMs:0,garden:{plots:[null,null,null]},wheelDate:"",hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
-  stats:{gamesPlayed:0,bellFed:0,notesRead:0,high:{bubble:0,memory:0,whack:0}},
+  stats:{gamesPlayed:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,
   weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,introSeen:false,tutorialSeen:false,storyCh:0,
   pets:{puffy:freshPet("puffy"),citrus:freshPet("citrus")}};}
 let G;
@@ -584,6 +626,50 @@ function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){
   o+=`<polygon points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${xt.toFixed(1)},${yt.toFixed(1)}" fill="${col}"/>`;}return o;}
 function svgWrap(inner,vb){return `<svg viewBox="${vb||'-150 -150 300 300'}"><g>${inner}</g></svg>`;}
 function puffAdult(form,m){
+  if(form==="samuraipuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000018"/>
+    <g transform="rotate(26)"><rect x="-2" y="-104" width="5" height="128" rx="2" fill="#cdd6df"/><rect x="-7" y="18" width="14" height="8" rx="2" fill="#7a4a10"/><rect x="-10" y="12" width="20" height="5" rx="2" fill="#b8911f"/></g>
+    ${spikeRing("#3a4a5a",18,76,94,0.10)}
+    <ellipse cx="-80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(-22 -80 24)"/><ellipse cx="80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(22 80 24)"/>
+    <circle cx="0" cy="0" r="82" fill="#5CC4D6"/>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#EAF8FB"/>
+    <path d="M -56 -26 A 56 56 0 0 1 56 -26 L 56 -15 L -56 -15 Z" fill="#2b3540"/>
+    <rect x="-58" y="-17" width="116" height="9" rx="4" fill="#b8911f"/>
+    <path d="M -30 -32 q -20 -20 -6 -42 q 12 16 18 36 Z" fill="#d4af37"/><path d="M 30 -32 q 20 -20 6 -42 q -12 16 -18 36 Z" fill="#d4af37"/>
+    <circle cx="0" cy="-28" r="7" fill="#c0392b"/>
+    <path d="M -44 -2 l 24 7 M 44 -2 l -24 7" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="-28" cy="10" r="9" fill="#2B3A42"/><circle cx="30" cy="10" r="9" fill="#2B3A42"/>
+    <path d="M -12 32 q 12 6 24 0" fill="none" stroke="#2B3A42" stroke-width="4.5" stroke-linecap="round"/>`);
+  if(form==="ghostpuffer")return svgWrap(`
+    <ellipse cx="0" cy="126" rx="56" ry="9" fill="#00000010"/>
+    <path d="M -78 14 Q -86 -88 0 -88 Q 86 -88 78 14 L 78 72 Q 62 56 48 72 Q 34 86 20 72 Q 6 56 -8 72 Q -22 86 -36 72 Q -50 56 -64 72 L -78 56 Z" fill="#e2f3f8" opacity="0.9"/>
+    <g fill="#cfe9f0" opacity="0.7"><polygon points="0,-104 -12,-86 12,-86"/><polygon points="-70,-44 -56,-34 -68,-26"/><polygon points="70,-44 56,-34 68,-26"/></g>
+    <ellipse cx="-26" cy="-12" rx="11" ry="15" fill="#6a8a96"/><ellipse cx="26" cy="-12" rx="11" ry="15" fill="#6a8a96"/>
+    <ellipse cx="-24" cy="-16" rx="3" ry="4" fill="#eaf6fa"/><ellipse cx="28" cy="-16" rx="3" ry="4" fill="#eaf6fa"/>
+    <path d="M -12 22 q 12 12 24 0" fill="none" stroke="#6a8a96" stroke-width="4" stroke-linecap="round"/>
+    <text x="-72" y="-48" font-size="15" opacity="0.85">✨</text>`,'-150 -150 300 300');
+  if(form==="warriorpuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000018"/>
+    ${spikeRing("#9aa6b2",18,76,94,0.10)}
+    <ellipse cx="-80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(-22 -80 24)"/><ellipse cx="80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(22 80 24)"/>
+    <circle cx="0" cy="0" r="82" fill="#5CC4D6"/>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#EAF8FB"/>
+    <path d="M -54 -30 A 54 54 0 0 1 54 -30 L 54 -20 L -54 -20 Z" fill="#7c8896"/>
+    <rect x="-56" y="-22" width="112" height="9" rx="4" fill="#5f6b78"/>
+    <rect x="-4" y="-74" width="8" height="18" rx="3" fill="#b23b30"/><circle cx="0" cy="-76" r="7" fill="#e74c3c"/>
+    <path d="M -44 -4 l 24 8 M 44 -4 l -24 8" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="-28" cy="8" r="9" fill="#2B3A42"/><circle cx="30" cy="8" r="9" fill="#2B3A42"/>
+    <path d="M -13 30 q 13 8 26 0" fill="none" stroke="#2B3A42" stroke-width="4.5" stroke-linecap="round"/>
+    <g transform="translate(76,46)"><path d="M -16 -16 L 16 -16 L 16 8 Q 0 22 -16 8 Z" fill="#c0392b" stroke="#8a2a1f" stroke-width="3"/><path d="M 0 -12 V 4 M -10 -4 H 10" stroke="#fff" stroke-width="3"/></g>`);
+  if(form==="rainbowpuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="84" ry="15" fill="#00000018"/>
+    ${spikeRing("#b39cf0",16,78,98,0.12)}
+    <ellipse cx="-86" cy="30" rx="24" ry="16" fill="#9ad6e8" transform="rotate(-22 -86 30)"/><ellipse cx="86" cy="30" rx="24" ry="16" fill="#9ad6e8" transform="rotate(22 86 30)"/>
+    <clipPath id="rbp"><circle cx="0" cy="0" r="84"/></clipPath>
+    <g clip-path="url(#rbp)"><rect x="-90" y="-92" width="180" height="34" fill="#ff8a8a"/><rect x="-90" y="-58" width="180" height="30" fill="#ffc06b"/><rect x="-90" y="-28" width="180" height="30" fill="#ffe87a"/><rect x="-90" y="2" width="180" height="30" fill="#9be08a"/><rect x="-90" y="32" width="180" height="30" fill="#86cfe8"/><rect x="-90" y="62" width="180" height="44" fill="#bfa8f0"/></g>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 70 50 0 0 1 -66 36 Z" fill="#ffffff55"/>
+    <text x="-72" y="-52" font-size="20">✨</text><text x="54" y="-44" font-size="18">🌈</text>
+    ${eyes(m)}${mouth(m)}`,'-150 -160 300 320');
   if(form==="pufferfish")return svgWrap(`
     <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000018"/>
     <path d="M 72 -6 Q 124 -40 134 -2 Q 124 36 72 22 Z" fill="#3FA9BE"/>
@@ -639,6 +725,50 @@ function puffAdult(form,m){
     <path d="M -18 46 Q 0 36 18 46" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>`);
 }
 function citrusAdult(form,m){
+  if(form==="mageorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="78" ry="14" fill="#00000018"/>
+    <circle cx="0" cy="6" r="80" fill="#FF9F33"/>
+    <path d="M -64 40 A 80 80 0 0 0 64 40 A 72 56 0 0 1 -64 40 Z" fill="#FFC074"/>
+    <path d="M -50 -32 L 8 -130 L 44 -38 Z" fill="#5a3aa0"/>
+    <path d="M -56 -32 L 50 -32 L 46 -20 L -52 -20 Z" fill="#6f4ac0"/>
+    <text x="-8" y="-76" font-size="15">⭐</text><circle cx="8" cy="-128" r="5" fill="#ffd24a"/>
+    <circle cx="-24" cy="2" r="8" fill="#2B3A42"/><circle cx="24" cy="2" r="8" fill="#2B3A42"/>
+    <path d="M -14 26 Q 0 36 14 26" fill="none" stroke="#7a4a10" stroke-width="4" stroke-linecap="round"/>
+    <text x="54" y="44" font-size="18">✨</text>`,'-150 -160 300 320');
+  if(form==="shamanorange")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="80" ry="15" fill="#00000018"/>
+    <path d="M 0 -76 Q -6 -120 8 -122 Q 16 -112 8 -74 Z" fill="#e07a3a"/>
+    <path d="M -24 -70 Q -36 -110 -20 -116 Q -10 -104 -16 -68 Z" fill="#d65a4a"/>
+    <path d="M 24 -70 Q 38 -110 22 -118 Q 12 -104 18 -68 Z" fill="#6fae6a"/>
+    <rect x="-32" y="-78" width="64" height="13" rx="6" fill="#8a5a2a"/><circle cx="0" cy="-71" r="4" fill="#ffd24a"/>
+    <circle cx="0" cy="10" r="80" fill="#FF9F33"/>
+    <path d="M -64 44 A 80 80 0 0 0 64 44 A 72 56 0 0 1 -64 44 Z" fill="#FFC074"/>
+    <circle cx="-22" cy="4" r="8" fill="#2B3A42"/><circle cx="22" cy="4" r="8" fill="#2B3A42"/>
+    <path d="M -28 18 h 10 M 18 18 h 10" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+    <path d="M -12 32 Q 0 42 12 32" fill="none" stroke="#7a4a10" stroke-width="4" stroke-linecap="round"/>
+    <text x="-66" y="-26" font-size="14">🌀</text>`,'-150 -160 300 320');
+  if(form==="superorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000018"/>
+    <path d="M -58 -28 Q -112 60 -48 112 L 48 112 Q 112 60 58 -28 Z" fill="#b23b30"/>
+    <path d="M -54 -26 Q -98 52 -44 100 L 44 100 Q 98 52 54 -26 Z" fill="#e74c3c"/>
+    <circle cx="0" cy="0" r="80" fill="#FF9F33"/>
+    <path d="M -64 36 A 80 80 0 0 0 64 36 A 72 56 0 0 1 -64 36 Z" fill="#FFC074"/>
+    <path d="M 4 -82 Q 26 -100 44 -84 Q 26 -74 4 -64 Z" fill="#7CC24B"/>
+    <path d="M -40 -16 Q 0 -28 40 -16 L 40 0 Q 0 -6 -40 0 Z" fill="#2b3a8a"/>
+    <ellipse cx="-20" cy="-12" rx="9" ry="7" fill="#fff"/><ellipse cx="20" cy="-12" rx="9" ry="7" fill="#fff"/>
+    <circle cx="-19" cy="-11" r="4" fill="#2B3A42"/><circle cx="21" cy="-11" r="4" fill="#2B3A42"/>
+    <path d="M -16 16 Q 0 30 16 16" fill="none" stroke="#7a4a10" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 0 30 l 5 11 12 1 -9 8 3 12 -11 -7 -11 7 3 -12 -9 -8 12 -1 z" fill="#ffd24a"/>`);
+  if(form==="crystalorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="76" ry="14" fill="#00000018"/>
+    <polygon points="0,-84 74,-30 46,76 -46,76 -74,-30" fill="#9fe3f5"/>
+    <polygon points="0,-84 74,-30 0,-8" fill="#cdf2fb"/><polygon points="74,-30 46,76 0,-8" fill="#7fcfe6"/>
+    <polygon points="46,76 -46,76 0,-8" fill="#a7def0"/><polygon points="-46,76 -74,-30 0,-8" fill="#8fd6ec"/>
+    <polygon points="-74,-30 0,-84 0,-8" fill="#c7f1fb"/>
+    <path d="M 4 -84 Q 26 -104 44 -86 Q 26 -76 4 -66 Z" fill="#7CC24B"/>
+    <circle cx="-22" cy="-4" r="7" fill="#2B3A42"/><circle cx="22" cy="-4" r="7" fill="#2B3A42"/>
+    <path d="M -14 22 Q 0 34 14 22" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>
+    <text x="-66" y="-40" font-size="16">✨</text><text x="52" y="60" font-size="14">✨</text>`);
   if(form==="orangetree")return svgWrap(`${treeBase("#6fbf48",36,
     `<circle cx="-44" cy="-50" r="11" fill="#FF9F33"/><circle cx="30" cy="-64" r="11" fill="#FF9F33"/><circle cx="50" cy="-20" r="11" fill="#FF9F33"/><circle cx="-54" cy="4" r="11" fill="#FF9F33"/><circle cx="40" cy="18" r="11" fill="#FF9F33"/>`)}${treeFace(m)}`,'-150 -170 300 330');
   if(form==="blossomtree")return svgWrap(`${treeBase("#ffc1dd",36,
@@ -706,9 +836,9 @@ let toastT;function toast(msg){const t=$("#toast");t.textContent=msg;t.classList
 function levelNeed(l){return 25+l*30;}
 function addXP(p,n){p.xp+=n;let lv=0;
   while(p.xp>=levelNeed(p.level)){p.xp-=levelNeed(p.level);p.level++;lv=p.level;}
-  if(lv){G.coins+=p.level*5;SFX.level();if(p.level>=10)unlock("lvl10");
+  if(lv){G.coins+=p.level*5;SFX.level();if(p.level>=10)unlock("lvl10");if(p.level>=15)unlock("centurion");
     const q=rnd(LEVEL_QUOTES);petSay(q);
-    queueCutscene([{art:petArt(p,"happy"),big:"⭐ Level "+lv+"!",text:'"'+q+'"  —  '+petName(p),bg:CS_LEVEL_BG,hold:2600}]);}}
+    queueCutscene([{art:petArt(p,"happy"),big:"⭐ Level "+lv+"!",text:'"'+q+'"  —  '+petName(p),bg:CS_LEVEL_BG,hold:2600}]);checkStory();}}
 const petLevel=()=>pet().level;
 
 /* ---------- Achievements ---------- */
@@ -769,9 +899,7 @@ function careGrade(p){const ratio=p.careGood/(p.careGood+p.careMistakes+1);
   const score=ratio*65+(p.discipline/100)*20+Math.min(15,p.level);
   if(score>=92&&p.level>=8)return "SS";if(score>=80)return "S";if(score>=62)return "A";
   if(score>=44)return "B";if(score>=26)return "C";return "D";}
-function chooseForm(p){const g=careGrade(p),gi=FORM_TIERS.indexOf(g);
-  if(p.targetForm){const ti=FORM_TIERS.indexOf(p.targetForm);if(ti>=gi)return FORMS[p.type][p.targetForm].k;}
-  return FORMS[p.type][g].k;}
+function chooseForm(p){for(const f of SPECIALS[p.type]){if(f.req(p))return f.k;}return FORMS[p.type][careGrade(p)].k;}
 function simulate(p,dt,away){
   if(p.dead)return;
   if(!p.hatched){if(ageSec(p)>=BABY_END/4){p.hatched=true;p.stage="baby";p.needsName=true;p.asleep=false;unlock("hatch");unlockSticker("hatch");
@@ -780,9 +908,9 @@ function simulate(p,dt,away){
   if(ns!=="adult"&&ns!==p.stage){p.stage=ns;if(!away)queueCutscene([{art:petArt(p,"happy"),big:petName(p)+" is growing!",text:STAGE_STORY[ns]||"Getting bigger every day!"}]);}
   if(ns==="adult"&&p.stage!=="adult"){p.stage="adult";p.form=chooseForm(p);recordForm(p);
     const g=careGrade(p);unlock("adult");if(g==="SS")unlock("perfect");
-    if(!away){SFX.level();queueCutscene([{art:"✨",big:"Evolution!",text:petName(p)+" begins to change…"},{art:petArt(p,"happy"),big:FORMS[p.type][g].nm+"!",text:adultStory(g,p)}]);}}
+    if(!away){SFX.level();queueCutscene([{art:"✨",big:"Evolution!",text:petName(p)+" begins to change…"},{art:petArt(p,"happy"),big:formName(p)+"!",text:adultStory(g,p)}]);}}
   // birthday milestones (every 24h of age)
-  const days=Math.floor(a/86400);if(days>p.birthdays&&p.hatched){p.birthdays=days;unlock("birthday");unlockSticker("bday");
+  const days=Math.floor(a/86400);if(days>p.birthdays&&p.hatched){p.birthdays=days;unlock("birthday");unlockSticker("bday");if(days>=7)unlock("devoted");
     G.coins+=30;if(!away){react("🎂");SFX.level();toast("🎂 Happy birthday, "+petName(p)+"! Day "+days+". +30🪙");}}
   const wmul=G.weather.weather==="rainy"?1.1:(G.weather.weather==="snowy"?1.2:1);
   const r=1/90/60*100*(away?0.6:1);
@@ -801,7 +929,7 @@ function simulate(p,dt,away){
 function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;
   while(dt>0){const step=Math.min(dt,30);simulate(p,step,away);dt-=step;}}
   if(pet().hunger>=100)unlock("fullbelly");if(G.coins>=200)unlock("rich");
-  if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();} render();save();flushCutscenes();}
+  if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();maybeSpawnFloat();} render();save();flushCutscenes();}
 
 /* ---------- Rendering ---------- */
 function setBar(id,v,color){const b=$("#b-"+id);b.style.width=clamp(v)+"%";b.style.background=v<25?"#ff6b6b":color;$("#p-"+id).textContent=Math.round(v);}
@@ -815,12 +943,12 @@ function applyScene(p){const bg=BGS[p.bg]||BGS.meadow;const sc=$("#scene");const
   if((w==="rainy"||w==="snowy")&&!p.asleep){const ch=w==="rainy"?"💧":"❄️";for(let i=0;i<10;i++){const d=document.createElement("div");d.className="wdrop";d.textContent=ch;d.style.left=(Math.random()*100)+"%";d.style.animationDuration=(1+Math.random()*1.5)+"s";d.style.animationDelay=(-Math.random()*2)+"s";wfx.appendChild(d);}}}
 function render(){const p=pet();
   $("#coins").textContent=G.coins;$("#lvl").textContent=p.level;
-  $("#xpbar").style.width=Math.min(100,(p.xp/(p.level*100))*100)+"%";
+  $("#xpbar").style.width=Math.min(100,(p.xp/levelNeed(p.level))*100)+"%";
   applyScene(p);
   const grade=p.hatched?careGrade(p):null;
-  const gradeTxt=p.stage==="adult"?(FORMS[p.type][careGrade(p)]?FORMS[p.type][careGrade(p)].nm:"Adult"):(p.hatched?("care: "+grade):"");
+  const gradeTxt=p.stage==="adult"?formName(p):(p.hatched?("care: "+grade):"");
   const a=ageSec(p),ageTxt=a<60?Math.round(a)+"s":a<3600?Math.round(a/60)+"m":(a/3600).toFixed(1)+"h";
-  const stageName=p.stage==="adult"?(p.form?FORMS[p.type][careGrade(p)].nm:"Adult"):(p.hatched?(FORMS[p.type][p.stage]||p.stage):"🥚 Egg");
+  const stageName=p.stage==="adult"?(p.form?formName(p):"Adult"):(p.hatched?(FORMS[p.type][p.stage]||p.stage):"🥚 Egg");
   $("#stageBadge").innerHTML=p.hatched?(petName(p)+" · "+stageName+"<small>age "+ageTxt+(p.stage!=="adult"&&p.stage!=="egg"?" · "+gradeTxt:"")+"</small>"):"🥚 Egg";
   let si="";if(p.sick)si+="<span>🤒</span>";if(p.asleep)si+="<span>💤</span>";if(p.poops.length)si+="<span>💩</span>";$("#statusIcons").innerHTML=si;
   $$("#scene .poop").forEach(e=>e.remove());
@@ -836,6 +964,7 @@ function render(){const p=pet();
     t.querySelector(".nm").textContent=pp.name||(t.dataset.pet==="puffy"?"Puffy":"Citrus");});
   const ov=$("#deadOverlay");if(p.dead){ov.classList.add("show");$("#deadMsg").textContent=petName(p)+" lived "+(a/3600).toFixed(1)+"h. "+(p.careMistakes<60?"A wonderful, well-loved life. 💛":"Check in a little more often next time. 💛");}else ov.classList.remove("show");
   $$('.act[data-act="sleep"]')[0].querySelector('.e').textContent=p.asleep?"☀️":"💤";
+  {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}
   updateQuests();renderCompanion();renderPet();
   if(p.needsName&&!$("#nameModal").classList.contains("open"))openNameModal();}
 
@@ -852,17 +981,22 @@ function openFeed(){if(!guard())return;const p=pet(),grid=$("#feedGrid");grid.in
 function feed(id){const p=pet();if(G.inv[id]<=0)return;if(p.hunger>=98){toast("Too full to eat! 🥴");return;}
   const f=FOODS[id];G.inv[id]--;const fav=FAVS[p.type].includes(id);
   p.hunger=clamp(p.hunger+f.hunger);p.happy=clamp(p.happy+f.happy+(fav?10:0));p.health=clamp(p.health+f.health);if(f.snack)p.health=clamp(p.health-2);
-  p.discipline=clamp(p.discipline+1);addXP(p,8);SFX.eat();react(f.e);toast(f.nm+(fav?" — favorite! 💕":" — yum!"));
-  questBump("feed",1);if(id==="bellpepper"){questBump("bell",1);G.stats.bellFed=(G.stats.bellFed||0)+1;if(G.stats.bellFed>=10)unlock("pepperlover");unlockSticker("pepper");}
+  p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,8);SFX.eat();react(f.e);toast(f.nm+(fav?" — favorite! 💕":" — yum!"));
+  questBump("feed",1);G.stats.feeds=(G.stats.feeds||0)+1;if(G.stats.feeds>=50)unlock("foodie");if(id==="bellpepper"){questBump("bell",1);G.stats.bellFed=(G.stats.bellFed||0)+1;if(G.stats.bellFed>=10)unlock("pepperlover");unlockSticker("pepper");}
   if(p.happy>=90)questBump("happy90",1);if(p.hunger>=100)unlock("fullbelly");
   render();save();if(G.inv[id]<=0)openFeed();}
 function doClean(){if(!guard())return;const p=pet();if(!p.poops.length&&p.hygiene>95){toast("Already squeaky clean! ✨");return;}
   p.poops=[];p.hygiene=clamp(p.hygiene+(G.inv.soap>0?100:35));if(G.inv.soap>0){G.inv.soap--;toast("Deep clean with soap! 🧴✨");}else toast("All tidied up! ✨");
-  p.discipline=clamp(p.discipline+1);addXP(p,6);SFX.clean();react("✨");questBump("clean",1);render();save();}
+  p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,6);SFX.clean();react("✨");questBump("clean",1);render();save();}
 function doSleep(){if(!guard())return;const p=pet();p.asleep=!p.asleep;toast(p.asleep?"Lights off... 💤":"Good morning! ☀️");react(p.asleep?"💤":"☀️");render();save();}
 function doHealOrWake(){}
+function doHeal(){if(!guard())return;const p=pet();
+  if(!p.sick&&p.health>=95){toast("Feeling perfectly healthy! 💪");petSay("I feel great!");return;}
+  if((G.inv.medicine||0)<=0){toast("No medicine — buy some in 🛒 Shop → Care.");return;}
+  G.inv.medicine--;p.sick=false;p.health=clamp(p.health+40);unlock("doctor");SFX.happy();react("💊");petSay("All better, thank you! 💕");toast("Medicine given — feeling better!");addXP(p,4);render();save();}
 function patPet(){const p=pet();if(p.dead||!p.hatched||p.needsName)return;if(p.asleep){toast("Shh, sleeping 💤");return;}
-  if(p.sick){if(G.inv.medicine>0){G.inv.medicine--;p.sick=false;p.health=clamp(p.health+15);unlock("doctor");SFX.happy();react("💊");toast("Gave medicine — all better! 💕");render();save();return;}else{toast("Sick! Buy 💊 medicine in the shop.");return;}}
+  if(p.sick&&Math.random()<0.6)petSay("achoo… I feel sick 🤧 (tap 💊 Heal)");
+  petBounce();if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;
   p.happy=clamp(p.happy+3);p.discipline=clamp(p.discipline+0.5);addXP(p,3);react(rnd(["💕","✨","😊","🫶"]));if(Math.random()<0.5)petSay(rnd(PAT_QUOTES));SFX.clean();questBump("pat",1);if(p.happy>=90)questBump("happy90",1);render();save();}
 
 /* ---------- Shop ---------- */
@@ -984,7 +1118,7 @@ function artFor(type,stage,form){return petArt({type,hatched:true,stage,form:for
 function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to hatch! 🥚");return;}
   const a=ageSec(p),order=["egg","baby","child","teen","adult"],ci=order.indexOf(p.stage);
   const REACH={egg:0,baby:30,child:120,teen:1500,adult:5400};
-  const rows=[["egg","🥚 Egg"],["baby",FORMS[p.type].baby],["child",FORMS[p.type].child],["teen",FORMS[p.type].teen],["adult",(p.stage==="adult"?FORMS[p.type][careGrade(p)].nm:"Adult form")]];
+  const rows=[["egg","🥚 Egg"],["baby",FORMS[p.type].baby],["child",FORMS[p.type].child],["teen",FORMS[p.type].teen],["adult",(p.stage==="adult"?formName(p):"Adult form")]];
   let html="";
   rows.forEach((r,i)=>{const key=r[0],nm=r[1];let status,cls="";
     if(i<ci){status="✓ grown";}else if(i===ci){status="\u25cf you are here";cls="cur";}else{status="in ~"+formatDur(REACH[key]-a);}
@@ -993,14 +1127,13 @@ function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to
     if(i<rows.length-1)html+=`<div class="evoConn"></div>`;});
   $("#evoBody").innerHTML=html;
   const cur=careGrade(p),isAdult=p.stage==="adult";
-  const cgi=FORM_TIERS.indexOf(cur);
-  let grid="";FORM_TIERS.forEach(g=>{const f=FORMS[p.type][g],ti=FORM_TIERS.indexOf(g),reach=cgi<=ti;
-    let on,label;
-    if(isAdult){on=(p.form===f.k);label=on?"✓ achieved":"";}
-    else{const chosen=p.targetForm?(p.targetForm===g):(g===cur);on=chosen;label=chosen?"🎯 your path":(reach?"tap to choose":EVO_REQ[g]);}
-    const show=isAdult?on:(reach||on);
-    grid+=`<div class="evoForm ${on?'on':'locked'}" ${isAdult?'':`onclick="chooseEvoPath('${g}')" style="cursor:pointer"`}><div class="fg">${g}</div><div class="fa">${artFor(p.type,"adult",f.k)}</div><div class="fn">${show?f.nm:"🔒 ???"}</div><div class="ft">${label}</div></div>`;});
-  $("#evoForms").innerHTML=grid;$("#evoAuto").style.display=isAdult?"none":"block";
+  const willBe=isAdult?p.form:chooseForm(p),cgi=FORM_TIERS.indexOf(cur);
+  let grid="";
+  SPECIALS[p.type].forEach(f=>{const ok=f.req(p),isW=willBe===f.k;
+    grid+=`<div class="evoForm ${ok||isW?'on':'locked'}"><div class="fg">★</div><div class="fa">${artFor(p.type,"adult",f.k)}</div><div class="fn">${ok||isW?f.nm:"🔒 ???"}</div><div class="ft">${isW?(isAdult?"✓ achieved":"★ on track"):(ok?"✓ unlocked":f.reqText)}</div></div>`;});
+  FORM_TIERS.forEach(g=>{const f=FORMS[p.type][g],reach=cgi<=FORM_TIERS.indexOf(g),isW=willBe===f.k;
+    grid+=`<div class="evoForm ${reach||isW?'on':'locked'}"><div class="fg">${g}</div><div class="fa">${artFor(p.type,"adult",f.k)}</div><div class="fn">${reach||isW?f.nm:"🔒 ???"}</div><div class="ft">${isW?(isAdult?"✓ achieved":"★ on track"):(reach?"":EVO_REQ[g])}</div></div>`;});
+  $("#evoForms").innerHTML=grid;$("#evoAuto").style.display="none";
   $("#evoSub").innerHTML=isAdult?(petName(p)+" is fully grown as <b>"+FORMS[p.type][cur].nm+"</b>! 🎉"):("<b>"+petName(p)+"</b> · "+(FORMS[p.type][p.stage]||p.stage)+" · care grade <b>"+cur+"</b><div style='margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6;text-align:left'>To reach a better adult form, raise the care grade:<br>• keep 🍽️ Hunger, 😊 Happy &amp; 🫧 Hygiene above 50%<br>• feed ⭐ favorite foods and play every day<br>• clean messes &amp; heal sickness fast<br>• never let a stat hit zero</div>");
   openModal("evoModal");}
 
@@ -1011,19 +1144,35 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="starpuffer"||p.form==="cosmicpuffer")unlockSticker("star");
   if(p.form==="blossomtree"||p.form==="goldenorchard")unlockSticker("bloom");
   if(p.form==="orangetree"||p.form==="pufferfish"||p.form==="clementinebush"||p.form==="balloonfish")unlockSticker("tree");
-  if(p.type==="puffy")unlockSticker("puff");}
-function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';FORM_TIERS.forEach(g=>{const fm=FORMS[type][g],got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+g+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
+  if(p.type==="puffy")unlockSticker("puff");
+  if(p.form==="warriorpuffer")unlock("warrior");
+  if(p.form==="rainbowpuffer")unlock("rainbow_p");
+  if(p.form==="superorange")unlock("superhero");
+  if(p.form==="crystalorange")unlock("crystal");
+  if(p.form==="cosmicpuffer")unlock("cosmic");
+  if(p.form==="goldenorchard")unlock("golden");
+  if(p.form==="samuraipuffer")unlock("samurai");
+  if(p.form==="ghostpuffer")unlock("ghost");
+  if(p.form==="mageorange")unlock("mage");
+  if(p.form==="shamanorange")unlock("shaman");
+  if(Object.keys(G.dex).length>=8)unlock("explorer");}
+function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
   $("#collStickers").innerHTML=STICKERS.map(s=>{const u=G.stickers[s.id];return '<div class="sticker '+(u?"":"lock")+'"><div class="se">'+(u?s.e:"❔")+'</div><div class="st">'+(u?s.t:"???")+'</div></div>';}).join("");
-  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(2*FORM_TIERS.length)+" · Stickers: "+Object.keys(G.stickers).length+"/"+STICKERS.length;openModal("collModal");}
+  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(allForms("puffy").length+allForms("citrus").length)+" · Stickers: "+Object.keys(G.stickers).length+"/"+STICKERS.length;openModal("collModal");}
 
 /* ---------- Bond ---------- */
 function addBond(n){G.bond=clamp(G.bond+n);checkBond();}
-function checkBond(){[[25,"🤝 Puffy & Citrus became friends!"],[50,"💞 They love hanging out together."],[75,"🌟 Best friends forever!"],[100,"💖 Totally inseparable."]].forEach(m=>{if(G.bond>=m[0]&&G.bondMs<m[0]){G.bondMs=m[0];toast(m[1]);if(m[0]>=75)unlockSticker("besties");}});}
+function checkBond(){[[25,"🤝 Puffy & Citrus became friends!"],[50,"💞 They love hanging out together."],[75,"🌟 Best friends forever!"],[100,"💖 Totally inseparable."]].forEach(m=>{if(G.bond>=m[0]&&G.bondMs<m[0]){G.bondMs=m[0];toast(m[1]);if(m[0]>=75)unlockSticker("besties");if(m[0]>=100)unlock("soulmates");}});}
 function renderCompanion(){const comp=$("#companion");if(!comp)return;const p=pet(),other=G.pets[G.active==="puffy"?"citrus":"puffy"];
   if(G.bond>=50&&p.hatched&&!p.dead&&!p.asleep&&other.hatched&&!other.dead){comp.style.display="block";comp.textContent=other.type==="puffy"?"🐡":"🍊";}else comp.style.display="none";}
 function playTogether(){const a=G.pets.puffy,b=G.pets.citrus;if(!a.hatched||!b.hatched||a.dead||b.dead){toast("Both pets need to hatch first! 🥚");return;}
-  a.happy=clamp(a.happy+10);b.happy=clamp(b.happy+10);G.coins+=3;addBond(6);addXP(pet(),4);react("💞");SFX.happy();toast("They played together! 🤝 +bond");
-  const fs=$("#funSub");if(fs&&$("#funModal").classList.contains("open"))fs.innerHTML="🤝 Friendship bond: <b>"+Math.round(G.bond)+"%</b>";render();save();}
+  if(now()-(G.lastTogether||0)<30000){toast("They're catching their breath… try again soon 😊");return;}
+  G.lastTogether=now();
+  a.happy=clamp(a.happy+14);b.happy=clamp(b.happy+14);a.energy=clamp(a.energy-6);b.energy=clamp(b.energy-6);a.health=clamp(a.health+4);b.health=clamp(b.health+4);
+  G.coins+=6;addBond(10);addXP(a,5);addXP(b,5);
+  react("💞");setTimeout(()=>react("🫧"),180);setTimeout(()=>react("✨"),360);SFX.happy();petBounce();petSay("that was so fun together! 💕");
+  toast("Played together! +14 happy · +bond · +6🪙");
+  const fs=$("#funSub");if(fs&&$("#funModal").classList.contains("open"))fs.innerHTML="🤝 Friendship bond: <b>"+Math.round(G.bond)+"%</b> · played!";render();save();}
 
 /* ---------- Fishing ---------- */
 let fishState=null;
@@ -1034,7 +1183,7 @@ function castLine(){const area=$("#fishArea");area.textContent="🌊";$("#fishMs
     fishState.miss=setTimeout(()=>{if(fishState&&fishState.bit){fishState.bit=false;area.textContent="🌊";$("#fishMsg").textContent="It got away… cast again!";$("#fishBtn").textContent="Cast again";$("#fishBtn").onclick=castLine;}},850);},wait);}
 function reelIn(){if(!fishState||!fishState.bit)return;clearTimeout(fishState.miss);fishState.bit=false;
   const loot=rnd([["🐟","a fish! +8🪙",()=>{G.coins+=8;}],["🫐","berries!",()=>{G.inv.berry=(G.inv.berry||0)+1;}],["🥬","seaweed!",()=>{G.inv.seaweed=(G.inv.seaweed||0)+1;}],["👢","an old boot 😅",()=>{}],["💎","treasure! +25🪙",()=>{G.coins+=25;}],["🫑","a bell pepper!",()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}]]);
-  loot[2]();const p=pet();p.happy=clamp(p.happy+6);addXP(p,4);unlockSticker("fish");SFX.coin();
+  loot[2]();const p=pet();p.happy=clamp(p.happy+6);addXP(p,4);unlockSticker("fish");G.stats.fishCaught=(G.stats.fishCaught||0)+1;if(G.stats.fishCaught>=10)unlock("angler");SFX.coin();
   $("#fishArea").textContent=loot[0];$("#fishMsg").textContent="You caught "+loot[1];$("#fishBtn").textContent="Cast again";$("#fishBtn").style.display="block";$("#fishBtn").onclick=castLine;render();save();}
 
 /* ---------- Garden ---------- */
@@ -1047,13 +1196,13 @@ function renderGarden(){const g=$("#gardenGrid");g.innerHTML="";G.garden.plots.f
     else{c.innerHTML='<div class="pe">🌱</div><div class="ps">'+formatDur(seed.t-el)+'</div>';c.onclick=()=>toast(seed.nm+" growing… "+formatDur(seed.t-el)+" left");}}
   g.appendChild(c);});$("#gardenSub").textContent="Plant a seed, wait, then harvest food! 🌱";}
 function plant(i){const seed=rnd(SEEDS);G.garden.plots[i]={crop:seed.crop,plantedAt:now()};SFX.clean();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),amt=1+Math.floor(Math.random()*2);G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;G.coins+=4;G.garden.plots[i]=null;unlockSticker("harvest");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+"! 🧺");renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),amt=1+Math.floor(Math.random()*2);G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;G.coins+=4;G.garden.plots[i]=null;unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+"! 🧺");renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
 function openWheel(){const done=G.wheelDate===dayKey();$("#wheelDisp").textContent="🎡";$("#wheelMsg").textContent=done?"Already spun today — back tomorrow!":"One free spin every day!";$("#wheelBtn").textContent=done?"Come back tomorrow":"Spin! 🎡";$("#wheelBtn").disabled=done;openModal("wheelModal");}
 function spinWheel(){if(G.wheelDate===dayKey())return;let n=0;const disp=$("#wheelDisp");$("#wheelBtn").disabled=true;
-  const iv=setInterval(()=>{disp.textContent=rnd(WHEEL).e;beep(500+n*30,.03);n++;if(n>15){clearInterval(iv);const prize=rnd(WHEEL);disp.textContent=prize.e;prize.fn();G.wheelDate=dayKey();SFX.level();$("#wheelMsg").textContent="You won "+prize.t+"! 🎉";$("#wheelBtn").textContent="Come back tomorrow";render();save();}},85);}
+  const iv=setInterval(()=>{disp.textContent=rnd(WHEEL).e;beep(500+n*30,.03);n++;if(n>15){clearInterval(iv);const prize=rnd(WHEEL);disp.textContent=prize.e;prize.fn();G.wheelDate=dayKey();G.stats.spins=(G.stats.spins||0)+1;if(G.stats.spins>=7)unlock("lucky");SFX.level();$("#wheelMsg").textContent="You won "+prize.t+"! 🎉";$("#wheelBtn").textContent="Come back tomorrow";render();save();}},85);}
 
 /* ---------- Tricks ---------- */
 const TRICKS=[{id:"spin",e:"🌀",nm:"Spin"},{id:"jump",e:"⬆️",nm:"Jump"},{id:"roll",e:"🤸",nm:"Roll"},{id:"wave",e:"👋",nm:"Wave"}];
@@ -1066,7 +1215,7 @@ function teachTrick(){const p=pet(),next=TRICKS.find(t=>!(p.tricks||[]).includes
   const go=$("#trGo");let ready=false,done=false;const delay=800+Math.random()*1500;
   const t=setTimeout(()=>{ready=true;go.textContent="TAP! 👆";go.style.color="#3b8b1f";
     const fail=setTimeout(()=>{if(!done){done=true;go.textContent="Too slow 😅";setTimeout(openTricks,900);}},750);
-    go.onclick=()=>{if(done)return;done=true;clearTimeout(fail);p.tricks=p.tricks||[];p.tricks.push(next.id);addXP(p,8);addBond(3);SFX.level();go.textContent=next.e+" Learned "+next.nm+"!";toast(petName(p)+" learned "+next.nm+"! 🎓");save();setTimeout(openTricks,1100);};},delay);
+    go.onclick=()=>{if(done)return;done=true;clearTimeout(fail);p.tricks=p.tricks||[];p.tricks.push(next.id);addXP(p,8);addBond(3);if(p.tricks.length>=4)unlock("trickster");SFX.level();go.textContent=next.e+" Learned "+next.nm+"!";toast(petName(p)+" learned "+next.nm+"! 🎓");save();setTimeout(openTricks,1100);};},delay);
   go.onclick=()=>{if(!ready&&!done){done=true;clearTimeout(t);go.textContent="Too early! 😅";setTimeout(openTricks,900);}};}
 function doTrick(){const p=pet(),known=p.tricks||[];if(!known.length){toast("Teach a trick first! 🎓");return;}
   if(now()-(p.lastTrick||0)<20000){toast("Needs a little rest first 😴");return;}
@@ -1118,8 +1267,14 @@ const STORY=[
 function maxStageRank(){const r={egg:0,baby:1,child:2,teen:3,adult:4};let m=0;for(const k in G.pets){if(G.pets[k].hatched)m=Math.max(m,r[G.pets[k].stage]||0);}return m;}
 function checkStory(){let ch=G.storyCh||0;if(ch>=STORY.length)return;
   const rank=maxStageRank(),bothAdult=G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult";
-  let want=0;if(rank>=1)want=1;if(rank>=2)want=2;if(rank>=3)want=3;if(rank>=4)want=4;if(bothAdult)want=5;
-  if(want>ch){G.storyCh=ch+1;queueCutscene(STORY[ch]);save();}}
+  const lv=Math.max(G.pets.puffy.level,G.pets.citrus.level),ach=Object.keys(G.ach).length;
+  let want=0;
+  if(rank>=1)want=1;
+  if(lv>=3||ach>=3)want=Math.max(want,2);
+  if(rank>=2||lv>=6||ach>=6)want=Math.max(want,3);
+  if(rank>=4||lv>=9||ach>=10)want=Math.max(want,4);
+  if(bothAdult||ach>=14)want=Math.max(want,5);
+  if(want>ch){G.storyCh=ch+1;queueCutscene(STORY[ch]);if(G.storyCh>=STORY.length)unlock("storyteller");save();}}
 function playStory(){let slides=INTRO.slice();const n=G.storyCh||0;for(let i=0;i<n;i++)slides=slides.concat(STORY[i]);playCutscene(slides);}
 function chooseEvoPath(tier){const p=pet();if(p.stage==="adult")return;
   const ci=FORM_TIERS.indexOf(careGrade(p)),ti=FORM_TIERS.indexOf(tier);
@@ -1133,7 +1288,7 @@ function csShow(){const sl=csSlides[csIdx],art=$("#csArt"),cut=$("#cutscene");
   if(sl.art&&String(sl.art).indexOf("<svg")===0)art.innerHTML=sl.art;else art.innerHTML='<div class="csArtEmoji">'+(sl.art||"")+'</div>';
   $("#csBig").textContent=sl.big||"";$("#csText").innerHTML=sl.text||"";
   $("#csDots").innerHTML=csSlides.map(function(_,i){return '<i class="'+(i===csIdx?'on':'')+'"></i>';}).join("");
-  cut.classList.remove("anim");void cut.offsetWidth;cut.classList.add("anim");clearTimeout(csHoldT);if(sl.hold)csHoldT=setTimeout(csNext,sl.hold);}
+  cut.classList.remove("anim");void cut.offsetWidth;cut.classList.add("anim");$("#csNextBtn").textContent=(csIdx>=csSlides.length-1)?"Done ✓":"Next ›";clearTimeout(csHoldT);if(sl.hold)csHoldT=setTimeout(csNext,sl.hold);}
 function csEnd(){clearTimeout(csHoldT);const cut=$("#cutscene");cut.classList.remove("show","anim");csPlaying=false;const d=csDone;csDone=null;csSlides=null;if(d)d();setTimeout(flushCutscenes,40);}
 function csNext(){if(!csPlaying)return;clearTimeout(csHoldT);csIdx++;if(csIdx>=csSlides.length)csEnd();else csShow();}
 function queueCutscene(slides){csQueue.push(slides);flushCutscenes();}
@@ -1189,23 +1344,31 @@ const PAT_QUOTES=["hehe, that tickles!","I like you! 💕","more pats, please","
 let speechT=null;
 function petSay(t){const e=$("#speech");if(!e)return;e.textContent=t;e.classList.add("show");clearTimeout(speechT);speechT=setTimeout(function(){e.classList.remove("show");},3500);}
 
+function petBounce(){const w=$("#petWrap");if(!w)return;w.classList.add("pop");setTimeout(function(){w.classList.remove("pop");},360);}
+function maybeSpawnFloat(){const p=pet();if(!p.hatched||p.dead||p.asleep)return;if(document.querySelectorAll("#scene .floatItem").length>=2)return;if(Math.random()>=0.05)return;
+  const items=[["🪙",function(){G.coins+=2;}],["🫧",function(){p.happy=clamp(p.happy+2);}],["⭐",function(){addXP(p,3);}],["💧",function(){p.hygiene=clamp(p.hygiene+2);}]];
+  const it=rnd(items),el=document.createElement("div");el.className="floatItem";el.textContent=it[0];
+  el.style.left=(12+Math.random()*70)+"%";el.style.bottom="64px";
+  el.onclick=function(){it[1]();react(it[0]);SFX.coin();el.remove();render();save();};
+  $("#scene").appendChild(el);setTimeout(function(){if(el.parentNode)el.remove();},6000);}
+
 /* ---------- Wire up ---------- */
 $$(".tab").forEach(t=>t.onclick=()=>{G.active=t.dataset.pet;render();save();if(pet().needsName)openNameModal();});
 $$(".act").forEach(b=>b.onclick=()=>{const a=b.dataset.act;
   if(a==="feed")openFeed();else if(a==="play")openFun();else if(a==="clean")doClean();
-  else if(a==="sleep")doSleep();else if(a==="quests")openQuests();else if(a==="shop")openShop();});
+  else if(a==="sleep")doSleep();else if(a==="heal")doHeal();else if(a==="shop")openShop();});
 $$("[data-close]").forEach(b=>b.onclick=closeModals);
 $$(".modal").forEach(m=>m.onclick=e=>{if(e.target===m)closeModals();});
 $$("#shopModal .seg").forEach(s=>s.onclick=()=>{shopTab=s.dataset.shoptab;$$("#shopModal .seg").forEach(x=>x.classList.toggle("on",x===s));renderShop();});
 $("#mgStart").onclick=startGame;
 $("#wheelBtn").onclick=spinWheel;$("#trickTeach").onclick=teachTrick;$("#trickDo").onclick=doTrick;
-$("#cutscene").onclick=csNext;$("#introBtn").onclick=()=>{closeModals();playCutscene(INTRO);};$("#howtoBtn").onclick=()=>{closeModals();playCutscene(TUTORIAL);};$("#storyBtn").onclick=()=>{closeModals();playStory();};$("#evoAuto").onclick=()=>{pet().targetForm=null;toast("✨ Letting your care decide the path.");save();openEvolution();};
+$("#csNextBtn").onclick=csNext;$("#introBtn").onclick=()=>{closeModals();playCutscene(INTRO);};$("#howtoBtn").onclick=()=>{closeModals();playCutscene(TUTORIAL);};$("#storyBtn").onclick=()=>{closeModals();playStory();};$("#evoAuto").onclick=()=>{pet().targetForm=null;toast("✨ Letting your care decide the path.");save();openEvolution();};
 $("#csSkip").onclick=(e)=>{e.stopPropagation();csEnd();};
 $("#authLogin").onclick=()=>doAuth("login");$("#authSignup").onclick=()=>doAuth("signup");$("#authSkip").onclick=hideAuth;$("#logoutBtn").onclick=cloudLogout;
 $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
 $("#belleMascot").onclick=showNote;
-$("#coinChip").onclick=openQuests;$("#lvlChip").onclick=openCollection;
+$("#coinChip").onclick=openQuests;$("#questsBtn").onclick=openQuests;$("#lvlChip").onclick=openCollection;
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
 $("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
 $("#soundBtn").onclick=()=>{G.sound=!G.sound;$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";if(G.sound)SFX.happy();save();};
