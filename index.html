@@ -166,8 +166,13 @@
   .evoForm .fg{position:absolute;top:5px;left:5px;font-size:10px;font-weight:800;background:#f1ebe0;border-radius:6px;padding:1px 6px;color:#8a8290;}
   .evoForm.on .fg{background:var(--happy);color:#7a5a10;}
   .evoForm .ft{font-size:10px;color:#b07415;font-weight:800;margin-top:2px;min-height:12px;}
-  .plot{background:#e9dcc4;border:1px solid #d8c39a;border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;}
-  .plot .pe{font-size:30px;}.plot .ps{font-size:10px;color:#8a7a55;font-weight:700;margin-top:3px;}
+  .plot{background:linear-gradient(180deg,#caa46e,#a87b46);border:2px solid #8a5f30;border-radius:14px;padding:8px 4px 8px;text-align:center;cursor:pointer;position:relative;overflow:hidden;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .plot .pe{font-size:32px;line-height:1;}
+  .plot .ps{font-size:10px;color:#4a3318;font-weight:800;margin-top:3px;}
+  .plot .pbar{position:absolute;left:6px;right:6px;bottom:4px;height:5px;background:#0000002a;border-radius:4px;overflow:hidden;}
+  .plot .pbar>i{display:block;height:100%;background:#7ecb50;}
+  .plot.ready{box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 0 0 2px #7ecb50;animation:readyPulse 1.2s infinite alternate;}
+  @keyframes readyPulse{to{box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 0 0 3px #aef08a;}}
   #fishArea{height:150px;display:flex;align-items:center;justify-content:center;font-size:60px;background:radial-gradient(120% 120% at 50% 0,#bdeefc,#7fd0e0);border-radius:14px;margin:10px 0;}
   #fishMsg,#wheelMsg{text-align:center;font-weight:700;font-size:13px;color:var(--ink);min-height:18px;margin-top:4px;}
   #wheelDisp{font-size:70px;text-align:center;height:92px;line-height:92px;}
@@ -458,6 +463,11 @@ const FOODS={
   smoothie:{e:"🥤",nm:"Smoothie",hunger:10,happy:8,health:4,energy:45,cost:14},
   honey:{e:"🍯",nm:"Honey",hunger:12,happy:10,health:2,energy:25,cost:10},
   coconut:{e:"🥥",nm:"Coconut",hunger:30,happy:14,health:12,energy:20,cost:22},
+  chili:{e:"🌶️",nm:"Chili",hunger:18,happy:20,health:4,cost:16},
+  mushroom:{e:"🍄",nm:"Mushroom",hunger:24,happy:6,health:10,cost:14},
+  grapes:{e:"🍇",nm:"Grapes",hunger:16,happy:10,health:8,cost:15},
+  watermelon:{e:"🍉",nm:"Watermelon",hunger:40,happy:12,health:6,energy:10,cost:22},
+  goldenapple:{e:"🍏",nm:"Golden Apple",hunger:30,happy:20,health:20,energy:30,cost:40},
   strawberry:{e:"🍓",nm:"Strawberry",hunger:14,happy:12,health:6,cost:11},
   tomato:{e:"🍅",nm:"Tomato",hunger:22,happy:6,health:8,cost:10},
   corn:{e:"🌽",nm:"Corn",hunger:28,happy:6,health:4,cost:10},
@@ -477,6 +487,10 @@ const HATS={
   starhalo:{e:"🌟",nm:"Star Halo",cost:null,unlock:"perfect",hint:"Evolve a top (SS) form"},
   bellebow:{e:"💖",nm:"Belle's Heart",cost:null,unlock:"belle",hint:"Read 5 of Belle's notes"},
   ninjab:{e:"🥷",nm:"Ninja Mask",cost:null,unlock:"samurai",hint:"Evolve a Samurai Puffer"},
+  sunhat:{e:"👒",nm:"Sun Hat",cost:50}, helmet:{e:"🪖",nm:"Helmet",cost:65}, mushcap:{e:"🍄",nm:"Mushroom Cap",cost:55}, tiara:{e:"👸",nm:"Tiara",cost:100},
+  strawhat:{e:"🌾",nm:"Straw Hat",cost:null,unlock:"farmer",hint:"Grow 5 kinds of crops"},
+  divermask:{e:"🤿",nm:"Diver Mask",cost:null,unlock:"angler",hint:"Catch 10 fish"},
+  rainbowcrown:{e:"🌈",nm:"Rainbow Crown",cost:null,unlock:"soulmates",hint:"Reach 100% friendship"},
 };
 const BGS={
   meadow:{nm:"Meadow",cost:0,sky:"#bdeefc",g1:"#cdeeb0",g2:"#a9da7f"},
@@ -484,6 +498,12 @@ const BGS={
   garden:{nm:"Garden",cost:120,sky:"#cdeffd",g1:"#bfe79a",g2:"#8fce63"},
   space:{nm:"Space",cost:200,sky:"#2b2a55",g1:"#4a4080",g2:"#332c5e",dark:true},
   kitchen:{nm:"Belle's Kitchen",cost:150,sky:"#ffe4d4",g1:"#e8c9a0",g2:"#d4ad7c"},
+  desert:{nm:"Desert",cost:90,sky:"#ffe1a8",g1:"#f0c878",g2:"#d9a85a"},
+  snow:{nm:"Snowy Peaks",cost:110,sky:"#dff0fb",g1:"#ffffff",g2:"#cfe2ee"},
+  sunset:{nm:"Sunset",cost:130,sky:"#ff9e6b",g1:"#c46a8a",g2:"#7a3550"},
+  candy:{nm:"Candyland",cost:140,sky:"#ffd6ec",g1:"#ffc0e0",g2:"#f59ccc"},
+  reef:{nm:"Coral Reef",cost:170,sky:"#2aa6c8",g1:"#1f7f9a",g2:"#155f73"},
+  aurora:{nm:"Aurora",cost:190,sky:"#10243f",g1:"#1f6f5a",g2:"#123a4a",dark:true},
 };
 const MINIGAMES=[
   {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats, dodge the 💣!"},
@@ -527,6 +547,10 @@ const ACHIEVEMENTS=[
   {id:"devoted",e:"📅",t:"Devoted",d:"Care for a pet 7 days"},
   {id:"loyal",e:"🔥",t:"On a Roll",d:"Reach a 7-day login streak"},
   {id:"farmer",e:"🌽",t:"Farmer",d:"Grow 5 kinds of crops"},
+  {id:"chef",e:"🍳",t:"Master Chef",d:"Evolve a Chef Puffer"},
+  {id:"disco",e:"🪩",t:"Disco Fever",d:"Evolve a Disco Puffer"},
+  {id:"sage",e:"🍂",t:"Old & Wise",d:"Evolve a Sage Orange"},
+  {id:"sunny",e:"🌻",t:"Ray of Sunshine",d:"Evolve a Sunny Orange"},
 ];
 const FORM_TIERS=["SS","S","A","B","C","D"];
 const FORMS={
@@ -544,13 +568,17 @@ const SPECIALS={
     {k:"samuraipuffer",nm:"Samurai Puffer 🗡️",reqText:"Discipline 85 · Lv 12 · 3 tricks",req:p=>p.discipline>=85&&p.level>=12&&(p.tricks||[]).length>=3},
     {k:"ghostpuffer",nm:"Ghost Puffer 👻",reqText:"Care at night ×15 · Lv 8",req:p=>(G.stats.nightCares||0)>=15&&p.level>=8},
     {k:"warriorpuffer",nm:"Warrior Puffer 🛡️",reqText:"Lv 10 · 12 games · 2 tricks",req:p=>p.level>=10&&(G.stats.gamesPlayed||0)>=12&&(p.tricks||[]).length>=2},
-    {k:"rainbowpuffer",nm:"Rainbow Puffer 🌈",reqText:"Friendship 80% · Lv 8",req:p=>G.bond>=80&&p.level>=8}
+    {k:"rainbowpuffer",nm:"Rainbow Puffer 🌈",reqText:"Friendship 80% · Lv 8",req:p=>G.bond>=80&&p.level>=8},
+    {k:"chefpuffer",nm:"Chef Puffer 🍳",reqText:"Feed 40 times · Lv 8",req:p=>(G.stats.feeds||0)>=40&&p.level>=8},
+    {k:"discopuffer",nm:"Disco Puffer 🪩",reqText:"25 games · friendship 50%",req:p=>(G.stats.gamesPlayed||0)>=25&&G.bond>=50}
   ],
   citrus:[
     {k:"mageorange",nm:"Mage Orange 🧙",reqText:"Lv 12 · 18 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=18},
     {k:"shamanorange",nm:"Shaman Orange 🪶",reqText:"8 harvests · bond 60% · Lv 8",req:p=>(G.stats.harvests||0)>=8&&G.bond>=60&&p.level>=8},
     {k:"superorange",nm:"Super Orange 🦸",reqText:"Lv 10 · discipline 70 · bond 50%",req:p=>p.level>=10&&p.discipline>=70&&G.bond>=50},
-    {k:"crystalorange",nm:"Crystal Orange 💎",reqText:"Lv 12 · 12 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=12}
+    {k:"crystalorange",nm:"Crystal Orange 💎",reqText:"Lv 12 · 12 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=12},
+    {k:"sageorange",nm:"Sage Orange 🍂",reqText:"15 harvests · Lv 10",req:p=>(G.stats.harvests||0)>=15&&p.level>=10},
+    {k:"sunnyorange",nm:"Sunny Orange 🌻",reqText:"5-day streak · Lv 8",req:p=>(G.streak||0)>=5&&p.level>=8}
   ]
 };
 const SHOP_FORMS={puffy:[{k:"piratepuffer",nm:"Pirate Puffer 🏴‍☠️",cost:180}],citrus:[{k:"kingorange",nm:"King Orange 👑",cost:180}]};
@@ -578,7 +606,7 @@ function freshPet(type){return{type,name:"",bornAt:now(),hatched:false,needsName
   xp:0,level:1,hat:"none",bg:"meadow",birthdays:0,tricks:[],lastTrick:0,targetForm:null,lastTick:now()};}
 function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
-  ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null]},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",hatsOwned:{none:1},bgsOwned:{meadow:1},
+  ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null]},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
   stats:{gamesPlayed:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,
   weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,introSeen:false,tutorialSeen:false,storyCh:0,
@@ -665,6 +693,27 @@ function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){
   o+=`<polygon points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${xt.toFixed(1)},${yt.toFixed(1)}" fill="${col}"/>`;}return o;}
 function svgWrap(inner,vb){return `<svg viewBox="${vb||'-150 -150 300 300'}"><g>${inner}</g></svg>`;}
 function puffAdult(form,m){
+  if(form==="chefpuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000018"/>
+    ${spikeRing("#9fd6e0",16,78,94,0.10)}
+    <ellipse cx="-80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(-22 -80 24)"/><ellipse cx="80" cy="24" rx="26" ry="17" fill="#4FB3C9" transform="rotate(22 80 24)"/>
+    <circle cx="0" cy="0" r="82" fill="#5CC4D6"/>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#EAF8FB"/>
+    <rect x="-32" y="-40" width="64" height="22" rx="6" fill="#fff"/><circle cx="-26" cy="-50" r="15" fill="#fff"/><circle cx="0" cy="-56" r="17" fill="#fff"/><circle cx="26" cy="-50" r="15" fill="#fff"/>
+    <circle cx="-30" cy="2" r="9" fill="#2B3A42"/><circle cx="30" cy="2" r="9" fill="#2B3A42"/>
+    <path d="M -22 26 q -10 8 -18 3 M 22 26 q 10 8 18 3" stroke="#6a4a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M -12 24 q 12 8 24 0" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>`);
+  if(form==="discopuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="84" ry="15" fill="#00000018"/>
+    ${spikeRing("#c45fd0",16,78,98,0.12)}
+    <ellipse cx="-82" cy="30" rx="24" ry="16" fill="#7a5acd" transform="rotate(-22 -82 30)"/><ellipse cx="82" cy="30" rx="24" ry="16" fill="#7a5acd" transform="rotate(22 82 30)"/>
+    <circle cx="0" cy="0" r="82" fill="#7d6be0"/>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#d9d2ff"/>
+    <g fill="#fff"><circle cx="-40" cy="-30" r="3"/><circle cx="20" cy="-44" r="3"/><circle cx="46" cy="-18" r="3"/><circle cx="-20" cy="30" r="3"/></g>
+    <line x1="0" y1="-86" x2="0" y2="-68" stroke="#9aa6b2" stroke-width="2"/><circle cx="0" cy="-100" r="14" fill="#cfd8e0"/><path d="M -14 -100 H 14 M 0 -114 V -86 M -10 -110 L 10 -90 M 10 -110 L -10 -90" stroke="#8a96a2" stroke-width="1"/>
+    <rect x="-42" y="-8" width="84" height="5" rx="2" fill="#1a1a1a"/><rect x="-42" y="-14" width="36" height="22" rx="7" fill="#1a1a1a"/><rect x="6" y="-14" width="36" height="22" rx="7" fill="#1a1a1a"/>
+    <path d="M -14 30 q 14 8 28 0" fill="none" stroke="#2B3A42" stroke-width="4.5" stroke-linecap="round"/>
+    <text x="-72" y="-44" font-size="16">✨</text>`);
   if(form==="piratepuffer")return svgWrap(`
     <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000018"/>
     ${spikeRing("#7a8a96",18,76,94,0.10)}
@@ -776,6 +825,19 @@ function puffAdult(form,m){
     <path d="M -18 46 Q 0 36 18 46" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>`);
 }
 function citrusAdult(form,m){
+  if(form==="sageorange")return svgWrap(`${treeBase("#cf7b2e",36,
+    `<circle cx="-44" cy="-50" r="10" fill="#e0533a"/><circle cx="30" cy="-64" r="10" fill="#f0a23a"/><circle cx="50" cy="-20" r="10" fill="#c0392b"/><circle cx="-54" cy="4" r="10" fill="#e07a2a"/>`,
+    `<text x="-74" y="40" font-size="18">🍂</text><text x="60" y="56" font-size="16">🍂</text>`)}<g transform="translate(0,70) scale(.62)"><path d="M -50 -24 q 14 -8 28 -2 M 22 -26 q 14 -6 28 2" stroke="#dadada" stroke-width="5" fill="none" stroke-linecap="round"/>${face(m)}</g>`,'-150 -170 300 330');
+  if(form==="sunnyorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000018"/>
+    ${spikeRing("#ffd24a",18,82,106,0.12)}
+    <path d="M 4 -82 Q 26 -100 44 -84 Q 26 -74 4 -64 Z" fill="#7CC24B"/>
+    <circle cx="0" cy="0" r="80" fill="#ffb733"/>
+    <path d="M -64 36 A 80 80 0 0 0 64 36 A 72 56 0 0 1 -64 36 Z" fill="#ffd98a"/>
+    <circle cx="-30" cy="-8" r="20" fill="#fff"/><circle cx="30" cy="-8" r="20" fill="#fff"/><circle cx="-28" cy="-6" r="10" fill="#2B3A42"/><circle cx="32" cy="-6" r="10" fill="#2B3A42"/><circle cx="-24" cy="-10" r="3.5" fill="#fff"/><circle cx="36" cy="-10" r="3.5" fill="#fff"/>
+    <circle cx="-50" cy="24" r="12" fill="#ff9d6b" opacity=".6"/><circle cx="50" cy="24" r="12" fill="#ff9d6b" opacity=".6"/>
+    <path d="M -18 24 Q 0 46 18 24" fill="none" stroke="#2B3A42" stroke-width="4.5" stroke-linecap="round"/>
+    <text x="54" y="-44" font-size="18">🌻</text>`,'-150 -168 300 320');
   if(form==="kingorange")return svgWrap(`
     <ellipse cx="0" cy="120" rx="82" ry="15" fill="#00000018"/>
     <path d="M -58 -18 Q -112 64 -48 112 L 48 112 Q 112 64 58 -18 Z" fill="#6e1b60"/>
@@ -1086,7 +1148,7 @@ function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";const disc=G.d
       c.innerHTML=`<div class="e">${f.e}</div><div class="nm">${f.nm}</div><div class="meta">🍽️+${f.hunger}${f.season?" · "+f.season:""}</div><div class="price">🪙 ${price(f.cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyFood(id,price(f.cost));grid.appendChild(c);});}
   else if(shopTab==="care"){grid.className="grid";
-    [["medicine","💊","Medicine",25,"Cures sickness"],["soap","🧴","Soap",15,"Deep clean"]].forEach(([id,e,nm,cost,meta])=>{
+    [["medicine","💊","Medicine",25,"Cures sickness"],["soap","🧴","Soap",15,"Deep clean"],["fertilizer","🧪","Fertilizer",20,"Finish a crop instantly"]].forEach(([id,e,nm,cost,meta])=>{
       const c=document.createElement("div");c.className="card"+(G.coins<price(cost)?" locked":"");
       c.innerHTML=`<div class="e">${e}</div><div class="nm">${nm}</div><div class="meta">${meta}</div><div class="price">🪙 ${price(cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyItem(id,price(cost));grid.appendChild(c);});}
@@ -1244,6 +1306,10 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="ghostpuffer")unlock("ghost");
   if(p.form==="mageorange")unlock("mage");
   if(p.form==="shamanorange")unlock("shaman");
+  if(p.form==="chefpuffer")unlock("chef");
+  if(p.form==="discopuffer")unlock("disco");
+  if(p.form==="sageorange")unlock("sage");
+  if(p.form==="sunnyorange")unlock("sunny");
   if(Object.keys(G.dex).length>=8)unlock("explorer");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
 function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?"":formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
@@ -1277,25 +1343,29 @@ function reelIn(){if(!fishState||!fishState.bit)return;clearTimeout(fishState.mi
   $("#fishArea").textContent=loot[0];$("#fishMsg").textContent="You caught "+loot[1];$("#fishBtn").textContent="Cast again";$("#fishBtn").style.display="block";$("#fishBtn").onclick=castLine;render();save();}
 
 /* ---------- Garden ---------- */
-const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null}];
+const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"mushroom",e:"🍄",t:80,nm:"Mushroom",cost:14},{crop:"grapes",e:"🍇",t:85,nm:"Grapes",cost:15},{crop:"chili",e:"🌶️",t:95,nm:"Chili",cost:16},{crop:"watermelon",e:"🍉",t:130,nm:"Watermelon",cost:22},{crop:"goldenapple",e:"🍏",t:200,nm:"Golden Apple",cost:40},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null}];
 let selSeed=null;
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function renderGarden(){
+  while(G.garden.plots.length<6)G.garden.plots.push(null);
   const owned=SEEDS.filter(sd=>(G.seeds[sd.crop]||0)>0);
   if(!owned.find(sd=>sd.crop===selSeed))selSeed=owned[0]?owned[0].crop:null;
-  let sel='<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 8px">';
-  if(!owned.length)sel+='<span style="color:var(--muted);font-size:12px">No seeds yet — buy some in 🛒 Shop → Seeds</span>';
+  let sel='<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0 10px">';
+  if(!owned.length)sel+='<span style="color:var(--muted);font-size:12px">No seeds — buy some in 🛒 Shop → Seeds</span>';
   else owned.forEach(sd=>{sel+='<div class="seedchip'+(selSeed===sd.crop?" on":"")+'" data-seed="'+sd.crop+'">'+sd.e+' '+sd.nm+' ×'+(G.seeds[sd.crop]||0)+'</div>';});
   sel+='</div>';$("#gardenSub").innerHTML=sel;
   $$("#gardenSub .seedchip").forEach(ch=>ch.onclick=()=>{selSeed=ch.dataset.seed;renderGarden();});
   const g=$("#gardenGrid");g.innerHTML="";G.garden.plots.forEach((pl,i)=>{const c=document.createElement("div");c.className="plot";
-    if(!pl){c.innerHTML='<div class="pe">🟫</div><div class="ps">empty · tap to plant</div>';c.onclick=()=>plant(i);}
-    else{const seed=SEEDS.find(s=>s.crop===pl.crop),el=(now()-pl.plantedAt)/1000,ready=el>=seed.t;
-      if(ready){c.innerHTML='<div class="pe">'+seed.e+'</div><div class="ps" style="color:#3b8b1f">ready! 🧺</div>';c.onclick=()=>harvest(i);}
-      else{c.innerHTML='<div class="pe">🌱</div><div class="ps">'+formatDur(seed.t-el)+'</div>';c.onclick=()=>toast(seed.nm+" growing… "+formatDur(seed.t-el)+" left");}}
+    if(!pl){c.innerHTML='<div class="pe">🟫</div><div class="ps">tap to plant</div>';c.onclick=()=>plant(i);}
+    else{const seed=SEEDS.find(s=>s.crop===pl.crop),el=(now()-pl.plantedAt)/1000,ready=el>=seed.t,pct=Math.min(100,el/seed.t*100);
+      if(ready){c.className="plot ready";c.innerHTML='<div class="pe">'+seed.e+'</div><div class="ps" style="color:#1f6b1f">ready! 🧺</div>';c.onclick=()=>harvest(i);}
+      else{c.innerHTML='<div class="pe">🌱</div><div class="ps">'+formatDur(seed.t-el)+'</div><div class="pbar"><i style="width:'+pct+'%"></i></div>';c.onclick=()=>plotTap(i);}}
     g.appendChild(c);});}
+function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),left=seed.t-(now()-pl.plantedAt)/1000;
+  if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.plantedAt=now()-seed.t*1000-1;SFX.coin();react("🧪");toast("Fertilizer used — ready now! 🧪");renderGarden();save();}
+  else toast(seed.nm+" growing… "+formatDur(left)+" left. Buy 🧪 Fertilizer (Shop → Care) to finish instantly.");}
 function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now()};SFX.clean();react("🌱");toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),amt=1+Math.floor(Math.random()*2);G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;G.coins+=4;G.garden.plots[i]=null;unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+"! 🧺");renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),amt=1+Math.floor(Math.random()*2);G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;const coins=Math.max(4,Math.round((seed.cost||10)*0.6));G.coins+=coins;addXP(pet(),3);G.garden.plots[i]=null;react("🧺");unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙");renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
@@ -1363,7 +1433,13 @@ const STORY=[
  [{bg:STORY_BG_DAWN,art:"✨",big:"Chapter 4 — Becoming",text:"Your care has shaped who they became. Belle sends a photo: a new seawall, with green shoots pushing up through the cracks."},
   {bg:STORY_BG_WARM,art:"🏝️",big:"A promise",text:"‘Tuvalu isn't giving up,’ she writes, ‘and neither am I. Thank you for looking after our little ones.’"}],
  [{bg:STORY_BG_DAWN,art:"🌅",big:"Chapter 5 — What we carry",text:"Whatever the sea decides, Tuvalu is saving its stories and songs — even a digital map of every shore, so nothing is truly lost."},
-  {bg:"radial-gradient(120% 90% at 50% 30%,#ff9bb5,#5a2540)",art:"💚",big:"For Belle Pepper",text:"Some things we hold so close they can't be lost — the people we love, and the little ones we raise. The end… for now."}]
+  {bg:"radial-gradient(120% 90% at 50% 30%,#ff9bb5,#5a2540)",art:"💚",big:"For Belle Pepper",text:"Some things we hold so close they can't be lost — the people we love, and the little ones we raise. 💚"}],
+ [{bg:STORY_BG_WARM,art:"💌",big:"Chapter 6 — A letter home",text:"Belle writes: the new seawall held through the storm season, and the seedlings you inspired are taking root all along the shore."},
+  {bg:STORY_BG_SEA,art:"🏝️",big:"Together",text:"‘None of us can hold back the ocean alone,’ she says, ‘but together, with a little care each day, we hold on to what we love.’"}],
+ [{bg:STORY_BG_SEA,art:"🌳",big:"Chapter 7 — The orchard",text:"Your grown-up pair has become a local legend. Children plant a whole orchard in their honour, humming songs of the islands."},
+  {bg:STORY_BG_DAWN,art:"🍊",big:"Roots that travel",text:"Even if the sea rises, these roots, songs and stories will travel with the people — carried in every heart that remembers."}],
+ [{bg:STORY_BG_DAWN,art:"🌅",big:"Chapter 8 — Years from now",text:"One day you'll look back on all this care — the feeding, the cleaning, the tiny daily acts — and see how much love it added up to."},
+  {bg:"radial-gradient(120% 90% at 50% 30%,#ff9bb5,#5a2540)",art:"💚",big:"Always, for Belle Pepper",text:"Made with love, one small act of care at a time. Thank you for playing. 🐡🍊💚"}]
 ];
 function maxStageRank(){const r={egg:0,baby:1,child:2,teen:3,adult:4};let m=0;for(const k in G.pets){if(G.pets[k].hatched)m=Math.max(m,r[G.pets[k].stage]||0);}return m;}
 function checkStory(){let ch=G.storyCh||0;if(ch>=STORY.length)return;
@@ -1375,6 +1451,9 @@ function checkStory(){let ch=G.storyCh||0;if(ch>=STORY.length)return;
   if(rank>=2||lv>=6||ach>=6)want=Math.max(want,3);
   if(rank>=4||lv>=9||ach>=10)want=Math.max(want,4);
   if(bothAdult||ach>=14)want=Math.max(want,5);
+  if(ach>=18||lv>=12)want=Math.max(want,6);
+  if(ach>=24)want=Math.max(want,7);
+  if(ach>=30)want=Math.max(want,8);
   if(want>ch){G.storyCh=ch+1;queueCutscene(STORY[ch]);if(G.storyCh===2){G.seeds.coconut=(G.seeds.coconut||0)+2;setTimeout(()=>toast("🌴 Belle sent palm seeds from Tuvalu — plant them in your Garden!"),400);}if(G.storyCh>=STORY.length)unlock("storyteller");save();}}
 function playStory(){let slides=INTRO.slice();const n=G.storyCh||0;for(let i=0;i<n;i++)slides=slides.concat(STORY[i]);playCutscene(slides);}
 function chooseEvoPath(tier){const p=pet();if(p.stage==="adult")return;
