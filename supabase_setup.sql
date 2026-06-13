@@ -77,3 +77,31 @@ create policy "gifts_select_recipient" on public.gifts
   for select using (auth.uid() = to_user_id);
 create policy "gifts_update_recipient" on public.gifts
   for update using (auth.uid() = to_user_id) with check (auth.uid() = to_user_id);
+
+-- ============================================================
+-- Friend requests (send / accept)
+-- ============================================================
+create table if not exists public.friend_requests (
+  id            uuid primary key default gen_random_uuid(),
+  from_user_id  uuid not null references auth.users(id) on delete cascade,
+  from_username text not null,
+  to_user_id    uuid not null references auth.users(id) on delete cascade,
+  to_username   text not null,
+  accepted      boolean not null default false,
+  created_at    timestamptz not null default now()
+);
+
+create index if not exists friend_req_to_idx on public.friend_requests (to_user_id, accepted);
+
+alter table public.friend_requests enable row level security;
+
+drop policy if exists "freq_insert_sender" on public.friend_requests;
+drop policy if exists "freq_select_party" on public.friend_requests;
+drop policy if exists "freq_update_recipient" on public.friend_requests;
+
+create policy "freq_insert_sender" on public.friend_requests
+  for insert with check (auth.uid() = from_user_id);
+create policy "freq_select_party" on public.friend_requests
+  for select using (auth.uid() = to_user_id or auth.uid() = from_user_id);
+create policy "freq_update_recipient" on public.friend_requests
+  for update using (auth.uid() = to_user_id) with check (auth.uid() = to_user_id);

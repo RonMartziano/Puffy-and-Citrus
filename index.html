@@ -589,6 +589,8 @@ const FOODS={
   elixir:{e:"🧪",nm:"Elixir of Life",hunger:40,happy:34,health:90,energy:70,cure:true,hygiene:70,dish:true},
   masterpiece:{e:"👨‍🍳",nm:"Chef's Masterpiece",hunger:55,happy:60,health:32,coins:150,bond:25,dish:true},
   royalfeast:{e:"👑",nm:"Royal Feast",hunger:80,happy:50,health:40,energy:40,xp:90,coins:130,bond:25,dish:true},
+  dragonstew:{e:"🐲",nm:"Dragon Stew",hunger:58,happy:24,health:34,energy:30,dish:true},
+  starparfait:{e:"🌟",nm:"Stardust Parfait",hunger:30,happy:44,health:16,xp:35,dish:true},
   apple:{e:"🍎",nm:"Apple",hunger:18,happy:2,health:4,cost:5},
   bread:{e:"🍞",nm:"Bread",hunger:30,happy:2,health:0,cost:8},
   sushi:{e:"🍣",nm:"Sushi",hunger:42,happy:10,health:5,cost:18},
@@ -660,6 +662,11 @@ const BGS={
   hall:{nm:"Champion's Hall",cost:null,unlock:"journeydone",hint:"Finish Belle’s Journey",sky:"#3a2f6e",g1:"#5a4aa8",g2:"#2a2150",dark:true},
   voidbg:{nm:"Cosmic Void",cost:null,unlock:"cosmic",hint:"Evolve a Cosmic Puffer",sky:"#120e2a",g1:"#2a2150",g2:"#0a0820",dark:true},
   grove:{nm:"Ancient Grove",cost:null,unlock:"explorer",hint:"Discover 8 forms",sky:"#1f5a3a",g1:"#2f7a4a",g2:"#143a28"},
+  shrine:{nm:"Ascended Shrine",cost:null,unlock:"ascend3",hint:"✨ 3 ascensions",sky:"#2a1f4a",g1:"#6a5aa8",g2:"#2a2150",dark:true},
+  empyrean:{nm:"Empyrean Sky",cost:null,unlock:"ascend5",hint:"✨ 5 ascensions",sky:"#ffd9a0",g1:"#ffb6e0",g2:"#c79af0"},
+  voidrealm:{nm:"The Void",cost:null,unlock:"ascend10",hint:"✨ 10 ascensions",sky:"#06030f",g1:"#2a1050",g2:"#0a0418",dark:true},
+  rainbowland:{nm:"Rainbow Land",cost:null,unlock:"collectorall",hint:"Discover every form",sky:"#ffe3f2",g1:"#bfe9ff",g2:"#ffd6ec"},
+  dragonlair:{nm:"Dragon's Lair",cost:null,unlock:"primal",hint:"Evolve a Primordial Puffer",sky:"#3a140a",g1:"#7a2a12",g2:"#1f0a06",dark:true},
 };
 const MINIGAMES=[
   {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats, dodge the 💣!"},
@@ -736,7 +743,15 @@ const ACHIEVEMENTS=[
   {id:"chefcook",e:"🍳",t:"Home Cook",d:"Cook 10 dishes"},
   {id:"showtime",e:"🎪",t:"Showstopper",d:"Put on a Talent Show"},
   {id:"maestro",e:"🌟",t:"Trick Maestro",d:"Master a trick to 5 stars"},
-  {id:"masterchef",e:"🔱",t:"Master Chef",d:"Cook a Master Dish (made from other dishes)"}
+  {id:"masterchef",e:"🔱",t:"Master Chef",d:"Cook a Master Dish (made from other dishes)"},
+  {id:"ascend3",e:"🌅",t:"Thrice Reborn",d:"Ascend 3 times"},
+  {id:"ascend10",e:"♾️",t:"Transcendent",d:"Ascend 10 times"},
+  {id:"primal",e:"🐲",t:"Primordial",d:"Evolve a Primordial Puffer"},
+  {id:"voidlord",e:"🕳️",t:"Void Sovereign",d:"Evolve a Void Sovereign"},
+  {id:"worldtree_a",e:"😇",t:"Angelic",d:"Evolve an Angelic Orange"},
+  {id:"celestial",e:"😈",t:"Demonic",d:"Evolve a Demonic Orange"},
+  {id:"kraken",e:"🐙",t:"Kraken",d:"Evolve a Kraken Puffer"},
+  {id:"dragon_a",e:"🐉",t:"Dragon Tamer",d:"Evolve a Dragon Orange"}
 ];
 const FORM_TIERS=["UR","SSS","SS","S","A","B","C","D"];
 const FORMS={
@@ -758,7 +773,10 @@ const SPECIALS={
     {k:"warriorpuffer",nm:"Warrior Puffer 🛡️",reqText:"Lv 10 · 12 games · 2 tricks",req:p=>p.level>=10&&(G.stats.gamesPlayed||0)>=12&&(p.tricks||[]).length>=2},
     {k:"rainbowpuffer",nm:"Rainbow Puffer 🌈",reqText:"Friendship 80% · Lv 8",req:p=>G.bond>=80&&p.level>=8},
     {k:"chefpuffer",nm:"Chef Puffer 🍳",reqText:"Feed 40 times · Lv 8",req:p=>(G.stats.feeds||0)>=40&&p.level>=8},
-    {k:"discopuffer",nm:"Disco Puffer 🪩",reqText:"25 games · friendship 50%",req:p=>(G.stats.gamesPlayed||0)>=25&&G.bond>=50}
+    {k:"discopuffer",nm:"Disco Puffer 🪩",reqText:"25 games · friendship 50%",req:p=>(G.stats.gamesPlayed||0)>=25&&G.bond>=50},
+    {k:"primalpuffer",nm:"Primordial Puffer 🐲",reqText:"✨ 3 ascensions · Lv 15",req:p=>(G.ascensions||0)>=3&&p.level>=15},
+    {k:"voidpuffer",nm:"Void Sovereign 🕳️",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
+    {k:"krakenpuffer",nm:"Kraken Puffer 🐙",reqText:"20 expeditions · Lv 15",req:p=>(G.stats.expeditions||0)>=20&&p.level>=15}
   ],
   citrus:[
     {k:"mageorange",nm:"Mage Orange 🧙",reqText:"Lv 12 · 18 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=18},
@@ -766,7 +784,10 @@ const SPECIALS={
     {k:"superorange",nm:"Super Orange 🦸",reqText:"Lv 10 · discipline 70 · bond 50%",req:p=>p.level>=10&&p.discipline>=70&&G.bond>=50},
     {k:"crystalorange",nm:"Crystal Orange 💎",reqText:"Lv 12 · 12 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=12},
     {k:"sageorange",nm:"Sage Orange 🍂",reqText:"15 harvests · Lv 10",req:p=>(G.stats.harvests||0)>=15&&p.level>=10},
-    {k:"sunnyorange",nm:"Sunny Orange 🌻",reqText:"5-day streak · Lv 8",req:p=>(G.streak||0)>=5&&p.level>=8}
+    {k:"sunnyorange",nm:"Sunny Orange 🌻",reqText:"5-day streak · Lv 8",req:p=>(G.streak||0)>=5&&p.level>=8},
+    {k:"worldtree",nm:"Angelic Orange 😇",reqText:"✨ 3 ascensions · Lv 15",req:p=>(G.ascensions||0)>=3&&p.level>=15},
+    {k:"celestialorange",nm:"Demonic Orange 😈",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
+    {k:"dragonorange",nm:"Dragon Orange 🐉",reqText:"50 harvests · bond 80% · Lv 15",req:p=>(G.stats.harvests||0)>=50&&G.bond>=80&&p.level>=15}
   ]
 };
 const SHOP_FORMS={puffy:[{k:"piratepuffer",nm:"Pirate Puffer 🏴‍☠️",cost:340},{k:"lavapuffer",nm:"Lava Puffer 🌋",cost:460},{k:"mechapuffer",nm:"Mecha Puffer 🤖",cost:580},{k:"ninjapuffer",nm:"Ninja Puffer 🥷",cost:680},{k:"angelpuffer",nm:"Angel Puffer 👼",cost:760}],citrus:[{k:"kingorange",nm:"King Orange 👑",cost:340},{k:"galaxyorange",nm:"Galaxy Orange 🌌",cost:460},{k:"pumpkinorange",nm:"Pumpkin Orange 🎃",cost:580},{k:"phoenixorange",nm:"Phoenix Orange 🔥",cost:680},{k:"fairyorange",nm:"Fairy Orange 🧚",cost:760}]};
@@ -812,7 +833,7 @@ function migrate(s){const f=freshGame();const g=Object.assign(f,s);
   g.placedByBg=Object.assign({},s.placedByBg||{});if(s.placed&&s.placed.length&&!s.placedByBg)g.placedByBg.meadow=s.placed;
   g.garden=Object.assign({plots:[],maxPlots:6,sprinkler:false,beehive:false,greenhouse:false,order:null},s.garden||{});while(g.garden.plots.length<(g.garden.maxPlots||6))g.garden.plots.push(null);
   for(const k of["puffy","citrus"])g.pets[k]=Object.assign(freshPet(k),s.pets&&s.pets[k]||{});
-  g.dex=g.dex||{};for(const _lk in (g.legacy||{}))(g.legacy[_lk]||[]).forEach(function(ff){if(ff)g.dex[ff]=true;});["puffy","citrus"].forEach(function(_pk){if(g.pets[_pk]&&g.pets[_pk].form)g.dex[g.pets[_pk].form]=true;});
+  g.dex=g.dex||{};for(const _lk in (g.legacy||{}))(g.legacy[_lk]||[]).forEach(function(ff){if(ff)g.dex[ff]=true;});["puffy","citrus"].forEach(function(_pk){if(g.pets[_pk]&&g.pets[_pk].form)g.dex[g.pets[_pk].form]=true;});g.ascensions=Math.max(g.ascensions||0,((g.pets.puffy.gen||1)-1)+((g.pets.citrus.gen||1)-1));
   return g;}
 function save(){G.updatedAt=now();const data=JSON.stringify(G);
   try{localStorage.setItem(SAVE_KEY,data);}catch(e){}
@@ -948,6 +969,37 @@ function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){
   o+=`<polygon points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${xt.toFixed(1)},${yt.toFixed(1)}" fill="${col}"/>`;}return o;}
 function svgWrap(inner,vb){return `<svg viewBox="${vb||'-150 -150 300 300'}"><g>${inner}</g></svg>`;}
 function puffAdult(form,m){
+  if(form==="krakenpuffer")return svgWrap(`
+    <ellipse cx="0" cy="124" rx="86" ry="14" fill="#00000022"/>
+    <g stroke="#3a6a86" stroke-width="12" fill="none" stroke-linecap="round" opacity=".9"><path d="M -40 70 q -20 40 -52 50"/><path d="M -14 80 q -6 44 -28 64"/><path d="M 14 80 q 6 44 28 64"/><path d="M 40 70 q 20 40 52 50"/></g>
+    ${spikeRing("#2f5a73",18,76,96,0.10)}
+    <ellipse cx="-82" cy="24" rx="24" ry="16" fill="#3a6a86" transform="rotate(-22 -82 24)"/><ellipse cx="82" cy="24" rx="24" ry="16" fill="#3a6a86" transform="rotate(22 82 24)"/>
+    <circle cx="0" cy="0" r="82" fill="#4a86a8"/>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#bfe0ee"/>
+    <g fill="#2f5a73" opacity=".4"><circle cx="-40" cy="-34" r="5"/><circle cx="34" cy="-26" r="5"/><circle cx="-14" cy="22" r="4"/></g>
+    <text x="-12" y="-90" font-size="20">🐙</text>
+    ${eyes(m)}${mouth(m)}`,'-160 -170 320 348');
+  if(form==="primalpuffer")return svgWrap(`
+    <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000026"/>
+    ${spikeRing("#8a4a2a",20,76,104,0.12)}
+    <path d="M -58 -64 q -20 -34 -2 -52 q 14 18 14 44 Z" fill="#caa24a"/><path d="M 58 -64 q 20 -34 2 -52 q -14 18 -14 44 Z" fill="#caa24a"/>
+    <ellipse cx="-82" cy="26" rx="24" ry="16" fill="#5a2a1e" transform="rotate(-22 -82 26)"/><ellipse cx="82" cy="26" rx="24" ry="16" fill="#5a2a1e" transform="rotate(22 82 26)"/>
+    <circle cx="0" cy="0" r="82" fill="#3a2018"/>
+    <g fill="#b8542e" opacity=".55"><circle cx="-36" cy="-30" r="7"/><circle cx="30" cy="-20" r="6"/><circle cx="-10" cy="22" r="6"/><circle cx="44" cy="14" r="5"/></g>
+    <path d="M -66 36 A 82 82 0 0 0 66 36 A 72 58 0 0 1 -66 36 Z" fill="#5a2a1e"/>
+    <text x="-12" y="-92" font-size="22">🔥</text>
+    ${eyes(m)}<path d="M -14 24 Q 0 38 14 24" fill="none" stroke="#ffcf8a" stroke-width="4.5" stroke-linecap="round"/>`,'-160 -172 320 330');
+  if(form==="voidpuffer")return svgWrap(`
+    <ellipse cx="0" cy="124" rx="86" ry="15" fill="#00000033"/>
+    <ellipse cx="0" cy="0" rx="124" ry="40" fill="none" stroke="#7a3aff" stroke-width="2.5" opacity=".5" transform="rotate(-16 0 0)"/>
+    ${spikeRing("#3a1a6a",20,80,110,0.10)}
+    <ellipse cx="-86" cy="28" rx="24" ry="16" fill="#2a1050" transform="rotate(-22 -86 28)"/><ellipse cx="86" cy="28" rx="24" ry="16" fill="#2a1050" transform="rotate(22 86 28)"/>
+    <circle cx="0" cy="0" r="84" fill="#0a0418"/>
+    <circle cx="0" cy="0" r="50" fill="#1a0a3a"/><circle cx="0" cy="0" r="26" fill="#3a1a6a" opacity=".8"/>
+    <g fill="#fff"><circle cx="-44" cy="-34" r="2"/><circle cx="40" cy="-40" r="1.8"/><circle cx="54" cy="-6" r="2"/><circle cx="-56" cy="6" r="1.8"/><circle cx="30" cy="30" r="1.8"/><circle cx="-24" cy="40" r="2"/></g>
+    <path d="M -64 38 A 84 84 0 0 0 64 38 A 72 54 0 0 1 -64 38 Z" fill="#06030f"/>
+    <text x="-12" y="-96" font-size="22">👑</text>
+    ${eyes(m)}<path d="M -14 24 Q 0 40 14 24" fill="none" stroke="#b98cff" stroke-width="4.5" stroke-linecap="round"/>`,'-170 -176 340 340');
   if(form==="angelpuffer")return svgWrap(`
     <ellipse cx="0" cy="122" rx="86" ry="15" fill="#00000012"/>
     <ellipse cx="-94" cy="6" rx="34" ry="52" fill="#ffffff" opacity=".9" transform="rotate(-18 -94 6)"/>
@@ -1130,6 +1182,36 @@ function puffAdult(form,m){
     ${badMood(m)?moodFace(m,{lx:-30,rx:30,ey:6,er:9,mx:0,my:42,mw:16}):`<circle cx="-30" cy="6" r="9" fill="#2B3A42"/><circle cx="30" cy="6" r="9" fill="#2B3A42"/><path d="M -18 46 Q 0 36 18 46" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>`}`);
 }
 function citrusAdult(form,m){
+  if(form==="dragonorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000022"/>
+    <g fill="#2f7a3a"><path d="M -58 4 q -46 -16 -76 14 q 30 0 42 14 q -8 8 -4 22 q 28 -14 38 -50 Z"/><path d="M 58 4 q 46 -16 76 14 q -30 0 -42 14 q 8 8 4 22 q -28 -14 -38 -50 Z"/></g>
+    <path d="M -34 -62 q -10 -28 -28 -34 q 4 22 16 38 Z" fill="#caa24a"/><path d="M 34 -62 q 10 -28 28 -34 q -4 22 -16 38 Z" fill="#caa24a"/>
+    <circle cx="0" cy="6" r="80" fill="#e0742a"/>
+    <path d="M -64 40 A 80 80 0 0 0 64 40 A 72 56 0 0 1 -64 40 Z" fill="#ffb060"/>
+    <path d="M -2 -78 q 14 -6 26 2" stroke="#2f7a3a" stroke-width="6" fill="none" stroke-linecap="round"/>
+    ${eyes(m)}${mouth(m)}
+    <text x="-84" y="2" font-size="15">🔥</text>`,'-170 -170 340 320');
+  if(form==="worldtree")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000010"/>
+    <g fill="#ffffff" opacity=".95"><path d="M -58 2 q -52 -34 -94 -10 q 30 2 40 16 q -24 0 -34 14 q 32 12 60 -2 q 18 -8 28 -18 Z"/><path d="M 58 2 q 52 -34 94 -10 q -30 2 -40 16 q 24 0 34 14 q -32 12 -60 -2 q -18 -8 -28 -18 Z"/></g>
+    <path d="M 4 -82 Q 26 -100 44 -84 Q 26 -74 4 -64 Z" fill="#7CC24B"/>
+    <circle cx="0" cy="8" r="80" fill="#ffd980"/>
+    <circle cx="0" cy="8" r="80" fill="#fff6d8" opacity=".45"/>
+    <path d="M -64 42 A 80 80 0 0 0 64 42 A 72 56 0 0 1 -64 42 Z" fill="#fff2c4"/>
+    <ellipse cx="0" cy="-92" rx="32" ry="10" fill="none" stroke="#ffe27a" stroke-width="6"/><ellipse cx="0" cy="-92" rx="32" ry="10" fill="none" stroke="#fff7d6" stroke-width="2"/>
+    ${eyes(m)}${mouth(m)}
+    <circle cx="-52" cy="32" r="11" fill="#FF8FA3" opacity=".5"/><circle cx="52" cy="32" r="11" fill="#FF8FA3" opacity=".5"/>
+    <text x="-92" y="-18" font-size="15">✨</text><text x="78" y="52" font-size="14">✨</text>`,'-180 -150 360 308');
+  if(form==="celestialorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000028"/>
+    <g fill="#2a0606"><path d="M -60 8 q -50 -6 -80 26 q 30 -6 46 4 q -10 8 -8 22 q 26 -10 42 -34 Z"/><path d="M 60 8 q 50 -6 80 26 q -30 -6 -46 4 q 10 8 8 22 q -26 -10 -42 -34 Z"/></g>
+    <path d="M -40 -58 q -16 -32 -38 -38 q 6 26 22 44 Z" fill="#1a0303"/><path d="M 40 -58 q 16 -32 38 -38 q -6 26 -22 44 Z" fill="#1a0303"/>
+    <circle cx="0" cy="8" r="80" fill="#a51f1a"/>
+    <circle cx="0" cy="8" r="80" fill="#5a0a0a" opacity=".4"/>
+    <path d="M -64 42 A 80 80 0 0 0 64 42 A 72 56 0 0 1 -64 42 Z" fill="#7a1414"/>
+    <path d="M -44 -12 l 30 9 M 44 -12 l -30 9" stroke="#2a0000" stroke-width="4.5" stroke-linecap="round"/>
+    ${eyes(m)}${mouth(m)}
+    <text x="-88" y="0" font-size="16">🔥</text><text x="74" y="54" font-size="16">🔥</text>`,'-180 -150 360 308');
   if(form==="fairyorange")return svgWrap(`
     <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000012"/>
     <g opacity=".7"><ellipse cx="-78" cy="-8" rx="30" ry="46" fill="#ffd6f0" transform="rotate(-24 -78 -8)"/><ellipse cx="78" cy="-8" rx="30" ry="46" fill="#ffd6f0" transform="rotate(24 78 -8)"/><ellipse cx="-66" cy="46" rx="22" ry="32" fill="#d6e9ff" transform="rotate(-18 -66 46)"/><ellipse cx="66" cy="46" rx="22" ry="32" fill="#d6e9ff" transform="rotate(18 66 46)"/></g>
@@ -1455,7 +1537,12 @@ const SCENE_DECOR={
  sakura:[["🌸",12,58,28,"sway"],["🌳",84,50,42,"sway"],["🌸",30,30,16,"drift"],["🌸",60,24,14,"drift2"],["🌸",46,70,18,"drift"],["🦋",4,36,18,"drift"],["☁️",24,14,20,"fl"]],
  abyss:[["🐙",78,40,34,"drift2"],["🐠",6,40,24,"drift"],["🪼",40,26,26,"fl"],["🫧",30,50,14,"fl"],["🫧",60,40,12,"fl"],["🪸",16,76,26,""],["🪸",82,78,22,""],["✨",70,18,14,"tw"]],
  volcano:[["🌋",50,50,46,""],["🔥",24,70,24,"fl"],["🔥",74,70,24,"fl"],["☄️",6,28,22,"drift"],["🪨",36,82,18,""],["🪨",64,84,16,""],["✨",80,22,14,"tw"]],
- citylights:[["🌆",50,52,46,""],["🏙️",16,58,34,""],["🏙️",84,58,30,""],["🎆",26,22,24,"tw"],["🎆",72,26,20,"tw"],["✨",46,30,14,"tw"],["🌙",12,16,26,""]]
+ citylights:[["🌆",50,52,46,""],["🏙️",16,58,34,""],["🏙️",84,58,30,""],["🎆",26,22,24,"tw"],["🎆",72,26,20,"tw"],["✨",46,30,14,"tw"],["🌙",12,16,26,""]],
+ shrine:[["⛩️",50,52,44,""],["🕯️",16,64,24,""],["🕯️",84,64,24,""],["✨",30,30,14,"tw"],["✨",70,30,14,"tw"],["🔮",50,22,24,"fl"]],
+ empyrean:[["☁️",20,30,30,"fl"],["☁️",74,24,26,"fl"],["🌈",50,42,40,""],["🕊️",10,50,20,"drift"],["✨",60,20,14,"tw"],["⭐",36,18,14,"tw"]],
+ voidrealm:[["🕳️",50,46,46,""],["🪐",78,26,28,"fl"],["⭐",18,30,12,"tw"],["⭐",60,40,12,"tw"],["✨",38,24,12,"tw"],["☄️",4,40,22,"drift"]],
+ rainbowland:[["🌈",50,30,46,""],["☁️",18,22,26,"fl"],["☁️",78,26,24,"fl"],["✨",40,50,14,"tw"],["🦄",16,66,28,"drift"],["🌸",70,70,20,"sway"]],
+ dragonlair:[["🌋",50,52,44,""],["🔥",22,68,24,"fl"],["🔥",76,68,24,"fl"],["💎",16,40,20,"tw"],["💎",82,44,18,"tw"],["🦴",40,82,18,""]]
 };
 function decorForScene(id){const list=SCENE_DECOR[id]||[];return list.map(d=>'<span class="dec '+(d[4]||"")+'" style="left:'+d[1]+'%;top:'+d[2]+'%;font-size:'+d[3]+'px">'+d[0]+'</span>').join("");}
 function applyScene(p){const bg=BGS[p.bg]||BGS.meadow;const sc=$("#scene");const night=(isNight()&&!bg.dark)||p.asleep;
@@ -1549,7 +1636,7 @@ function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";const disc=G.d
     c=document.createElement("div");c.className="card"+(!G.garden.greenhouse&&G.coins<price(360)?" locked":"");c.innerHTML='<div class="e">🏡</div><div class="nm">Greenhouse</div><div class="meta">+15% growth · more ⭐ perfect crops</div>'+(G.garden.greenhouse?'<div class="own">✓ owned</div>':'<div class="price">🪙 '+price(360)+'</div>');c.onclick=()=>{if(G.garden.greenhouse){toast("Already built ✓");return;}if(G.coins<price(360)){toast("Not enough coins!");return;}G.coins-=price(360);G.garden.greenhouse=true;SFX.coin();toast("🏡 Greenhouse built!");renderShop();save();};grid.appendChild(c);
     c=document.createElement("div");c.className="card"+(mp<9&&G.coins<price(120)?" locked":"");c.innerHTML='<div class="e">🪴</div><div class="nm">Extra Plot</div><div class="meta">'+(mp>=9?"max — 9 plots":"+1 plot · "+mp+"/9")+'</div>'+(mp>=9?'<div class="own">✓ max</div>':'<div class="price">🪙 '+price(120)+'</div>');c.onclick=()=>{if(mp>=9){toast("Garden is full!");return;}if(G.coins<price(120)){toast("Not enough coins!");return;}G.coins-=price(120);G.garden.maxPlots=mp+1;G.garden.plots.push(null);SFX.coin();toast("🪴 New plot added!");renderShop();save();};grid.appendChild(c);
     c=document.createElement("div");c.className="card"+(G.coins<price(20)?" locked":"");c.innerHTML='<div class="e">🧪</div><div class="nm">Fertilizer</div><div class="meta">finish a crop instantly</div><div class="price">🪙 '+price(20)+'</div><div class="own">have '+(G.inv.fertilizer||0)+'</div>';c.onclick=()=>{if(G.coins<price(20)){toast("Not enough coins!");return;}G.coins-=price(20);G.inv.fertilizer=(G.inv.fertilizer||0)+1;SFX.coin();toast("Bought Fertilizer! 🧪");renderShop();save();};grid.appendChild(c);}
-  else if(shopTab==="room"){grid.className="grid";FURNITURE.forEach(f=>{const c=document.createElement("div");c.className="card"+(G.coins<price(f.cost)?" locked":"");c.innerHTML='<div class="e">'+f.e+'</div><div class="nm">'+f.nm+'</div><div class="price">🪙 '+price(f.cost)+'</div><div class="own">have '+((G.furnitureOwned||{})[f.id]||0)+'</div>';c.onclick=()=>buyFurniture(f.id,price(f.cost));grid.appendChild(c);});const tip=document.createElement("div");tip.style.cssText="grid-column:1/-1;font-size:11px;color:var(--muted);text-align:center;margin-top:6px";tip.innerHTML="Place them via ⚙️ Menu → 🛋️ Decorate";grid.appendChild(tip);}
+  else if(shopTab==="room"){grid.className="grid";FURNITURE.forEach(f=>{const lock=f.asc&&(G.ascensions||0)<f.asc;const c=document.createElement("div");c.className="card"+((lock||G.coins<price(f.cost))?" locked":"");c.innerHTML='<div class="e">'+f.e+'</div><div class="nm">'+f.nm+'</div>'+(lock?'<div class="own" style="color:#8a8290">🔒 ✨'+f.asc+' ascensions</div>':'<div class="price">🪙 '+price(f.cost)+'</div>')+'<div class="own">have '+((G.furnitureOwned||{})[f.id]||0)+'</div>';c.onclick=()=>{if(lock){toast("🔒 Unlocks at "+f.asc+" ascensions ✨");return;}buyFurniture(f.id,price(f.cost));};grid.appendChild(c);});const tip=document.createElement("div");tip.style.cssText="grid-column:1/-1;font-size:11px;color:var(--muted);text-align:center;margin-top:6px";tip.innerHTML="Place them via ⚙️ Menu → 🛋️ Decorate";grid.appendChild(tip);}
   else if(shopTab==="form"){grid.className="grid2";const p=pet();(SHOP_FORMS[p.type]||[]).forEach(f=>{const owned=(G.boughtForms[p.type]||[]).indexOf(f.k)>=0;
     const c=document.createElement("div");c.className="card"+(!owned&&G.coins<price(f.cost)?" locked":"");
     c.innerHTML=`<div class="shopform">${artFor(p.type,"adult",f.k)}</div><div class="nm">${f.nm}</div>`+(owned?`<div class="own">✓ unlocked</div>`:`<div class="price">🪙 ${price(f.cost)}</div>`);
@@ -1708,6 +1795,8 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="discopuffer")unlock("disco");
   if(p.form==="sageorange")unlock("sage");
   if(p.form==="sunnyorange")unlock("sunny");
+  if(p.form==="krakenpuffer")unlock("kraken");if(p.form==="dragonorange")unlock("dragon_a");
+  if(p.form==="primalpuffer")unlock("primal");if(p.form==="voidpuffer")unlock("voidlord");if(p.form==="worldtree")unlock("worldtree_a");if(p.form==="celestialorange")unlock("celestial");
   if(Object.keys(G.dex).length>=8)unlock("explorer");if(Object.keys(G.dex).length>=16)unlock("collector16");if(Object.keys(G.dex).length>=(allForms("puffy").length+allForms("citrus").length))unlock("collectorall");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
 function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"'+(got?' data-wear="'+type+'|'+fm.k+'" style="cursor:pointer"':'')+'><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?"tap to wear ✨":formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
@@ -1743,7 +1832,7 @@ function reelIn(){if(!fishState||!fishState.bit)return;clearTimeout(fishState.mi
   $("#fishArea").textContent=loot[0];$("#fishMsg").textContent="You caught "+loot[1];$("#fishBtn").textContent="Cast again";$("#fishBtn").style.display="block";$("#fishBtn").onclick=castLine;render();save();}
 
 /* ---------- Garden ---------- */
-const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"mushroom",e:"🍄",t:80,nm:"Mushroom",cost:14},{crop:"grapes",e:"🍇",t:85,nm:"Grapes",cost:15},{crop:"chili",e:"🌶️",t:95,nm:"Chili",cost:16},{crop:"watermelon",e:"🍉",t:130,nm:"Watermelon",cost:22},{crop:"goldenapple",e:"🍏",t:200,nm:"Golden Apple",cost:40},{crop:"eggplant",e:"🍆",t:95,nm:"Eggplant",cost:15},{crop:"broccoli",e:"🥦",t:90,nm:"Broccoli",cost:14},{crop:"peach",e:"🍑",t:110,nm:"Peach",cost:18},{crop:"pineapple",e:"🍍",t:140,nm:"Pineapple",cost:24},{crop:"lemon",e:"🍋",t:100,nm:"Lemon",cost:16},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null}];
+const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"mushroom",e:"🍄",t:80,nm:"Mushroom",cost:14},{crop:"grapes",e:"🍇",t:85,nm:"Grapes",cost:15},{crop:"chili",e:"🌶️",t:95,nm:"Chili",cost:16},{crop:"watermelon",e:"🍉",t:130,nm:"Watermelon",cost:22},{crop:"goldenapple",e:"🍏",t:200,nm:"Golden Apple",cost:40},{crop:"eggplant",e:"🍆",t:95,nm:"Eggplant",cost:15},{crop:"broccoli",e:"🥦",t:90,nm:"Broccoli",cost:14},{crop:"peach",e:"🍑",t:110,nm:"Peach",cost:18},{crop:"pineapple",e:"🍍",t:140,nm:"Pineapple",cost:24},{crop:"lemon",e:"🍋",t:100,nm:"Lemon",cost:16},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null},{crop:"dragonfruit",e:"🐉",t:220,nm:"Dragon Fruit",cost:50},{crop:"starfruit",e:"⭐",t:190,nm:"Star Fruit",cost:45},{crop:"moonberry",e:"🌙",t:240,nm:"Moonberry",cost:55}];
 let selSeed=null;
 const RECIPES=[
  {id:"fruitsalad",nm:"Fruit Salad",e:"🥗",need:{berry:2,strawberry:1,grapes:1}},
@@ -1761,7 +1850,9 @@ const RECIPES=[
  {id:"banquet",nm:"Grand Banquet",e:"🍽️",need:{feast:1,bento:1,veggiestew:1}},
  {id:"elixir",nm:"Elixir of Life",e:"🧪",need:{ramen:1,berrysmoothie:1,spaclean:1,goldenapple:1}},
  {id:"masterpiece",nm:"Chef's Masterpiece",e:"👨‍🍳",need:{fruitsalad:1,sparklejam:1,goldenapple:2}},
- {id:"royalfeast",nm:"Royal Feast",e:"👑",need:{banquet:1,masterpiece:1,coconut:1}}
+ {id:"royalfeast",nm:"Royal Feast",e:"👑",need:{banquet:1,masterpiece:1,coconut:1}},
+ {id:"dragonstew",nm:"Dragon Stew",e:"🐲",need:{dragonfruit:2,chili:1,mushroom:1}},
+ {id:"starparfait",nm:"Stardust Parfait",e:"🌟",need:{starfruit:2,moonberry:1,grapes:1}}
 ];
 function canCook(r){for(const k in r.need)if((G.inv[k]||0)<r.need[k])return false;return true;}
 function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
@@ -1838,10 +1929,15 @@ const TRICKS=[
  {id:"skate",e:"🛼",nm:"Skate",anim:"run",req:p=>(G.stats.gamesPlayed||0)>=15,hint:"play 15 mini-games"},
  {id:"magic",e:"🎩",nm:"Magic",anim:"pulse",req:p=>G.bond>=55,hint:"bond 55%"},
  {id:"rockstar",e:"🎸",nm:"Rock Out",anim:"dance",req:p=>p.level>=10,hint:"reach Lv 10"},
- {id:"fireworks",e:"🎆",nm:"Fireworks",anim:"flip",req:p=>p.level>=15,hint:"reach Lv 15"}
+ {id:"fireworks",e:"🎆",nm:"Fireworks",anim:"flip",req:p=>p.level>=15,hint:"reach Lv 15"},
+ {id:"phoenixdance",e:"🔥",nm:"Phoenix Rise",anim:"fly",req:p=>(G.ascensions||0)>=2,hint:"✨ 2 ascensions"},
+ {id:"timewarp",e:"⏳",nm:"Time Warp",anim:"spin",req:p=>(G.ascensions||0)>=5,hint:"✨ 5 ascensions"},
+ {id:"galaxydance",e:"🌌",nm:"Galaxy Dance",anim:"dance",req:p=>(G.ascensions||0)>=8,hint:"✨ 8 ascensions"},
+ {id:"shadowclone",e:"🌑",nm:"Shadow Clone",anim:"flip",req:p=>(G.ascensions||0)>=4,hint:"✨ 4 ascensions"},
+ {id:"stardusttrick",e:"💫",nm:"Stardust",anim:"pulse",req:p=>(G.stats.harvests||0)>=50,hint:"50 harvests"}
 ];
 function openTricks(){if(!guard())return;renderTricks();openModal("trickModal");}
-const TRICK_FX={spin:["💫"],jump:["⬆️","✨"],roll:["💫","✨"],wave:["👋"],run:["💨","💨","🏃"],sparkle:["✨","⭐","✨"],dance:["🎶","🎵","🎶"],backflip:["💫","✨","💫"],fly:["☁️","💨","🕊️"],sing:["🎵","🎶","🎵"],kiss:["💗","💕","💗"],fireworks:["🎆","🎇","✨","🎆"],roar:["💢","🔊"],teleport:["✨","💫","✨"],moonwalk:["🎵","🕺"],handshake:["🤝","✨"],flex:["💪","✨"],skate:["🛼","💨"],magic:["🎩","✨","🐰"],rockstar:["🎸","🎶","🤘"]};
+const TRICK_FX={spin:["💫"],jump:["⬆️","✨"],roll:["💫","✨"],wave:["👋"],run:["💨","💨","🏃"],sparkle:["✨","⭐","✨"],dance:["🎶","🎵","🎶"],backflip:["💫","✨","💫"],fly:["☁️","💨","🕊️"],sing:["🎵","🎶","🎵"],kiss:["💗","💕","💗"],fireworks:["🎆","🎇","✨","🎆"],roar:["💢","🔊"],teleport:["✨","💫","✨"],moonwalk:["🎵","🕺"],handshake:["🤝","✨"],flex:["💪","✨"],skate:["🛼","💨"],magic:["🎩","✨","🐰"],rockstar:["🎸","🎶","🤘"],phoenixdance:["🔥","🕊️","✨"],timewarp:["⏳","✨","💫"],galaxydance:["🌌","⭐","✨"],shadowclone:["🌑","💨","🌑"],stardusttrick:["💫","⭐","✨"]};
 function trickFx(id){const arr=TRICK_FX[id]||["✨"];arr.forEach((e,i)=>setTimeout(()=>react(e),i*140));}
 function trickCount(p,id){return (p.trickCt&&p.trickCt[id])||0;}
 function trickLevel(p,id){return Math.min(5,1+Math.floor(trickCount(p,id)/4));}
@@ -1980,9 +2076,12 @@ const FURNITURE=[
  {id:"teddy",e:"🧸",nm:"Teddy",cost:35},{id:"lantern",e:"🏮",nm:"Lantern",cost:30},
  {id:"fountain",e:"⛲",nm:"Fountain",cost:80},{id:"cactus",e:"🌵",nm:"Cactus",cost:22},
  {id:"balloon",e:"🎈",nm:"Balloons",cost:25},{id:"piano",e:"🎹",nm:"Piano",cost:90},
- {id:"mirror",e:"🪞",nm:"Mirror",cost:40},{id:"campfire",e:"🔥",nm:"Campfire",cost:45}
+ {id:"mirror",e:"🪞",nm:"Mirror",cost:40},{id:"campfire",e:"🔥",nm:"Campfire",cost:45},
+ {id:"throne",e:"👑",nm:"Golden Throne",cost:200,asc:3},{id:"trophy",e:"🏆",nm:"Champion Trophy",cost:160,asc:5},
+ {id:"portal",e:"🌀",nm:"Cosmic Portal",cost:300,asc:10},
+ {id:"aquarium",e:"🐠",nm:"Aquarium",cost:140},{id:"statue",e:"🗿",nm:"Ancient Statue",cost:220,asc:7}
 ];
-function buyFurniture(id,cost){if(G.coins<cost){toast("Not enough coins!");return;}G.coins-=cost;G.furnitureOwned=G.furnitureOwned||{};G.furnitureOwned[id]=(G.furnitureOwned[id]||0)+1;SFX.coin();const f=FURNITURE.find(x=>x.id===id);toast("Bought "+f.nm+"! 🛋️ (place via ⚙️ → Decorate)");renderShop();save();}
+function buyFurniture(id,cost){const _f=FURNITURE.find(x=>x.id===id);if(_f&&_f.asc&&(G.ascensions||0)<_f.asc){toast("🔒 Needs "+_f.asc+" ascensions ✨");return;}if(G.coins<cost){toast("Not enough coins!");return;}G.coins-=cost;G.furnitureOwned=G.furnitureOwned||{};G.furnitureOwned[id]=(G.furnitureOwned[id]||0)+1;SFX.coin();const f=FURNITURE.find(x=>x.id===id);toast("Bought "+f.nm+"! 🛋️ (place via ⚙️ → Decorate)");renderShop();save();}
 let buildMode=false,buildSel=null;
 function renderRoom(){const rl=$("#roomLayer");if(!rl)return;const k=pet().bg;G.placedByBg=G.placedByBg||{};const list=G.placedByBg[k]||[];rl.innerHTML=list.map((it,i)=>{const f=FURNITURE.find(x=>x.id===it.id);return '<span class="furn" data-i="'+i+'" style="left:'+it.x+'%;top:'+it.y+'%">'+((f&&f.e)||"❓")+'</span>';}).join("");
   if(buildMode)rl.querySelectorAll(".furn").forEach(el=>{el.onclick=function(e){e.stopPropagation();(G.placedByBg[k]||[]).splice(+el.dataset.i,1);renderRoom();save();};});}
@@ -2009,7 +2108,7 @@ function nextGen(k){const p=G.pets[k];if(p.stage!=="adult"){toast("Only a grown-
   G.legacy=G.legacy||{};G.legacy[k]=G.legacy[k]||[];if(p.form){G.legacy[k].push(p.form);G.dex[p.form]=true;}
   const gen=(p.gen||1)+1,tricks=(p.tricks||[]).slice(),nm=p.name;
   G.pets[k]=freshPet(k);const np=G.pets[k];np.gen=gen;np.tricks=tricks;np.name=nm;np.needsName=false;np.careGood=1+gen*40;np.discipline=30+Math.min(45,gen*6);
-  G.ascensions=(G.ascensions||0)+1;unlock("legacy");unlock("ascend1");if((G.ascensions||0)>=5)unlock("ascend5");if(gen>=3)unlock("dynasty");
+  G.ascensions=(G.ascensions||0)+1;unlock("legacy");unlock("ascend1");if((G.ascensions||0)>=3)unlock("ascend3");if((G.ascensions||0)>=5)unlock("ascend5");if((G.ascensions||0)>=10)unlock("ascend10");if(gen>=3)unlock("dynasty");
   queueCutscene([{art:"✨",big:"Ascension!",text:(nm||"Your pet")+" ascends to Generation "+gen+"! They keep "+tricks.length+" tricks, their traits and a head start — and your coins, seeds, garden & items all carry over. Ascension bonus is now +"+Math.round(ascBonus()*100)+"% coins & XP.",bg:CS_LEVEL_BG}]);
   toast("✨ "+(nm||"New egg")+" ascended — Generation "+gen+"!");render();save();}
 function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")){toast("Both pets must be grown up!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("✨ Ascended both — bonus now +"+Math.round(ascBonus()*100)+"%!");renderFamily();save();}
@@ -2127,7 +2226,7 @@ async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
     if(error)throw error;
     const remote=data&&data.data;
     const localTs=cloudFirst?launchTs:(G.updatedAt||0);
-    if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=localTs)){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();if(!silent)toast("Progress loaded ☁️");}
+    if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=localTs)){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();syncUnlocks();if(!silent)toast("Progress loaded ☁️");}
     else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud synced ☁️");}
   }catch(e){if(!silent)toast("Cloud offline — playing locally.");}
   cloudLoading=false;cloudFirst=false;render();
@@ -2135,6 +2234,7 @@ async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
 function cloudSave(){if(!sb||!cloudUser||cloudLoading)return;if(cloudTimer)return;cloudTimer=setTimeout(function(){cloudTimer=null;cloudSaveNow();},1500);}
 function flushSave(){try{G.updatedAt=now();localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}if(sb&&cloudUser&&!cloudLoading){if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}cloudSaveNow();}}
 async function cloudSaveNow(){if(!sb||!cloudUser||cloudLoading)return;try{await sb.from("saves").upsert({user_id:cloudUser.id,data:G,updated_at:new Date().toISOString()});publishProfile();}catch(e){}}
+function syncUnlocks(){G.hatsOwned=G.hatsOwned||{};G.bgsOwned=G.bgsOwned||{};for(const hk in HATS){if(HATS[hk].unlock&&G.ach[HATS[hk].unlock]&&!G.hatsOwned[hk])G.hatsOwned[hk]=1;}for(const bk in BGS){if(BGS[bk].unlock&&G.ach[BGS[bk].unlock]&&!G.bgsOwned[bk])G.bgsOwned[bk]=1;}}
 async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}cloudUser=null;cloudUsername=null;closeModals();showAuth();}
 /* ---------- Friends: visiting + gifting ---------- */
 function unameFromUser(u){return (((u&&u.email)||"").split("@")[0])||null;}
@@ -2143,7 +2243,15 @@ function profileSnapshot(){const mk=p=>({type:p.type,name:p.name||"",form:p.form
 async function publishProfile(){if(!sb||!cloudUser||!cloudUsername)return;try{await sb.from("profiles").upsert({user_id:cloudUser.id,username:cloudUsername,data:profileSnapshot(),updated_at:new Date().toISOString()});}catch(e){}}
 const GIFTS=[{k:"coins",e:"🪙",nm:"25 coins",cost:25,amt:25},{k:"seed",e:"🌱",nm:"Berry seed",amt:1},{k:"apple",e:"🍎",nm:"Apple",amt:1},{k:"cake",e:"🎂",nm:"Cake",amt:1}];
 function applyGift(g){if(g.kind==="coins")G.coins+=(g.amount||25);else if(g.kind==="seed")G.seeds.berry=(G.seeds.berry||0)+(g.amount||1);else G.inv[g.kind]=(G.inv[g.kind]||0)+(g.amount||1);}
-async function fetchGifts(){if(!sb||!cloudUser)return;try{const r=await sb.from("gifts").select("id,from_username,kind,amount").eq("to_user_id",cloudUser.id).eq("claimed",false);const data=r&&r.data;
+async function sendFriendRequest(t){if(!sb||!cloudUser||!t||!t.id)return;try{await sb.from("friend_requests").insert({from_user_id:cloudUser.id,from_username:cloudUsername,to_user_id:t.id,to_username:t.name,accepted:false});}catch(e){}}
+async function fetchRequests(){if(!sb||!cloudUser)return [];try{const r=await sb.from("friend_requests").select("id,from_username,from_user_id").eq("to_user_id",cloudUser.id).eq("accepted",false);return (r&&r.data)||[];}catch(e){return [];}}
+function notifyRequests(){fetchRequests().then(function(r){if(r&&r.length)toast("👋 "+r.length+" friend request"+(r.length>1?"s":"")+" — open Friends!");});}
+async function acceptRequest(id,fromName){G.friends=G.friends||[];if(G.friends.indexOf(fromName)<0)G.friends.push(fromName);try{await sb.from("friend_requests").update({accepted:true}).eq("id",id);}catch(e){}SFX.coin();react("🤝");toast("You\u2019re now friends with "+fromName+"!");save();renderFriends();}
+async function renderRequests(){const el=$("#frReq");if(!el)return;const reqs=await fetchRequests();if(!reqs.length){el.innerHTML="";return;}
+  let h='<div class="menuhd" style="margin-top:12px">Friend requests</div>';
+  reqs.forEach(function(rq){h+='<div class="famrow"><div>👋 <b>'+rq.from_username+'</b> wants to be friends</div><button class="ordbtn" data-acc="'+rq.id+'" data-from="'+rq.from_username+'">Accept</button></div>';});
+  el.innerHTML=h;$$("#frReq [data-acc]").forEach(function(b){b.onclick=function(){acceptRequest(b.dataset.acc,b.dataset.from);};});}
+async function fetchGifts(){if(!sb||!cloudUser)return;notifyRequests();try{const r=await sb.from("gifts").select("id,from_username,kind,amount").eq("to_user_id",cloudUser.id).eq("claimed",false);const data=r&&r.data;
   if(data&&data.length){data.forEach(applyGift);const ids=data.map(g=>g.id);try{await sb.from("gifts").update({claimed:true}).in("id",ids);}catch(e){}
     SFX.coin();react("🎁");toast("🎁 You got "+data.length+" gift"+(data.length>1?"s":"")+" from friends!");save();render();}}catch(e){}}
 async function sendGift(g){if(!visitTarget)return;if(!sb||!cloudUser){toast("Log in to send gifts");return;}
@@ -2154,11 +2262,11 @@ async function sendGift(g){if(!visitTarget)return;if(!sb||!cloudUser){toast("Log
   try{const {error}=await sb.from("gifts").insert({from_user_id:cloudUser.id,from_username:cloudUsername,to_user_id:visitTarget.id,kind:g.k,amount:g.amt});
     if(error)throw error;G.giftLog[key]=1;SFX.coin();react("🎁");toast("Sent "+g.e+" "+g.nm+" to "+visitTarget.name+"! 🎁");render();save();renderVisit();}
   catch(e){if(g.k==="coins")G.coins+=g.cost;else if(g.k==="seed")G.seeds.berry++;else G.inv[g.k]=(G.inv[g.k]||0)+1;toast("Couldn't send — try again");}}
-function miniPetSVG(sp){return petArt({type:sp.type,hatched:true,stage:sp.stage||"adult",form:sp.form||null,skin:sp.skin||null},"happy");}
+function miniPetSVG(sp){var st=sp.stage||"adult";var svg=(st==="egg")?eggSVG(sp.type):petArt({type:sp.type,hatched:true,stage:st,form:sp.form||null,skin:sp.skin||null},"happy");return svg.replace("<svg ","<svg style=\"max-width:100%;max-height:88px;width:auto;height:auto\" ");}
 function agoText(ms){const m=Math.floor(ms/60000);if(m<1)return "just now";if(m<60)return m+"m ago";const h=Math.floor(m/60);if(h<24)return h+"h ago";return Math.floor(h/24)+"d ago";}
 function onlineStatus(updated){const t=updated?Date.parse(updated):0;if(!t)return {dot:"⚪",txt:"offline"};const d=Date.now()-t;return d<180000?{dot:"🟢",txt:"online now"}:{dot:"⚪",txt:"seen "+agoText(d)};}
 function isFriend(name){return (G.friends||[]).indexOf(name)>=0;}
-function addFriend(name){name=(name||"").trim().toLowerCase();if(!name)return;G.friends=G.friends||[];if(G.friends.indexOf(name)<0){G.friends.push(name);SFX.coin();react("👋");toast("Added "+name+" to friends!");save();}renderFriendList();if(visitTarget&&visitTarget.name===name)renderVisit();}
+function addFriend(name){name=(name||"").trim().toLowerCase();if(!name)return;G.friends=G.friends||[];var isNew=G.friends.indexOf(name)<0;if(isNew){G.friends.push(name);SFX.coin();react("👋");save();}if(visitTarget&&visitTarget.name===name&&sb){sendFriendRequest(visitTarget);toast(isNew?("Friend request sent to "+name+"! 👋"):("Request re-sent to "+name+" 👋"));}else if(isNew){toast("Added "+name+" to friends!");}renderFriendList();if(visitTarget&&visitTarget.name===name)renderVisit();}
 async function renderFriendList(){const el=$("#frList");if(!el)return;const fr=G.friends||[];
   if(!fr.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;padding:6px">No friends yet — visit someone and tap ➕ Add friend!</div>';return;}
   if(!sb){el.innerHTML="";return;}
@@ -2172,16 +2280,19 @@ function renderFriends(){const body=$("#friendsBody");
   if(!cloudConfigured()){$("#friendsSub").textContent="Visiting friends needs cloud play.";body.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;line-height:1.6">Friends &amp; visiting work when the game is hosted with cloud saves (Supabase) set up. Ask the host to enable it! ☁️</div>';return;}
   if(!cloudUser){$("#friendsSub").textContent="Log in to visit friends.";body.innerHTML='<button class="btn" id="frLogin">Log in / sign up ☁️</button>';$("#frLogin").onclick=()=>{closeModals();showAuth();};return;}
   $("#friendsSub").innerHTML="You are <b>"+(cloudUsername||"?")+"</b> — share your username so friends can visit you!";
-  body.innerHTML='<div style="display:flex;gap:6px;margin:6px 0 10px"><input id="frName" class="nameInput" placeholder="friend&#39;s username" autocapitalize="none" style="flex:1;margin:0"><button class="btn" id="frGo" style="width:auto;margin:0;padding:10px 16px">Visit</button></div><div id="frResult"></div><div class="menuhd" style="margin-top:12px">Your friends</div><div id="frList"><div style="color:var(--muted);font-size:12px;padding:6px">Loading…</div></div>';
+  body.innerHTML='<div style="display:flex;gap:6px;margin:6px 0 10px"><input id="frName" class="nameInput" placeholder="friend&#39;s username" autocapitalize="none" style="flex:1;margin:0"><button class="btn" id="frGo" style="width:auto;margin:0;padding:10px 16px">Visit</button></div><div id="frResult"></div><div id="frReq"></div><div class="menuhd" style="margin-top:12px">Your friends</div><div id="frList"><div style="color:var(--muted);font-size:12px;padding:6px">Loading…</div></div>';
   $("#frGo").onclick=()=>visitUser($("#frName").value);
   $("#frName").onkeydown=e=>{if(e.key==="Enter")visitUser($("#frName").value);};
-  renderFriendList();}
+  renderFriendList();renderRequests();}
 async function visitUser(name){name=(name||"").trim().toLowerCase().replace(/[^a-z0-9_.-]/g,"");const res=$("#frResult");if(!name){toast("Type a username");return;}
   if(name===cloudUsername){toast("That's you! 😄");return;}
+  if(!sb){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Log in to visit friends ☁️</div>';return;}
   if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Looking…</div>';
-  try{const r=await sb.from("profiles").select("user_id,username,data").eq("username",name).maybeSingle();const data=r&&r.data;
-    if(!data){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">No player named <b>'+name+'</b> yet.</div>';return;}
-    visitTarget={id:data.user_id,name:data.username,data:data.data||{}};renderVisit();}
+  try{const r=await sb.from("profiles").select("user_id,username,data").eq("username",name).limit(1);
+    if(r&&r.error)throw r.error;const rows=(r&&r.data)||[];const row=rows[0];
+    if(!row){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">No player named <b>'+name+'</b> yet.</div>';return;}
+    visitTarget={id:row.user_id,name:row.username,data:row.data||{}};
+    try{renderVisit();}catch(e){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Couldn&#39;t show that profile — try again.</div>';}}
   catch(e){if(res)res.innerHTML='<div style="text-align:center;color:var(--muted);padding:14px">Couldn&#39;t reach the cloud — try again.</div>';}}
 function renderVisit(){const res=$("#frResult");if(!res||!visitTarget)return;const d=visitTarget.data||{},pp=d.pets||{};
   let h='<div style="text-align:center;font-weight:800;margin:4px 0">🏡 '+visitTarget.name+"&#39;s place</div>";
@@ -2275,6 +2386,8 @@ const _snap={};for(const k in G.pets){const p=G.pets[k];_snap[k]={hunger:p.hunge
 const _away=(now()-(G.lastSeen||now()))/1000;
 for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;while(dt>0){const st=Math.min(dt,30);simulate(p,st,true);dt-=st;}}
 G.lastSeen=now();
+[["ascend1",1],["ascend3",3],["ascend5",5],["ascend10",10]].forEach(function(a){if((G.ascensions||0)>=a[1])G.ach[a[0]]=true;});
+syncUnlocks();
 render();save();
 if(_away>300)welcomeBack(_snap,_away);
 if(!G.introSeen){G.introSeen=true;G.tutorialSeen=true;save();setTimeout(()=>playCutscene(INTRO,()=>playCutscene(TUTORIAL)),2700);}
