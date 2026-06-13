@@ -876,7 +876,7 @@ function treeBase(canopyCol,trunkW,fruit,extra){
     <rect x="${-trunkW/2}" y="6" width="${trunkW}" height="120" rx="14" fill="#9c6b3f"/>
     <circle cx="0" cy="-34" r="92" fill="${canopyCol}"/><circle cx="-58" cy="6" r="46" fill="${canopyCol}"/><circle cx="58" cy="6" r="46" fill="${canopyCol}"/>
     ${fruit||""}${extra||""}`;}
-function treeFace(m){return `<g transform="translate(0,70) scale(.62)">${face(m)}</g>`;}
+function treeFace(m){return `<g transform="translate(0,58) scale(.82)">${face(m)}</g>`;}
 function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2,a1=a-w,a2=a+w;
   const x1=Math.cos(a1)*inner,y1=Math.sin(a1)*inner,x2=Math.cos(a2)*inner,y2=Math.sin(a2)*inner,xt=Math.cos(a)*outer,yt=Math.sin(a)*outer;
   o+=`<polygon points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${xt.toFixed(1)},${yt.toFixed(1)}" fill="${col}"/>`;}return o;}
