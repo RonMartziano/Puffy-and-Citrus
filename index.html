@@ -227,6 +227,16 @@
   @keyframes twave{0%,100%{transform:translateX(-50%) rotate(0);}25%{transform:translateX(-50%) rotate(-13deg);}75%{transform:translateX(-50%) rotate(13deg);}}
   #petWrap.t-spin{animation:tspin .8s ease;}#petWrap.t-jump{animation:tjump .7s ease;}#petWrap.t-roll{animation:troll .8s ease;}#petWrap.t-wave{animation:twave .8s ease;}
   .shopform svg{width:54px;height:54px;overflow:visible;}
+  #sceneDecor{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;}
+  #sceneDecor .dec{position:absolute;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18));}
+  @keyframes twinkle{0%,100%{opacity:.35;}50%{opacity:1;}}
+  @keyframes decsway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+  @keyframes decfloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .dec.tw{animation:twinkle 2.6s ease-in-out infinite;}
+  .dec.sway{animation:decsway 4s ease-in-out infinite;transform-origin:bottom center;}
+  .dec.fl{animation:decfloat 5s ease-in-out infinite;}
+  .chest{position:absolute;bottom:80px;left:8px;font-size:30px;cursor:pointer;z-index:5;animation:decfloat 2.2s ease-in-out infinite;}
+  .chest .chestamt{position:absolute;top:-8px;right:-12px;background:#b07415;color:#fff;font-size:10px;font-weight:800;border-radius:10px;padding:1px 5px;}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -255,9 +265,11 @@
     <div class="stagebadge" id="stageBadge">Egg</div>
     <div class="statusicons" id="statusIcons"></div>
     <div id="ground"></div>
+    <div id="sceneDecor"></div>
     <div id="petWrap" class="bob"></div>
     <div id="speech"></div>
     <div id="zzz">💤</div>
+    <div class="chest" id="chest" style="display:none" title="Collect coins!">🎁<span class="chestamt" id="chestAmt"></span></div>
     <div class="belleMascot" id="belleMascot" title="A note from Belle">🫑</div>
     <div class="companion" id="companion" style="display:none"></div>
     <div class="moodline" id="moodLine"></div>
@@ -606,7 +618,7 @@ function freshPet(type){return{type,name:"",bornAt:now(),hatched:false,needsName
   xp:0,level:1,hat:"none",bg:"meadow",birthdays:0,tricks:[],lastTrick:0,targetForm:null,lastTick:now()};}
 function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
-  ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null]},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",hatsOwned:{none:1},bgsOwned:{meadow:1},
+  ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null]},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",lastChest:now(),hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
   stats:{gamesPlayed:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,
   weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,introSeen:false,tutorialSeen:false,storyCh:0,
@@ -1070,14 +1082,32 @@ function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.
 
 /* ---------- Rendering ---------- */
 function setBar(id,v,color){const b=$("#b-"+id);b.style.width=clamp(v)+"%";b.style.background=v<25?"#ff6b6b":color;$("#p-"+id).textContent=Math.round(v);}
+let _lastDecorBg=null;
+const SCENE_DECOR={
+ meadow:[["🌼",12,70,20,"sway"],["🌷",82,73,20,"sway"],["🦋",62,28,20,"fl"],["🌿",30,76,18,"sway"],["☁️",20,16,22,"fl"]],
+ beach:[["🌴",80,38,42,"sway"],["⭐",18,18,15,"tw"],["🐚",18,80,18,""],["⛵",52,26,22,"fl"],["🦀",70,82,16,""]],
+ garden:[["🌻",13,64,26,"sway"],["🌷",84,72,20,"sway"],["🐝",60,32,18,"fl"],["🌿",40,78,18,"sway"],["🦋",26,30,18,"fl"]],
+ space:[["🪐",74,22,36,"fl"],["🌙",16,16,30,""],["✨",40,30,16,"tw"],["⭐",60,48,14,"tw"],["⭐",26,46,12,"tw"],["✨",84,54,14,"tw"],["🚀",52,72,26,"fl"],["⭐",12,60,12,"tw"],["✨",70,12,14,"tw"]],
+ kitchen:[["🍳",14,70,26,""],["🧂",84,72,20,""],["🍯",64,74,20,""],["🫕",40,68,22,""],["🥄",24,30,20,"fl"]],
+ desert:[["🌵",14,58,42,"sway"],["🌵",82,66,30,"sway"],["☀️",72,16,28,"tw"],["🦂",54,84,16,""],["🪨",34,82,18,""]],
+ snow:[["⛄",16,62,34,""],["🌲",80,56,36,""],["🌲",64,64,24,""],["❄️",40,22,18,"tw"],["❄️",26,34,14,"tw"],["❄️",72,30,14,"tw"]],
+ sunset:[["🌅",50,18,38,""],["🦅",24,30,20,"fl"],["🌴",82,44,34,"sway"],["🐦",66,34,16,"fl"]],
+ candy:[["🍭",14,62,30,"sway"],["🍬",84,70,22,"fl"],["🧁",62,72,24,""],["🍩",36,28,20,"fl"],["🍫",24,80,18,""]],
+ reef:[["🐠",24,40,24,"fl"],["🐟",70,52,22,"fl"],["🪸",16,74,26,""],["🌿",84,70,22,"sway"],["🫧",50,32,16,"fl"],["⭐",30,20,14,"tw"]],
+ aurora:[["🌌",50,14,42,""],["✨",20,26,16,"tw"],["⭐",80,28,14,"tw"],["🌲",14,62,30,""],["🌲",84,64,26,""],["❄️",60,40,14,"tw"]]
+};
+function decorForScene(id){const list=SCENE_DECOR[id]||[];return list.map(d=>'<span class="dec '+(d[4]||"")+'" style="left:'+d[1]+'%;top:'+d[2]+'%;font-size:'+d[3]+'px">'+d[0]+'</span>').join("");}
 function applyScene(p){const bg=BGS[p.bg]||BGS.meadow;const sc=$("#scene");const night=(isNight()&&!bg.dark)||p.asleep;
   if(bg.dark||night){sc.style.background="radial-gradient(120% 90% at 50% 0%,"+(bg.dark?bg.sky:"#2b2a55")+","+(bg.dark?bg.g2:"#4a4080")+")";}
   else{sc.style.background="radial-gradient(120% 90% at 50% 0%,"+bg.sky+",#ffe9c2)";}
   $("#ground").style.background="linear-gradient(180deg,"+bg.g1+","+bg.g2+")";
+  if(_lastDecorBg!==p.bg){_lastDecorBg=p.bg;const sd=$("#sceneDecor");if(sd)sd.innerHTML=decorForScene(p.bg);}
   $("#skyObj").textContent=p.asleep?"🌙":(bg.dark?"🪐":(isNight()?"🌙":({sunny:"☀️",cloudy:"⛅",rainy:"🌧️",snowy:"❄️",windy:"🌬️"}[G.weather.weather]||"☀️")));
   // weather particles
   const wfx=$("#wfx");wfx.innerHTML="";const w=G.weather.weather;
   if((w==="rainy"||w==="snowy")&&!p.asleep){const ch=w==="rainy"?"💧":"❄️";for(let i=0;i<10;i++){const d=document.createElement("div");d.className="wdrop";d.textContent=ch;d.style.left=(Math.random()*100)+"%";d.style.animationDuration=(1+Math.random()*1.5)+"s";d.style.animationDelay=(-Math.random()*2)+"s";wfx.appendChild(d);}}}
+function chestReady(){return Math.min(150,Math.floor((now()-(G.lastChest||now()))/60000));}
+function claimChest(){const c=chestReady();if(c<=0)return;G.coins+=c;G.lastChest=now();SFX.coin();react("🪙");toast("Collected "+c+" 🪙 from the chest! 🎁");render();save();}
 function render(){const p=pet();
   $("#coins").textContent=G.coins;$("#lvl").textContent=p.level;
   $("#xpbar").style.width=Math.min(100,(p.xp/levelNeed(p.level))*100)+"%";
@@ -1101,7 +1131,7 @@ function render(){const p=pet();
     t.querySelector(".nm").textContent=pp.name||(t.dataset.pet==="puffy"?"Puffy":"Citrus");});
   const ov=$("#deadOverlay");if(p.dead){ov.classList.add("show");$("#deadMsg").textContent=petName(p)+" lived "+(a/3600).toFixed(1)+"h. "+(p.careMistakes<60?"A wonderful, well-loved life. 💛":"Check in a little more often next time. 💛");}else ov.classList.remove("show");
   $$('.act[data-act="sleep"]')[0].querySelector('.e').textContent=p.asleep?"☀️":"💤";
-  {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}
+  {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}{const c=chestReady(),ch=$("#chest");if(ch){if(c>=10&&p.hatched&&!p.dead){ch.style.display="block";$("#chestAmt").textContent=c;}else ch.style.display="none";}}
   updateQuests();renderCompanion();renderPet();
   if(p.needsName&&!$("#nameModal").classList.contains("open"))openNameModal();}
 
@@ -1375,10 +1405,16 @@ function spinWheel(){if(G.wheelDate===dayKey())return;let n=0;const disp=$("#whe
 
 /* ---------- Tricks ---------- */
 const TRICKS=[{id:"spin",e:"🌀",nm:"Spin"},{id:"jump",e:"⬆️",nm:"Jump"},{id:"roll",e:"🤸",nm:"Roll"},{id:"wave",e:"👋",nm:"Wave"}];
-function openTricks(){if(!guard())return;const p=pet(),known=p.tricks||[],next=TRICKS.find(t=>!known.includes(t.id));
-  $("#trickBody").innerHTML='<div class="sub">'+petName(p)+' knows '+known.length+'/'+TRICKS.length+' tricks.</div><div class="grid">'+TRICKS.map(t=>'<div class="card '+(known.includes(t.id)?"":"locked")+'"><div class="e">'+t.e+'</div><div class="nm">'+(known.includes(t.id)?t.nm:"???")+'</div></div>').join("")+'</div>';
-  $("#trickTeach").style.display=next?"block":"none";$("#trickTeach").textContent=next?"Teach a new trick 🎓":"All tricks learned! 🌟";
-  $("#trickDo").style.display=known.length?"block":"none";openModal("trickModal");}
+function openTricks(){if(!guard())return;renderTricks();openModal("trickModal");}
+function renderTricks(){const p=pet(),known=p.tricks||[];
+  let html='<div class="sub">Tap a trick to teach it 🎓 — then tap it again to perform! ('+known.length+'/'+TRICKS.length+' learned)</div><div class="grid">';
+  TRICKS.forEach(t=>{const has=known.indexOf(t.id)>=0;html+='<div class="card trickcard" data-tid="'+t.id+'"><div class="e">'+t.e+'</div><div class="nm">'+t.nm+'</div><div class="ft" style="font-size:10px;font-weight:800;color:'+(has?"#3b8b1f":"#b07415")+'">'+(has?"▶ perform":"＋ teach")+'</div></div>';});
+  html+='</div>';$("#trickBody").innerHTML=html;
+  $("#trickTeach").style.display="none";$("#trickDo").style.display="none";
+  $$("#trickBody .trickcard").forEach(c=>c.onclick=()=>trickTap(c.dataset.tid));}
+function trickTap(id){const p=pet(),t=TRICKS.find(x=>x.id===id),known=p.tricks||[];
+  if(known.indexOf(id)<0){p.tricks=known.concat([id]);addXP(p,8);addBond(2);if((p.tricks||[]).length>=4)unlock("trickster");SFX.level();petBounce();react("🎓");petSay("I learned "+t.nm+"! "+t.e);toast(petName(p)+" learned "+t.nm+"! 🎓");renderTricks();save();}
+  else{closeModals();const w=$("#petWrap");if(w){w.classList.add("t-"+id);setTimeout(function(){w.classList.remove("t-"+id);},900);}p.happy=clamp(p.happy+8);G.coins+=5;addXP(p,3);react(t.e);petSay("Ta-da — "+t.nm+"! "+t.e);SFX.happy();toast(petName(p)+" did "+t.nm+"! +5🪙");render();save();}}
 function teachTrick(){const p=pet(),next=TRICKS.find(t=>!(p.tricks||[]).includes(t.id));if(!next){toast("Knows all tricks! 🌟");return;}
   $("#trickBody").innerHTML='<div style="text-align:center;font-size:38px;padding:34px 0" id="trGo">Get ready…</div>';$("#trickTeach").style.display="none";$("#trickDo").style.display="none";
   const go=$("#trGo");let ready=false,done=false;const delay=800+Math.random()*1500;
@@ -1564,7 +1600,7 @@ $("#csSkip").onclick=(e)=>{e.stopPropagation();csEnd();};
 $("#authLogin").onclick=()=>doAuth("login");$("#authSignup").onclick=()=>doAuth("signup");$("#authSkip").onclick=hideAuth;$("#logoutBtn").onclick=cloudLogout;
 $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
-$("#belleMascot").onclick=showNote;
+$("#belleMascot").onclick=showNote;$("#chest").onclick=claimChest;
 $("#coinChip").onclick=openQuests;$("#questsBtn").onclick=openQuests;$("#lvlChip").onclick=openCollection;
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
 $("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
