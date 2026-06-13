@@ -585,6 +585,10 @@ const FOODS={
   feast:{e:"🍛",nm:"Hearty Feast",hunger:60,happy:18,health:18,xp:45,dish:true},
   sparklejam:{e:"🌈",nm:"Rainbow Parfait",hunger:26,happy:40,health:18,energy:18,dish:true},
   spaclean:{e:"🥒",nm:"Cucumber Spa Plate",hunger:18,happy:16,health:6,hygiene:60,dish:true},
+  banquet:{e:"🍽️",nm:"Grand Banquet",hunger:95,happy:42,health:40,energy:30,xp:60,dish:true},
+  elixir:{e:"🧪",nm:"Elixir of Life",hunger:40,happy:34,health:90,energy:70,cure:true,hygiene:70,dish:true},
+  masterpiece:{e:"👨‍🍳",nm:"Chef's Masterpiece",hunger:55,happy:60,health:32,coins:150,bond:25,dish:true},
+  royalfeast:{e:"👑",nm:"Royal Feast",hunger:80,happy:50,health:40,energy:40,xp:90,coins:130,bond:25,dish:true},
   apple:{e:"🍎",nm:"Apple",hunger:18,happy:2,health:4,cost:5},
   bread:{e:"🍞",nm:"Bread",hunger:30,happy:2,health:0,cost:8},
   sushi:{e:"🍣",nm:"Sushi",hunger:42,happy:10,health:5,cost:18},
@@ -731,7 +735,8 @@ const ACHIEVEMENTS=[
   {id:"perfectfarm",e:"⭐",t:"Prize Grower",d:"Harvest 10 perfect crops"},
   {id:"chefcook",e:"🍳",t:"Home Cook",d:"Cook 10 dishes"},
   {id:"showtime",e:"🎪",t:"Showstopper",d:"Put on a Talent Show"},
-  {id:"maestro",e:"🌟",t:"Trick Maestro",d:"Master a trick to 5 stars"}
+  {id:"maestro",e:"🌟",t:"Trick Maestro",d:"Master a trick to 5 stars"},
+  {id:"masterchef",e:"🔱",t:"Master Chef",d:"Cook a Master Dish (made from other dishes)"}
 ];
 const FORM_TIERS=["UR","SSS","SS","S","A","B","C","D"];
 const FORMS={
@@ -1752,15 +1757,19 @@ const RECIPES=[
  {id:"friendpie",nm:"Friendship Pie",e:"🥧",need:{bellpepper:1,tomato:1,peach:1}},
  {id:"feast",nm:"Hearty Feast",e:"🍛",need:{corn:1,broccoli:1,eggplant:1}},
  {id:"sparklejam",nm:"Rainbow Parfait",e:"🌈",need:{watermelon:1,pineapple:1,grapes:1}},
- {id:"spaclean",nm:"Cucumber Spa Plate",e:"🥒",need:{seaweed:2,watermelon:1}}
+ {id:"spaclean",nm:"Cucumber Spa Plate",e:"🥒",need:{seaweed:2,watermelon:1}},
+ {id:"banquet",nm:"Grand Banquet",e:"🍽️",need:{feast:1,bento:1,veggiestew:1}},
+ {id:"elixir",nm:"Elixir of Life",e:"🧪",need:{ramen:1,berrysmoothie:1,spaclean:1,goldenapple:1}},
+ {id:"masterpiece",nm:"Chef's Masterpiece",e:"👨‍🍳",need:{fruitsalad:1,sparklejam:1,goldenapple:2}},
+ {id:"royalfeast",nm:"Royal Feast",e:"👑",need:{banquet:1,masterpiece:1,coconut:1}}
 ];
 function canCook(r){for(const k in r.need)if((G.inv[k]||0)<r.need[k])return false;return true;}
-function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
+function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
 function openCook(){if(!guard())return;renderCook();openModal("cookModal");}
 function cropEmoji(k){const sd=SEEDS.find(s=>s.crop===k);return sd?sd.e:((FOODS[k]&&FOODS[k].e)||"❓");}
 function renderCook(){let h='<div class="sub">Combine crops you grew into hearty dishes, then feed them for a big boost! 🍽️</div><div class="grid">';
-  RECIPES.forEach(r=>{const f=FOODS[r.id],ok=canCook(r);const need=Object.keys(r.need).map(k=>cropEmoji(k)+(G.inv[k]||0)+"/"+r.need[k]).join("  ");
-    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+'</div><div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+(f.energy?' ⚡+'+f.energy:'')+(f.coins?' 🪙+'+f.coins:'')+(f.bond?' 💞bond':'')+(f.xp?' ⭐+'+f.xp:'')+(f.cure?' 💊cure':'')+(f.hygiene?' 🫧clean':'')+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div><div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
+  RECIPES.forEach(r=>{const f=FOODS[r.id],ok=canCook(r);const adv=Object.keys(r.need).some(k=>FOODS[k]&&FOODS[k].dish);const need=Object.keys(r.need).map(k=>cropEmoji(k)+(G.inv[k]||0)+"/"+r.need[k]).join("  ");
+    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+(adv?' 🔱':'')+'</div>'+(adv?'<div class="ft" style="font-size:8px;font-weight:800;color:#b07415;letter-spacing:.5px">🔱 MASTER DISH</div>':'')+'<div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+(f.energy?' ⚡+'+f.energy:'')+(f.coins?' 🪙+'+f.coins:'')+(f.bond?' 💞bond':'')+(f.xp?' ⭐+'+f.xp:'')+(f.cure?' 💊cure':'')+(f.hygiene?' 🫧clean':'')+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div><div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
   h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));}
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function gardenLevel(){return Math.min(12,1+Math.floor((G.stats.harvests||0)/6));}
