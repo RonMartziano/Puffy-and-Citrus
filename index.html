@@ -515,7 +515,7 @@
   </div></div>
 
   <div class="modal" id="familyModal"><div class="sheet">
-    <div class="closeRow"><h2>👪 Family</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="closeRow"><h2>✨ Ascension &amp; Legacy</h2><button class="iconbtn" data-close>✕</button></div>
     <div id="familyBody"></div>
   </div></div>
 
@@ -532,7 +532,7 @@
     <button class="btn" id="wardrobeBtn" style="background:#c8a0e8">👗 Wardrobe</button>
     <button class="btn" id="journeyBtn" style="background:#9ad36b">🗺️ Belle’s Journey</button>
     <button class="btn" id="decorateBtn" style="background:#9ecae8">🛋️ Decorate habitat</button>
-    <button class="btn" id="familyBtn" style="background:#f0b46c">👪 Family &amp; generations</button>
+    <button class="btn" id="familyBtn" style="background:#f0b46c">✨ Ascension &amp; Legacy</button>
     <button class="btn" id="logoutBtn" style="background:#cbbfae;display:none">☁️ Log out</button>
     <button class="btn" id="hardReset" style="background:#ff7a7a">🥚 Reset everything</button>
   </div></div>
@@ -676,6 +676,23 @@ const ACHIEVEMENTS=[
   {id:"disco",e:"🪩",t:"Disco Fever",d:"Evolve a Disco Puffer"},
   {id:"sage",e:"🍂",t:"Old & Wise",d:"Evolve a Sage Orange"},
   {id:"sunny",e:"🌻",t:"Ray of Sunshine",d:"Evolve a Sunny Orange"},
+  {id:"ascend1",e:"✨",t:"Ascended",d:"Ascend a pet to a new generation"},
+  {id:"ascend5",e:"🌠",t:"Eternal Bloodline",d:"Ascend 5 times"},
+  {id:"rich2",e:"💎",t:"Wealthy",d:"Hold 500 coins"},
+  {id:"rich3",e:"🏦",t:"Tycoon",d:"Hold 1000 coins"},
+  {id:"harvest50",e:"🌽",t:"Farmhand",d:"Harvest 50 crops"},
+  {id:"harvest100",e:"🚜",t:"Master Farmer",d:"Harvest 100 crops"},
+  {id:"games25",e:"🎯",t:"Arcade Pro",d:"Play 25 mini-games"},
+  {id:"games50",e:"🕹️",t:"Arcade Legend",d:"Play 50 mini-games"},
+  {id:"lvl20",e:"🌟",t:"Veteran",d:"Reach level 20"},
+  {id:"lvl30",e:"💫",t:"Grand Master",d:"Reach level 30"},
+  {id:"collector16",e:"📚",t:"Collector",d:"Discover 16 forms"},
+  {id:"collectorall",e:"🏆",t:"Completionist",d:"Discover every form"},
+  {id:"expert10",e:"🗺️",t:"Globetrotter",d:"Complete 10 expeditions"},
+  {id:"streak14",e:"📅",t:"Two-Week Streak",d:"Reach a 14-day streak"},
+  {id:"streak30",e:"🔥",t:"Unstoppable",d:"Reach a 30-day streak"},
+  {id:"trader",e:"🧺",t:"Trusted Trader",d:"Deliver 15 market orders"},
+  {id:"decorator2",e:"🛋️",t:"Interior Designer",d:"Place 10 pieces of furniture"}
 ];
 const FORM_TIERS=["UR","SSS","SS","S","A","B","C","D"];
 const FORMS={
@@ -735,7 +752,7 @@ function freshGame(){return{coins:60,active:"puffy",
   inv:{apple:3,bread:1,sushi:0,seaweed:0,berry:0,cake:0,pizza:0,bellpepper:1,icecream:0,pumpkin:0,medicine:1,soap:0},
   ach:{},dex:{},stickers:{},boughtForms:{puffy:[],citrus:[]},bond:0,bondMs:0,garden:{plots:[null,null,null,null,null,null],maxPlots:6,sprinkler:false,beehive:false,order:null},seeds:{berry:2,seaweed:1},wheelDate:"",streak:0,lastLoginDay:"",lastChest:now(),hatsOwned:{none:1},bgsOwned:{meadow:1},
   daily:{date:"",counts:{},quests:[],loginDone:false,noteShown:false,discount:1},
-  stats:{gamesPlayed:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,legacy:{puffy:[],citrus:[]},
+  stats:{gamesPlayed:0,bellFed:0,notesRead:0,feeds:0,fishCaught:0,harvests:0,spins:0,nightCares:0,orders:0,expeditions:0,high:{bubble:0,memory:0,whack:0}},lastTogether:0,exped:null,campaign:{step:0},furnitureOwned:{},placedByBg:{},familyLevel:1,ascensions:0,legacy:{puffy:[],citrus:[]},
   weather:{date:"",season:"",weather:""},lastSeen:now(),sound:true,music:true,notify:false,revealed:{},introSeen:false,tutorialSeen:false,storyCh:0,
   pets:{puffy:freshPet("puffy"),citrus:freshPet("citrus")}};}
 let G;
@@ -790,7 +807,7 @@ const EVENTS=[
 ];
 function currentEvent(){const d=new Date(),dow=d.getDay();if(dow!==0&&dow!==6)return null;const day=Math.floor(d.getTime()/86400000);return EVENTS[day%EVENTS.length];}
 function maxLevel(){return Math.max(G.pets.puffy.level||1,G.pets.citrus.level||1);}
-function featUnlocked(id){const L=maxLevel();switch(id){
+function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;const L=maxLevel();switch(id){
   case "garden":case "journey":case "game":return true;
   case "fish":case "wheel":return L>=2;
   case "grow":case "tricks":return L>=3;
@@ -800,8 +817,9 @@ function featUnlocked(id){const L=maxLevel();switch(id){
   default:return true;}}
 const REVEALS={fish:["🎣","Fishing"],wheel:["🎡","Daily Wheel"],tricks:["🎓","Tricks"],grow:["🧬","Evolution & Legacy"],home:["🏡","Home & Style"],exped:["🧭","Expeditions"],together:["🤝","Play Together"]};
 function checkReveals(){if(!G.revealed)G.revealed={};for(const id in REVEALS){if(featUnlocked(id)&&!G.revealed[id]){G.revealed[id]=true;toast("🎉 New unlocked: "+REVEALS[id][0]+" "+REVEALS[id][1]+"!");SFX.coin();}}}
-function coinMul(p){var ev=currentEvent(),m=1;if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;return m;}
-function xpMul(p){var ev=currentEvent(),m=1;if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;return m;}
+function ascBonus(){return Math.min(1,0.05*(G.ascensions||0));}
+function coinMul(p){var ev=currentEvent(),m=1+ascBonus();if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;return m;}
+function xpMul(p){var ev=currentEvent(),m=1+ascBonus();if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;return m;}
 let musicTimer=null,musicStep=0;const MELODY=[523,587,659,784,880,784,659,587,659,587];
 function startMusic(){if(musicTimer||!G||!G.music||!G.sound)return;musicTimer=setInterval(()=>{if(document.hidden||!G.music||!G.sound)return;const f=MELODY[musicStep%MELODY.length];beep(f,.5,"sine",.016);if(musicStep%2===0)beep(f/2,.6,"triangle",.011);musicStep++;},640);}
 function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null;}}
@@ -1244,7 +1262,7 @@ let toastT;function toast(msg){const t=$("#toast");t.textContent=msg;t.classList
 function levelNeed(l){return 25+l*30;}
 function addXP(p,n){n=Math.round(n*xpMul(p));p.xp+=n;let lv=0;
   while(p.xp>=levelNeed(p.level)){p.xp-=levelNeed(p.level);p.level++;lv=p.level;}
-  if(lv){G.coins+=p.level*5;SFX.level();if(p.level>=10)unlock("lvl10");if(p.level>=15)unlock("centurion");
+  if(lv){G.coins+=p.level*5;SFX.level();if(p.level>=10)unlock("lvl10");if(p.level>=15)unlock("centurion");if(p.level>=20)unlock("lvl20");if(p.level>=30)unlock("lvl30");
     const q=rnd(LEVEL_QUOTES);petSay(q);
     confetti();queueCutscene([{art:petArt(p,"happy"),big:"⭐ Level "+lv+"!",text:'"'+q+'"  —  '+petName(p),bg:CS_LEVEL_BG,hold:2600}]);checkStory();}}
 const petLevel=()=>pet().level;
@@ -1284,6 +1302,12 @@ const QUEST_POOL=[
   {id:"pat",d:"Pat your pets 5 times",goal:5,metric:"pat",reward:15},
   {id:"happy",d:"Get a pet to 90% happy",goal:1,metric:"happy90",reward:25},
   {id:"bell",d:"Feed a Bell Pepper",goal:1,metric:"bell",reward:30},
+  {id:"harvestq",d:"Harvest 3 crops",goal:3,metric:"harvest",reward:25},
+  {id:"fishq",d:"Catch a fish",goal:1,metric:"fish",reward:20},
+  {id:"trickq",d:"Perform a trick",goal:1,metric:"trick",reward:15},
+  {id:"spinq",d:"Spin the daily wheel",goal:1,metric:"spin",reward:15},
+  {id:"napq",d:"Let a pet take a nap",goal:1,metric:"sleep",reward:10},
+  {id:"orderq",d:"Deliver a market order",goal:1,metric:"order",reward:30},
 ];
 function genQuests(){const s=[...QUEST_POOL].sort(()=>Math.random()-.5).slice(0,3);
   return s.map(q=>({id:q.id,d:q.d,goal:q.goal,metric:q.metric,reward:q.reward,prog:0,claimed:false}));}
@@ -1354,7 +1378,7 @@ function simulate(p,dt,away){
   p.lastTick=now();}
 function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;
   while(dt>0){const step=Math.min(dt,30);simulate(p,step,away);dt-=step;}}
-  if(pet().hunger>=100)unlock("fullbelly");if(G.coins>=200)unlock("rich");
+  if(pet().hunger>=100)unlock("fullbelly");if(G.coins>=200)unlock("rich");if(G.coins>=500)unlock("rich2");if(G.coins>=1000)unlock("rich3");
   if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();maybeSpawnFloat();} render();save();flushCutscenes();}
 
 /* ---------- Rendering ---------- */
@@ -1439,7 +1463,7 @@ function feed(id){const p=pet();if(G.inv[id]<=0)return;if(p.hunger>=98){toast("T
 function doClean(){if(!guard())return;const p=pet();if(!p.poops.length&&p.hygiene>95){toast("Already squeaky clean! ✨");return;}
   const hadPoop=p.poops.length;p.poops=[];p.hygiene=clamp(p.hygiene+(G.inv.soap>0?100:(hadPoop?55:40)));if(G.inv.soap>0){G.inv.soap--;toast("Deep clean with soap! 🧴✨");}else toast(hadPoop?"Cleaned up the mess! ✨":"All tidied up! ✨");
   p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,6);SFX.clean();bubbleBurst(8);petBounce();questBump("clean",1);render();save();}
-function doSleep(){if(!guard())return;const p=pet();p.asleep=!p.asleep;toast(p.asleep?"Lights off... 💤":"Good morning! ☀️");react(p.asleep?"💤":"☀️");render();save();}
+function doSleep(){if(!guard())return;const p=pet();p.asleep=!p.asleep;if(p.asleep)questBump("sleep",1);toast(p.asleep?"Lights off... 💤":"Good morning! ☀️");react(p.asleep?"💤":"☀️");render();save();}
 function doHealOrWake(){}
 function doHeal(){if(!guard())return;const p=pet();
   if(!p.sick&&p.health>=95){toast("Feeling perfectly healthy! 💪");petSay("I feel great!");return;}
@@ -1523,7 +1547,7 @@ function stopGame(){if(mg){if(mg.spawn)clearInterval(mg.spawn);if(mg.timer)clear
 function startGame(){stopGame();$("#mgArea").innerHTML="";$("#mgStart").style.display="none";
   if(curGame==="bubble")gameBubble();else if(curGame==="whack")gameWhack();else gameMemory();}
 function endGame(score){stopGame();const coins=score*2;G.coins+=coins;const p=pet();p.happy=clamp(p.happy+Math.min(40,score*2));p.energy=clamp(p.energy-8);addXP(p,Math.min(30,score*2));
-  G.stats.gamesPlayed++;if(G.stats.gamesPlayed>=5)unlock("gamer");if(G.stats.gamesPlayed>=5)unlockSticker("gamer");if(score>(G.stats.high[curGame]||0))G.stats.high[curGame]=score;
+  G.stats.gamesPlayed++;if(G.stats.gamesPlayed>=5)unlock("gamer");if(G.stats.gamesPlayed>=25)unlock("games25");if(G.stats.gamesPlayed>=50)unlock("games50");if(G.stats.gamesPlayed>=5)unlockSticker("gamer");if(score>(G.stats.high[curGame]||0))G.stats.high[curGame]=score;
   questBump("play",1);if(G.coins>=200)unlock("rich");SFX.level();
   $("#mgArea").innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px"><div style="font-size:40px">🎉</div><div style="font-weight:800;font-size:18px">Score: ${score}</div><div style="color:#b07415;font-weight:800">+${coins} 🪙 · +XP · +happiness</div></div>`;
   $("#mgStart").style.display="block";$("#mgStart").textContent="Play again";render();save();}
@@ -1630,7 +1654,7 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="discopuffer")unlock("disco");
   if(p.form==="sageorange")unlock("sage");
   if(p.form==="sunnyorange")unlock("sunny");
-  if(Object.keys(G.dex).length>=8)unlock("explorer");}
+  if(Object.keys(G.dex).length>=8)unlock("explorer");if(Object.keys(G.dex).length>=16)unlock("collector16");if(Object.keys(G.dex).length>=(allForms("puffy").length+allForms("citrus").length))unlock("collectorall");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
 function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?"":formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
   $("#collStickers").innerHTML=STICKERS.map(s=>{const u=G.stickers[s.id];return '<div class="sticker '+(u?"":"lock")+'"><div class="se">'+(u?s.e:"❔")+'</div><div class="st">'+(u?s.t:(s.h||"???"))+'</div></div>';}).join("");
@@ -1659,7 +1683,7 @@ function castLine(){const area=$("#fishArea");area.textContent="🌊";$("#fishMs
     fishState.miss=setTimeout(()=>{if(fishState&&fishState.bit){fishState.bit=false;area.textContent="🌊";$("#fishMsg").textContent="It got away… cast again!";$("#fishBtn").textContent="Cast again";$("#fishBtn").onclick=castLine;}},850);},wait);}
 function reelIn(){if(!fishState||!fishState.bit)return;clearTimeout(fishState.miss);fishState.bit=false;
   const loot=rnd([["🐟","a fish! +8🪙",()=>{G.coins+=8;}],["🫐","berries!",()=>{G.inv.berry=(G.inv.berry||0)+1;}],["🥬","seaweed!",()=>{G.inv.seaweed=(G.inv.seaweed||0)+1;}],["👢","an old boot 😅",()=>{}],["💎","treasure! +25🪙",()=>{G.coins+=25;}],["🫑","a bell pepper!",()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}]]);
-  loot[2]();const p=pet();p.happy=clamp(p.happy+6);addXP(p,4);unlockSticker("fish");G.stats.fishCaught=(G.stats.fishCaught||0)+1;if(G.stats.fishCaught>=10)unlock("angler");SFX.coin();
+  loot[2]();const p=pet();p.happy=clamp(p.happy+6);addXP(p,4);unlockSticker("fish");questBump("fish",1);G.stats.fishCaught=(G.stats.fishCaught||0)+1;if(G.stats.fishCaught>=10)unlock("angler");SFX.coin();
   $("#fishArea").textContent=loot[0];$("#fishMsg").textContent="You caught "+loot[1];$("#fishBtn").textContent="Cast again";$("#fishBtn").style.display="block";$("#fishBtn").onclick=castLine;render();save();}
 
 /* ---------- Garden ---------- */
@@ -1675,7 +1699,7 @@ function renderGardenOrder(){const o=G.garden.order,el=$("#gardenOrder");if(!el)
   const seed=SEEDS.find(s=>s.crop===o.crop)||{e:"❓",nm:o.crop},have=G.inv[o.crop]||0;
   el.innerHTML='<div class="order"><div>🧺 <b>Market order</b><br>'+o.need+'× '+seed.e+' '+seed.nm+' → <b>'+o.reward+'🪙</b> <span style="font-size:11px;color:var(--muted)">('+have+'/'+o.need+')</span></div><button class="ordbtn" id="ordBtn"'+(have>=o.need?'':' disabled')+'>Deliver</button></div>';
   const b=$("#ordBtn");if(b)b.onclick=fulfillOrder;}
-function fulfillOrder(){const o=G.garden.order;if(!o||o.done)return;if((G.inv[o.crop]||0)<o.need){toast("Not enough crops yet!");return;}G.inv[o.crop]-=o.need;G.coins+=o.reward;addXP(pet(),6);o.done=true;G.stats.orders=(G.stats.orders||0)+1;SFX.coin();react("🪙");gardenPetHop();toast("Order delivered! +"+o.reward+"🪙 🎉");renderGarden();save();}
+function fulfillOrder(){const o=G.garden.order;if(!o||o.done)return;if((G.inv[o.crop]||0)<o.need){toast("Not enough crops yet!");return;}G.inv[o.crop]-=o.need;G.coins+=o.reward;addXP(pet(),6);o.done=true;questBump("order",1);G.stats.orders=(G.stats.orders||0)+1;if(G.stats.orders>=15)unlock("trader");SFX.coin();react("🪙");gardenPetHop();toast("Order delivered! +"+o.reward+"🪙 🎉");renderGarden();save();}
 function renderGarden(){
   if(!G.garden.maxPlots)G.garden.maxPlots=6;
   while(G.garden.plots.length<G.garden.maxPlots)G.garden.plots.push(null);
@@ -1702,13 +1726,13 @@ function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.fi
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.plantedAt=now()-gt*1000-1;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer used — ready now!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
 function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:false};SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}coins=Math.round(coins*coinMul(pet()));G.coins+=coins;addXP(pet(),4);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}coins=Math.round(coins*coinMul(pet()));G.coins+=coins;addXP(pet(),4);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();toast("Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
 function openWheel(){const done=G.wheelDate===dayKey();$("#wheelDisp").textContent="🎡";$("#wheelMsg").textContent=done?"Already spun today — come back tomorrow!":"One free spin every day!";const b=$("#wheelBtn");b.disabled=false;if(done){b.textContent="Close";b.onclick=closeModals;}else{b.textContent="Spin! 🎡";b.onclick=spinWheel;}openModal("wheelModal");}
 function spinWheel(){if(G.wheelDate===dayKey())return;let n=0;const disp=$("#wheelDisp");$("#wheelBtn").disabled=true;
-  const iv=setInterval(()=>{disp.textContent=rnd(WHEEL).e;beep(500+n*30,.03);n++;if(n>15){clearInterval(iv);const prize=rnd(WHEEL);disp.textContent=prize.e;prize.fn();G.wheelDate=dayKey();G.stats.spins=(G.stats.spins||0)+1;if(G.stats.spins>=7)unlock("lucky");SFX.level();$("#wheelMsg").textContent="You won "+prize.t+"! 🎉";const b=$("#wheelBtn");b.textContent="Come back tomorrow ✓";b.onclick=closeModals;render();save();}},85);}
+  const iv=setInterval(()=>{disp.textContent=rnd(WHEEL).e;beep(500+n*30,.03);n++;if(n>15){clearInterval(iv);const prize=rnd(WHEEL);disp.textContent=prize.e;prize.fn();G.wheelDate=dayKey();questBump("spin",1);G.stats.spins=(G.stats.spins||0)+1;if(G.stats.spins>=7)unlock("lucky");SFX.level();$("#wheelMsg").textContent="You won "+prize.t+"! 🎉";const b=$("#wheelBtn");b.textContent="Come back tomorrow ✓";b.onclick=closeModals;render();save();}},85);}
 
 /* ---------- Tricks ---------- */
 const TRICKS=[
@@ -1752,7 +1776,7 @@ function teachTrick(){const p=pet(),next=TRICKS.find(t=>!(p.tricks||[]).includes
   go.onclick=()=>{if(!ready&&!done){done=true;clearTimeout(t);go.textContent="Too early! 😅";setTimeout(openTricks,900);}};}
 function doTrick(){const p=pet(),known=p.tricks||[];if(!known.length){toast("Teach a trick first! 🎓");return;}
   if(now()-(p.lastTrick||0)<20000){toast("Needs a little rest first 😴");return;}
-  p.lastTrick=now();const id=rnd(known),t=TRICKS.find(x=>x.id===id);closeModals();
+  p.lastTrick=now();questBump("trick",1);const id=rnd(known),t=TRICKS.find(x=>x.id===id);closeModals();
   const w=$("#petWrap");if(w){w.classList.add("t-"+id);setTimeout(function(){w.classList.remove("t-"+id);},900);}
   p.happy=clamp(p.happy+8);G.coins+=5;addXP(p,3);react(t.e);petSay("Ta-da — "+t.nm+"! "+t.e);SFX.happy();toast(petName(p)+" did "+t.nm+"! +5🪙");render();save();}
 
@@ -1768,7 +1792,7 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
   openHub("🧬 Grow &amp; Legacy","Shape who your pets become — then pass on the torch.",[
     ["🧬","Evolution",(p.stage==="adult"?"fully grown ✓":"care grade "+grade),openEvolution],
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
-    ["👪","Family & Legacy","retire & next gen",openFamily]
+    ["👪","Ascension & Legacy","ascend & carry on",openFamily]
   ]);}
 function openHome(){if(!guard())return;const p=pet();
   openHub("🏡 Home &amp; Style","Build your room, pick a habitat, dress up your pets.",[
@@ -1802,7 +1826,7 @@ function renderExped(){const el=$("#expedBody");
   let html='<div class="grid">';EXPEDITIONS.forEach(e=>{html+='<div class="card expcard" data-id="'+e.id+'"><div class="e">'+e.e+'</div><div class="nm">'+e.nm+'</div><div class="meta">'+e.desc+'</div></div>';});html+='</div>';el.innerHTML=html;
   el.querySelectorAll(".expcard").forEach(c=>c.onclick=()=>startExped(c.dataset.id));}
 function startExped(id){if(G.exped){toast("An expedition is already underway!");return;}const e=EXPEDITIONS.find(x=>x.id===id);G.exped={id:id,returnsAt:now()+e.dur*60000};SFX.coin();toast(petName(pet())+" set off to "+e.nm+"! 🧭");renderExped();render();save();}
-function claimExped(){if(!expReady())return;const loot=expLoot(G.exped.id);G.exped=null;G.stats.expeditions=(G.stats.expeditions||0)+1;if((G.stats.expeditions||0)>=5)unlock("explorer2");SFX.level();react("🎁");toast("Brought back: "+loot.join(" · "));renderExped();render();save();}
+function claimExped(){if(!expReady())return;const loot=expLoot(G.exped.id);G.exped=null;G.stats.expeditions=(G.stats.expeditions||0)+1;if((G.stats.expeditions||0)>=5)unlock("explorer2");if((G.stats.expeditions||0)>=10)unlock("expert10");SFX.level();react("🎁");toast("Brought back: "+loot.join(" · "));renderExped();render();save();}
 
 /* ---------- Journey (campaign) ---------- */
 const CAMPAIGN=[
@@ -1862,26 +1886,26 @@ function renderBuildBar(){const own=Object.keys(G.furnitureOwned||{}).filter(k=>
   else own.forEach(k=>{const f=FURNITURE.find(x=>x.id===k);h+='<span class="bchip'+(buildSel===k?" on":"")+'" data-k="'+k+'">'+f.e+'</span>';});
   h+='</div><div class="bbhint">tap a piece, then tap the habitat to place · tap a placed piece to remove</div><div class="bbhint" style="opacity:.7">each habitat keeps its own layout 🏡</div><button class="bbdone" id="bbDone">Done ✓</button>';
   $("#buildBar").innerHTML=h;$$("#buildBar .bchip").forEach(c=>c.onclick=function(){buildSel=c.dataset.k;renderBuildBar();});$("#bbDone").onclick=exitBuild;}
-function placeFurn(e){if(!buildMode||!buildSel)return;const sc=$("#scene"),r=sc.getBoundingClientRect();let x=50,y=50;if(r.width){x=Math.round((e.clientX-r.left)/r.width*100);y=Math.round((e.clientY-r.top)/r.height*100);}const k=pet().bg;G.placedByBg=G.placedByBg||{};G.placedByBg[k]=G.placedByBg[k]||[];G.placedByBg[k].push({id:buildSel,x:Math.max(4,Math.min(94,x||50)),y:Math.max(8,Math.min(86,y||50))});SFX.clean();renderRoom();save();}
+function placeFurn(e){if(!buildMode||!buildSel)return;const sc=$("#scene"),r=sc.getBoundingClientRect();let x=50,y=50;if(r.width){x=Math.round((e.clientX-r.left)/r.width*100);y=Math.round((e.clientY-r.top)/r.height*100);}const k=pet().bg;G.placedByBg=G.placedByBg||{};G.placedByBg[k]=G.placedByBg[k]||[];G.placedByBg[k].push({id:buildSel,x:Math.max(4,Math.min(94,x||50)),y:Math.max(8,Math.min(86,y||50))});{var _tot=0;for(var _b in G.placedByBg)_tot+=G.placedByBg[_b].length;if(_tot>=10)unlock("decorator2");}SFX.clean();renderRoom();save();}
 
 /* ---------- Family / generations ---------- */
 function openFamily(){renderFamily();openModal("familyModal");}
-function renderFamily(){const el=$("#familyBody");let h='<div class="sub">👪 Family level <b>'+(G.familyLevel||1)+'</b> — each new generation keeps its tricks and gets a head start toward higher care.</div>';
+function renderFamily(){const el=$("#familyBody");let h='<div class="sub">✨ Ascensions: <b>'+(G.ascensions||0)+'</b> · permanent bonus <b>+'+Math.round(ascBonus()*100)+'%</b> coins &amp; XP.<br>Ascending keeps each pet\u2019s tricks, traits &amp; a head start — and you keep all your coins, seeds, garden &amp; items.</div>';
   ["puffy","citrus"].forEach(k=>{const p=G.pets[k],leg=(G.legacy&&G.legacy[k])||[];
-    h+='<div class="famrow"><div><b>'+petName(p)+'</b> · Gen '+(p.gen||1)+' · '+(p.stage==="adult"?"grown 🌟":(p.hatched?p.stage:"egg"))+'</div><button class="ordbtn" id="ng_'+k+'"'+(p.stage==="adult"?"":" disabled")+'>Next Gen</button></div>';
+    h+='<div class="famrow"><div><b>'+petName(p)+'</b> · Gen '+(p.gen||1)+' · '+(p.stage==="adult"?"grown 🌟":(p.hatched?p.stage:"egg"))+'</div><button class="ordbtn" id="ng_'+k+'"'+(p.stage==="adult"?"":" disabled")+'>✨ Ascend</button></div>';
     if(leg.length)h+='<div class="famalbum">'+leg.map(f=>'<span class="famform">'+artFor(k,"adult",f)+'</span>').join("")+'</div>';});
   const both=G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult";
-  h+='<button class="btn" id="famGen"'+(both?"":" disabled")+' style="margin-top:12px">👪 New Family Generation (both)</button>';
-  h+='<div class="sub" style="margin-top:8px;font-size:11px">Tip: retiring a grown pet records its form in your album and hatches a stronger next generation.</div>';
+  h+='<button class="btn" id="famGen"'+(both?"":" disabled")+' style="margin-top:12px">✨ Ascend Both</button>';
+  h+='<div class="sub" style="margin-top:8px;font-size:11px">Tip: ascending a grown pet records its form in your album and begins a stronger new generation. You keep everything else — coins, seeds, garden, items &amp; unlocked features.</div>';
   el.innerHTML=h;["puffy","citrus"].forEach(k=>{const b=$("#ng_"+k);if(b)b.onclick=function(){nextGen(k);};});const fb=$("#famGen");if(fb)fb.onclick=familyGen;}
 function nextGen(k){const p=G.pets[k];if(p.stage!=="adult"){toast("Only a grown-up can pass on its legacy!");return;}
   G.legacy=G.legacy||{};G.legacy[k]=G.legacy[k]||[];if(p.form){G.legacy[k].push(p.form);G.dex[p.form]=true;}
   const gen=(p.gen||1)+1,tricks=(p.tricks||[]).slice(),nm=p.name;
   G.pets[k]=freshPet(k);const np=G.pets[k];np.gen=gen;np.tricks=tricks;np.name=nm;np.needsName=false;np.careGood=1+gen*40;np.discipline=30+Math.min(45,gen*6);
-  unlock("legacy");if(gen>=3)unlock("dynasty");
-  queueCutscene([{art:"🥚",big:"A new generation",text:(nm||"Your pet")+" — Generation "+gen+" — begins! They inherit "+tricks.length+" tricks and a head start from their elder.",bg:CS_LEVEL_BG}]);
-  toast("🥚 "+(nm||"New egg")+" — Generation "+gen+"!");render();save();}
-function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")){toast("Both pets must be grown up!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("👪 Family Generation "+G.familyLevel+" — bonuses up!");renderFamily();save();}
+  G.ascensions=(G.ascensions||0)+1;unlock("legacy");unlock("ascend1");if((G.ascensions||0)>=5)unlock("ascend5");if(gen>=3)unlock("dynasty");
+  queueCutscene([{art:"✨",big:"Ascension!",text:(nm||"Your pet")+" ascends to Generation "+gen+"! They keep "+tricks.length+" tricks, their traits and a head start — and your coins, seeds, garden & items all carry over. Ascension bonus is now +"+Math.round(ascBonus()*100)+"% coins & XP.",bg:CS_LEVEL_BG}]);
+  toast("✨ "+(nm||"New egg")+" ascended — Generation "+gen+"!");render();save();}
+function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")){toast("Both pets must be grown up!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("✨ Ascended both — bonus now +"+Math.round(ascBonus()*100)+"%!");renderFamily();save();}
 
 /* ---------- Cutscenes / story ---------- */
 const INTRO=[
