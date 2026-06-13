@@ -149,6 +149,23 @@
   #splash .sp-sub{font-size:14px;color:#9a6b50;margin-top:6px;font-weight:600;}
   @keyframes splashIn{from{opacity:0;transform:scale(.85) translateY(10px);}}
   @keyframes splashOut{to{opacity:0;visibility:hidden;}}
+  .evoRow{display:flex;align-items:center;gap:11px;padding:7px;border-radius:12px;margin-bottom:0;background:#fff;border:1px solid #f0e6d6;}
+  .evoRow.cur{background:#eef9ff;border-color:#bfe6f5;}
+  .evoRow .mini{width:52px;height:52px;flex:none;}
+  .evoRow .mini svg{width:100%;height:100%;overflow:visible;}
+  .evoRow .en{font-weight:700;font-size:13px;}
+  .evoRow .es{font-size:11px;color:var(--muted);margin-top:1px;}
+  .evoConn{height:9px;width:2px;background:#e3d8c6;margin:0 0 0 32px;}
+  .evoForms{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px;}
+  .evoForm{background:#fff;border:1px solid #f0e6d6;border-radius:12px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
+  .evoForm.on{border:2px solid var(--happy);background:#fffdf0;}
+  .evoForm .fa{width:66px;height:66px;margin:0 auto;}
+  .evoForm .fa svg{width:100%;height:100%;overflow:visible;}
+  .evoForm.locked .fa{filter:brightness(0) opacity(.26);}
+  .evoForm .fn{font-size:11px;font-weight:700;margin-top:3px;}
+  .evoForm .fg{position:absolute;top:5px;left:5px;font-size:10px;font-weight:800;background:#f1ebe0;border-radius:6px;padding:1px 6px;color:#8a8290;}
+  .evoForm.on .fg{background:var(--happy);color:#7a5a10;}
+  .evoForm .ft{font-size:10px;color:#b07415;font-weight:800;margin-top:2px;min-height:12px;}
 </style>
 </head>
 <body>
@@ -262,6 +279,15 @@
     <h2 style="color:#d8557e;font-family:Georgia,serif">A note from Belle</h2>
     <div id="noteBody" style="font-size:15px;line-height:1.7;color:#7a5a45;margin:6px 0 4px"></div>
     <button class="btn orange" data-close>Aww 💕</button>
+  </div></div>
+
+  <div class="modal" id="evoModal"><div class="sheet">
+    <div class="closeRow"><h2>🧬 Evolution</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub" id="evoSub"></div>
+    <div id="evoBody"></div>
+    <h2 style="font-size:15px;margin-top:14px">Possible adult forms</h2>
+    <div class="sub">The glowing one is where you're headed now — better care unlocks better forms. 🔒 = still a mystery.</div>
+    <div class="evoForms" id="evoForms"></div>
   </div></div>
 
   <div class="modal" id="menuModal"><div class="sheet">
@@ -774,6 +800,26 @@ function welcomeBack(snap,away){const p0=G.pets,lines=[];
   $("#welcomeSub").textContent="You were away "+(h?h+"h ":"")+m+"m.";
   $("#welcomeBody").innerHTML=lines.map(l=>"• "+l).join("<br>");openModal("welcomeModal");}
 
+function formatDur(s){s=Math.max(0,Math.round(s));if(s<60)return s+"s";const m=Math.floor(s/60);if(m<60)return m+"m "+(s%60)+"s";const h=Math.floor(m/60);return h+"h "+(m%60)+"m";}
+function artFor(type,stage,form){return petArt({type,hatched:true,stage,form:form||null},"happy");}
+function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to hatch! 🥚");return;}
+  const a=ageSec(p),order=["egg","baby","child","teen","adult"],ci=order.indexOf(p.stage);
+  const REACH={egg:0,baby:30,child:120,teen:1500,adult:5400};
+  const rows=[["egg","🥚 Egg"],["baby",FORMS[p.type].baby],["child",FORMS[p.type].child],["teen",FORMS[p.type].teen],["adult",(p.stage==="adult"?FORMS[p.type][careGrade(p)].nm:"Adult form")]];
+  let html="";
+  rows.forEach((r,i)=>{const key=r[0],nm=r[1];let status,cls="";
+    if(i<ci){status="✓ grown";}else if(i===ci){status="\u25cf you are here";cls="cur";}else{status="in ~"+formatDur(REACH[key]-a);}
+    const art=key==="egg"?eggSVG(p.type):(key==="adult"?artFor(p.type,"adult",(p.form||chooseForm(p))):artFor(p.type,key));
+    html+=`<div class="evoRow ${cls}"><div class="mini">${art}</div><div><div class="en">${nm}</div><div class="es">${status}</div></div></div>`;
+    if(i<rows.length-1)html+=`<div class="evoConn"></div>`;});
+  $("#evoBody").innerHTML=html;
+  const cur=careGrade(p),isAdult=p.stage==="adult";
+  let grid="";["S","A","C","D"].forEach(g=>{const f=FORMS[p.type][g],on=isAdult?(p.form===f.k):(g===cur);
+    grid+=`<div class="evoForm ${on?'on':'locked'}"><div class="fg">${g}</div><div class="fa">${artFor(p.type,"adult",f.k)}</div><div class="fn">${on?f.nm:"🔒 ???"}</div><div class="ft">${on?(isAdult?"✓ achieved":"★ on track"):""}</div></div>`;});
+  $("#evoForms").innerHTML=grid;
+  $("#evoSub").innerHTML=isAdult?(petName(p)+" is fully grown as <b>"+FORMS[p.type][cur].nm+"</b>! 🎉"):("<b>"+petName(p)+"</b> · "+(FORMS[p.type][p.stage]||p.stage)+" · care grade <b>"+cur+"</b> — keep stats high to aim higher!");
+  openModal("evoModal");}
+
 /* ---------- Wire up ---------- */
 $$(".tab").forEach(t=>t.onclick=()=>{G.active=t.dataset.pet;render();save();if(pet().needsName)openNameModal();});
 $$(".act").forEach(b=>b.onclick=()=>{const a=b.dataset.act;
@@ -787,6 +833,7 @@ $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
 $("#belleMascot").onclick=showNote;
 $("#coinChip").onclick=openQuests;$("#lvlChip").onclick=openQuests;
+$("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
 $("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>Progress saves automatically on this device.";$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";openModal("menuModal");};
 $("#soundBtn").onclick=()=>{G.sound=!G.sound;$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";if(G.sound)SFX.happy();save();};
 $("#renameBtn").onclick=()=>{closeModals();openNameModal(G.active);};

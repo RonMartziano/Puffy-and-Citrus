@@ -10,10 +10,10 @@ AsyncStorage (swap in a backend later whenever you want).
 2. Install the **Expo Go** app on your phone (App Store / Google Play).
 3. In a terminal:
 
-   This project targets **Expo SDK 55** (the latest *stable* SDK), which the
-   public Expo Go from the app stores supports. (SDK 56 is still a beta and
-   isn't in the store version of Expo Go yet — targeting it causes the
-   "requires a newer version of Expo Go" error.)
+   This project targets **Expo SDK 54**, which the public Expo Go from the app
+   stores currently supports. (SDK 55 and 56 require a beta Expo Go from
+   TestFlight or expo.dev/go — targeting them causes the "requires a newer
+   version of Expo Go" error even though the store says Expo Go is up to date.)
 
    ```bash
    cd expo-app
