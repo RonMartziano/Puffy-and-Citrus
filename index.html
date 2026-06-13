@@ -1098,8 +1098,9 @@ function confirmName(){const key=nameTarget;if(!key)return;const v=($("#nameInpu
   G.pets[key].name=v||(key==="puffy"?"Puffy":"Citrus");G.pets[key].needsName=false;unlock("named");closeModals();SFX.happy();toast("Say hello to "+G.pets[key].name+"! 💛");render();save();}
 
 /* ---------- Modal helpers ---------- */
-function openModal(id){$("#"+id).classList.add("open");}
-function closeModals(){$$(".modal").forEach(m=>{if(m.id==="nameModal"&&pet().needsName)return;m.classList.remove("open");});stopGame();flushCutscenes();}
+let modalZ=20;
+function openModal(id){const m=$("#"+id);if(!m)return;modalZ++;m.style.zIndex=modalZ;m.classList.add("open");}
+function closeModals(){$$(".modal").forEach(m=>{if(m.id==="nameModal"&&pet().needsName)return;m.classList.remove("open");m.style.zIndex="";});modalZ=20;stopGame();flushCutscenes();}
 
 /* ---------- Welcome back ---------- */
 function welcomeBack(snap,away){const p0=G.pets,lines=[];
