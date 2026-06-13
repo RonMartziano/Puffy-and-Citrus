@@ -669,6 +669,9 @@ const BGS={
   voidrealm:{nm:"The Void",cost:null,unlock:"ascend10",hint:"✨ 10 ascensions",sky:"#06030f",g1:"#2a1050",g2:"#0a0418",dark:true},
   rainbowland:{nm:"Rainbow Land",cost:null,unlock:"collectorall",hint:"Discover every form",sky:"#ffe3f2",g1:"#bfe9ff",g2:"#ffd6ec"},
   dragonlair:{nm:"Dragon's Lair",cost:null,unlock:"primal",hint:"Evolve a Primordial Puffer",sky:"#3a140a",g1:"#7a2a12",g2:"#1f0a06",dark:true},
+  olympus:{nm:"Mount Olympus",cost:null,unlock:"eternal_p",hint:"Evolve an Eternal Puffer",sky:"#dfe9ff",g1:"#cfe0ff",g2:"#b6c9f0"},
+  edenfield:{nm:"Garden of Eden",cost:null,unlock:"gaia",hint:"Evolve a Gaia Orange",sky:"#cdeffd",g1:"#bff0c0",g2:"#7fd89a"},
+  feasthall:{nm:"Ambrosia Hall",cost:null,unlock:"mythicchef",hint:"Cook a mythic dish",sky:"#3a2f1a",g1:"#caa24a",g2:"#6a4a1a",dark:true},
 };
 const MINIGAMES=[
   {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats, dodge the 💣!"},
@@ -760,7 +763,9 @@ const ACHIEVEMENTS=[
   {id:"fish50",e:"🎣",t:"Sea Master",d:"Catch 50 fish"},
   {id:"mythicchef",e:"🍶",t:"Ambrosia Chef",d:"Cook a mythic dish (Ambrosia / Supreme Elixir)"},
   {id:"eternal_p",e:"♾️",t:"Eternal",d:"Evolve an Eternal Puffer"},
-  {id:"gaia",e:"🌍",t:"Gaia",d:"Evolve a Gaia Orange"}
+  {id:"gaia",e:"🌍",t:"Gaia",d:"Evolve a Gaia Orange"},
+  {id:"titan",e:"🛡️",t:"Titan",d:"Evolve a Titan Puffer"},
+  {id:"cosmos",e:"🌠",t:"Cosmos",d:"Evolve a Cosmos Orange"}
 ];
 const FORM_TIERS=["UR","SSS","SS","S","A","B","C","D"];
 const FORMS={
@@ -786,7 +791,8 @@ const SPECIALS={
     {k:"primalpuffer",nm:"Primordial Puffer 🐲",reqText:"✨ 3 ascensions · Lv 15",req:p=>(G.ascensions||0)>=3&&p.level>=15},
     {k:"voidpuffer",nm:"Void Sovereign 🕳️",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
     {k:"krakenpuffer",nm:"Kraken Puffer 🐙",reqText:"20 expeditions · Lv 15",req:p=>(G.stats.expeditions||0)>=20&&p.level>=15},
-    {k:"eternalpuffer",nm:"Eternal Puffer ♾️",reqText:"♾️ Lv 25 · 200 feeds · 100 games · 5 ascensions",req:p=>p.level>=25&&(G.stats.feeds||0)>=200&&(G.stats.gamesPlayed||0)>=100&&(G.ascensions||0)>=5}
+    {k:"eternalpuffer",nm:"Eternal Puffer ♾️",reqText:"♾️ Lv 25 · 200 feeds · 100 games · 5 ascensions",req:p=>p.level>=25&&(G.stats.feeds||0)>=200&&(G.stats.gamesPlayed||0)>=100&&(G.ascensions||0)>=5},
+    {k:"titanpuffer",nm:"Titan Puffer 🛡️",reqText:"🛡️ Lv 30 · 20 dishes cooked · 20 perfect crops",req:p=>p.level>=30&&(G.stats.cooked||0)>=20&&(G.stats.perfectCrops||0)>=20}
   ],
   citrus:[
     {k:"mageorange",nm:"Mage Orange 🧙",reqText:"Lv 12 · 18 games",req:p=>p.level>=12&&(G.stats.gamesPlayed||0)>=18},
@@ -798,7 +804,8 @@ const SPECIALS={
     {k:"worldtree",nm:"Angelic Orange 😇",reqText:"✨ 3 ascensions · Lv 15",req:p=>(G.ascensions||0)>=3&&p.level>=15},
     {k:"celestialorange",nm:"Demonic Orange 😈",reqText:"✨ 10 ascensions · grade SSS+",req:p=>(G.ascensions||0)>=10&&FORM_TIERS.indexOf(careGrade(p))<=1},
     {k:"dragonorange",nm:"Dragon Orange 🐉",reqText:"50 harvests · bond 80% · Lv 15",req:p=>(G.stats.harvests||0)>=50&&G.bond>=80&&p.level>=15},
-    {k:"gaiaorange",nm:"Gaia Orange 🌍",reqText:"🌍 Lv 25 · 150 harvests · 50 fish · bond 100%",req:p=>p.level>=25&&(G.stats.harvests||0)>=150&&(G.stats.fishCaught||0)>=50&&G.bond>=100}
+    {k:"gaiaorange",nm:"Gaia Orange 🌍",reqText:"🌍 Lv 25 · 150 harvests · 50 fish · bond 100%",req:p=>p.level>=25&&(G.stats.harvests||0)>=150&&(G.stats.fishCaught||0)>=50&&G.bond>=100},
+    {k:"cosmosorange",nm:"Cosmos Orange 🌠",reqText:"🌠 Lv 30 · 30 wheel spins · 20 orders · 24 forms",req:p=>p.level>=30&&(G.stats.spins||0)>=30&&(G.stats.orders||0)>=20&&Object.keys(G.dex).length>=24}
   ]
 };
 const SHOP_FORMS={puffy:[{k:"piratepuffer",nm:"Pirate Puffer 🏴‍☠️",cost:340},{k:"lavapuffer",nm:"Lava Puffer 🌋",cost:460},{k:"mechapuffer",nm:"Mecha Puffer 🤖",cost:580},{k:"ninjapuffer",nm:"Ninja Puffer 🥷",cost:680},{k:"angelpuffer",nm:"Angel Puffer 👼",cost:760}],citrus:[{k:"kingorange",nm:"King Orange 👑",cost:340},{k:"galaxyorange",nm:"Galaxy Orange 🌌",cost:460},{k:"pumpkinorange",nm:"Pumpkin Orange 🎃",cost:580},{k:"phoenixorange",nm:"Phoenix Orange 🔥",cost:680},{k:"fairyorange",nm:"Fairy Orange 🧚",cost:760}]};
@@ -980,6 +987,15 @@ function spikeRing(col,n,inner,outer,w){w=w||0.12;let o="";for(let i=0;i<n;i++){
   o+=`<polygon points="${x1.toFixed(1)},${y1.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} ${xt.toFixed(1)},${yt.toFixed(1)}" fill="${col}"/>`;}return o;}
 function svgWrap(inner,vb){return `<svg viewBox="${vb||'-150 -150 300 300'}"><g>${inner}</g></svg>`;}
 function puffAdult(form,m){
+  if(form==="titanpuffer")return svgWrap(`
+    <ellipse cx="0" cy="124" rx="88" ry="15" fill="#00000026"/>
+    ${spikeRing("#8a939c",20,78,104,0.11)}
+    <circle cx="0" cy="0" r="84" fill="#9aa6b2"/>
+    <path d="M -68 36 A 84 84 0 0 0 68 36 A 74 58 0 0 1 -68 36 Z" fill="#cdd6df"/>
+    <path d="M -84 -22 A 84 84 0 0 1 84 -22 L 84 -8 L -84 -8 Z" fill="#5f6b78"/>
+    <rect x="-86" y="-12" width="172" height="7" rx="3" fill="#c0a030"/>
+    <path d="M 0 -122 l 11 28 -22 0 Z" fill="#ffd24a"/><circle cx="0" cy="-120" r="6" fill="#e05a3a"/>
+    ${eyes(m)}${mouth(m)}`,'-165 -176 330 348');
   if(form==="eternalpuffer")return svgWrap(`
     <ellipse cx="0" cy="124" rx="86" ry="15" fill="#00000022"/>
     <ellipse cx="0" cy="0" rx="128" ry="42" fill="none" stroke="#7fd0ff" stroke-width="2.5" opacity=".5" transform="rotate(20 0 0)"/>
@@ -1205,6 +1221,17 @@ function puffAdult(form,m){
     ${badMood(m)?moodFace(m,{lx:-30,rx:30,ey:6,er:9,mx:0,my:42,mw:16}):`<circle cx="-30" cy="6" r="9" fill="#2B3A42"/><circle cx="30" cy="6" r="9" fill="#2B3A42"/><path d="M -18 46 Q 0 36 18 46" fill="none" stroke="#2B3A42" stroke-width="4" stroke-linecap="round"/>`}`);
 }
 function citrusAdult(form,m){
+  if(form==="cosmosorange")return svgWrap(`
+    <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000026"/>
+    <ellipse cx="0" cy="6" rx="124" ry="38" fill="none" stroke="#b98cff" stroke-width="2.5" opacity=".5" transform="rotate(16 0 6)"/>
+    <path d="M 4 -82 Q 26 -100 44 -84 Q 26 -74 4 -64 Z" fill="#7CC24B"/>
+    <circle cx="0" cy="6" r="80" fill="#241a52"/>
+    <ellipse cx="-6" cy="0" rx="50" ry="32" fill="#7a4fd0" opacity=".5" transform="rotate(-20 -6 0)"/>
+    <ellipse cx="14" cy="16" rx="34" ry="20" fill="#c86fd6" opacity=".4" transform="rotate(20 14 16)"/>
+    <g fill="#fff"><circle cx="-42" cy="-30" r="2.4"/><circle cx="36" cy="-36" r="2"/><circle cx="52" cy="0" r="2.2"/><circle cx="-52" cy="14" r="2"/><circle cx="24" cy="34" r="2"/></g>
+    <path d="M -64 40 A 80 80 0 0 0 64 40 A 72 56 0 0 1 -64 40 Z" fill="#160f38"/>
+    <text x="-12" y="-88" font-size="20">🌠</text>
+    ${eyes(m)}<path d="M -14 24 Q 0 40 14 24" fill="none" stroke="#cdb8ff" stroke-width="4.5" stroke-linecap="round"/>`,'-170 -176 340 320');
   if(form==="gaiaorange")return svgWrap(`
     <ellipse cx="0" cy="120" rx="80" ry="15" fill="#00000022"/>
     <ellipse cx="0" cy="6" rx="118" ry="36" fill="none" stroke="#bfe0ee" stroke-width="2.5" opacity=".5" transform="rotate(-12 0 6)"/>
@@ -1574,7 +1601,10 @@ const SCENE_DECOR={
  empyrean:[["☁️",20,30,30,"fl"],["☁️",74,24,26,"fl"],["🌈",50,42,40,""],["🕊️",10,50,20,"drift"],["✨",60,20,14,"tw"],["⭐",36,18,14,"tw"]],
  voidrealm:[["🕳️",50,46,46,""],["🪐",78,26,28,"fl"],["⭐",18,30,12,"tw"],["⭐",60,40,12,"tw"],["✨",38,24,12,"tw"],["☄️",4,40,22,"drift"]],
  rainbowland:[["🌈",50,30,46,""],["☁️",18,22,26,"fl"],["☁️",78,26,24,"fl"],["✨",40,50,14,"tw"],["🦄",16,66,28,"drift"],["🌸",70,70,20,"sway"]],
- dragonlair:[["🌋",50,52,44,""],["🔥",22,68,24,"fl"],["🔥",76,68,24,"fl"],["💎",16,40,20,"tw"],["💎",82,44,18,"tw"],["🦴",40,82,18,""]]
+ dragonlair:[["🌋",50,52,44,""],["🔥",22,68,24,"fl"],["🔥",76,68,24,"fl"],["💎",16,40,20,"tw"],["💎",82,44,18,"tw"],["🦴",40,82,18,""]],
+ olympus:[["🏛️",50,52,46,""],["☁️",18,24,28,"fl"],["☁️",78,28,24,"fl"],["⚡",30,40,18,"tw"],["✨",66,36,14,"tw"],["🕊️",8,56,18,"drift"]],
+ edenfield:[["🌳",16,52,40,"sway"],["🌳",84,56,34,"sway"],["🍎",34,40,18,""],["🌸",64,46,18,"sway"],["🦋",6,34,18,"drift"],["💧",50,70,16,"fl"]],
+ feasthall:[["🍶",50,50,40,""],["🍇",18,62,24,""],["🍯",80,62,22,""],["🕯️",10,48,20,""],["🕯️",90,48,20,""],["✨",44,28,14,"tw"]]
 };
 function decorForScene(id){const list=SCENE_DECOR[id]||[];return list.map(d=>'<span class="dec '+(d[4]||"")+'" style="left:'+d[1]+'%;top:'+d[2]+'%;font-size:'+d[3]+'px">'+d[0]+'</span>').join("");}
 function applyScene(p){const bg=BGS[p.bg]||BGS.meadow;const sc=$("#scene");const night=(isNight()&&!bg.dark)||p.asleep;
@@ -1663,10 +1693,11 @@ function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";const disc=G.d
       c.innerHTML=`<div class="e">${e}</div><div class="nm">${nm}</div><div class="meta">${meta}</div><div class="price">🪙 ${price(cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyItem(id,price(cost));grid.appendChild(c);});}
   else if(shopTab==="gard"){grid.className="grid";const mp=G.garden.maxPlots||6;
-    let c=document.createElement("div");c.className="card"+(!G.garden.sprinkler&&G.coins<price(220)?" locked":"");c.innerHTML='<div class="e">🚿</div><div class="nm">Sprinkler</div><div class="meta">crops grow +30% faster</div>'+(G.garden.sprinkler?'<div class="own">✓ owned</div>':'<div class="price">🪙 '+price(220)+'</div>');c.onclick=()=>{if(G.garden.sprinkler){toast("Already installed ✓");return;}if(G.coins<price(220)){toast("Not enough coins!");return;}G.coins-=price(220);G.garden.sprinkler=true;SFX.coin();toast("🚿 Sprinkler installed!");renderShop();save();};grid.appendChild(c);
-    c=document.createElement("div");c.className="card"+(!G.garden.beehive&&G.coins<price(260)?" locked":"");c.innerHTML='<div class="e">🐝</div><div class="nm">Bee Hive</div><div class="meta">+50% coins from harvests</div>'+(G.garden.beehive?'<div class="own">✓ owned</div>':'<div class="price">🪙 '+price(260)+'</div>');c.onclick=()=>{if(G.garden.beehive){toast("Already buzzing ✓");return;}if(G.coins<price(260)){toast("Not enough coins!");return;}G.coins-=price(260);G.garden.beehive=true;SFX.coin();toast("🐝 Bee Hive added!");renderShop();save();};grid.appendChild(c);
-    c=document.createElement("div");c.className="card"+(!G.garden.greenhouse&&G.coins<price(360)?" locked":"");c.innerHTML='<div class="e">🏡</div><div class="nm">Greenhouse</div><div class="meta">+15% growth · more ⭐ perfect crops</div>'+(G.garden.greenhouse?'<div class="own">✓ owned</div>':'<div class="price">🪙 '+price(360)+'</div>');c.onclick=()=>{if(G.garden.greenhouse){toast("Already built ✓");return;}if(G.coins<price(360)){toast("Not enough coins!");return;}G.coins-=price(360);G.garden.greenhouse=true;SFX.coin();toast("🏡 Greenhouse built!");renderShop();save();};grid.appendChild(c);
-    c=document.createElement("div");c.className="card"+(mp<9&&G.coins<price(120)?" locked":"");c.innerHTML='<div class="e">🪴</div><div class="nm">Extra Plot</div><div class="meta">'+(mp>=9?"max — 9 plots":"+1 plot · "+mp+"/9")+'</div>'+(mp>=9?'<div class="own">✓ max</div>':'<div class="price">🪙 '+price(120)+'</div>');c.onclick=()=>{if(mp>=9){toast("Garden is full!");return;}if(G.coins<price(120)){toast("Not enough coins!");return;}G.coins-=price(120);G.garden.maxPlots=mp+1;G.garden.plots.push(null);SFX.coin();toast("🪴 New plot added!");renderShop();save();};grid.appendChild(c);
+    GARDEN_UPGRADES.forEach(function(u){const own=!!G.garden[u.id],lock=u.asc&&(G.ascensions||0)<u.asc;
+      const c=document.createElement("div");c.className="card"+(own?"":((lock||G.coins<price(u.cost))?" locked":""));
+      c.innerHTML='<div class="e">'+u.e+'</div><div class="nm">'+u.nm+'</div><div class="meta">'+u.meta+'</div>'+(own?'<div class="own">✓ owned</div>':(lock?'<div class="own" style="color:#8a8290">🔒 ✨'+u.asc+' ascensions</div>':'<div class="price">🪙 '+price(u.cost)+'</div>'));
+      c.onclick=function(){if(own){toast("Already have "+u.nm+" ✓");return;}if(lock){toast("🔒 Unlocks at "+u.asc+" ascensions ✨");return;}if(G.coins<price(u.cost)){toast("Not enough coins!");return;}G.coins-=price(u.cost);G.garden[u.id]=true;SFX.coin();toast(u.e+" "+u.nm+" added!");renderShop();save();};grid.appendChild(c);});
+    let c=document.createElement("div");c.className="card"+(mp<12&&G.coins<price(120)?" locked":"");c.innerHTML='<div class="e">🪴</div><div class="nm">Extra Plot</div><div class="meta">'+(mp>=12?"max — 12 plots":"+1 plot · "+mp+"/12")+'</div>'+(mp>=12?'<div class="own">✓ max</div>':'<div class="price">🪙 '+price(120)+'</div>');c.onclick=()=>{if(mp>=12){toast("Garden is full!");return;}if(G.coins<price(120)){toast("Not enough coins!");return;}G.coins-=price(120);G.garden.maxPlots=mp+1;G.garden.plots.push(null);SFX.coin();toast("🪴 New plot added!");renderShop();save();};grid.appendChild(c);
     c=document.createElement("div");c.className="card"+(G.coins<price(20)?" locked":"");c.innerHTML='<div class="e">🧪</div><div class="nm">Fertilizer</div><div class="meta">finish a crop instantly</div><div class="price">🪙 '+price(20)+'</div><div class="own">have '+(G.inv.fertilizer||0)+'</div>';c.onclick=()=>{if(G.coins<price(20)){toast("Not enough coins!");return;}G.coins-=price(20);G.inv.fertilizer=(G.inv.fertilizer||0)+1;SFX.coin();toast("Bought Fertilizer! 🧪");renderShop();save();};grid.appendChild(c);}
   else if(shopTab==="room"){grid.className="grid";FURNITURE.forEach(f=>{const lock=f.asc&&(G.ascensions||0)<f.asc;const c=document.createElement("div");c.className="card"+((lock||G.coins<price(f.cost))?" locked":"");c.innerHTML='<div class="e">'+f.e+'</div><div class="nm">'+f.nm+'</div>'+(lock?'<div class="own" style="color:#8a8290">🔒 ✨'+f.asc+' ascensions</div>':'<div class="price">🪙 '+price(f.cost)+'</div>')+'<div class="own">have '+((G.furnitureOwned||{})[f.id]||0)+'</div>';c.onclick=()=>{if(lock){toast("🔒 Unlocks at "+f.asc+" ascensions ✨");return;}buyFurniture(f.id,price(f.cost));};grid.appendChild(c);});const tip=document.createElement("div");tip.style.cssText="grid-column:1/-1;font-size:11px;color:var(--muted);text-align:center;margin-top:6px";tip.innerHTML="Place them via ⚙️ Menu → 🛋️ Decorate";grid.appendChild(tip);}
   else if(shopTab==="form"){grid.className="grid2";const p=pet();(SHOP_FORMS[p.type]||[]).forEach(f=>{const owned=(G.boughtForms[p.type]||[]).indexOf(f.k)>=0;
@@ -1827,7 +1858,7 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="discopuffer")unlock("disco");
   if(p.form==="sageorange")unlock("sage");
   if(p.form==="sunnyorange")unlock("sunny");
-  if(p.form==="krakenpuffer")unlock("kraken");if(p.form==="dragonorange")unlock("dragon_a");if(p.form==="eternalpuffer")unlock("eternal_p");if(p.form==="gaiaorange")unlock("gaia");
+  if(p.form==="krakenpuffer")unlock("kraken");if(p.form==="dragonorange")unlock("dragon_a");if(p.form==="eternalpuffer")unlock("eternal_p");if(p.form==="gaiaorange")unlock("gaia");if(p.form==="titanpuffer")unlock("titan");if(p.form==="cosmosorange")unlock("cosmos");
   if(p.form==="primalpuffer")unlock("primal");if(p.form==="voidpuffer")unlock("voidlord");if(p.form==="worldtree")unlock("worldtree_a");if(p.form==="celestialorange")unlock("celestial");
   if(Object.keys(G.dex).length>=8)unlock("explorer");if(Object.keys(G.dex).length>=16)unlock("collector16");if(Object.keys(G.dex).length>=(allForms("puffy").length+allForms("citrus").length))unlock("collectorall");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
@@ -1866,6 +1897,17 @@ function reelIn(){if(!fishState||!fishState.bit)return;clearTimeout(fishState.mi
 /* ---------- Garden ---------- */
 const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"mushroom",e:"🍄",t:80,nm:"Mushroom",cost:14},{crop:"grapes",e:"🍇",t:85,nm:"Grapes",cost:15},{crop:"chili",e:"🌶️",t:95,nm:"Chili",cost:16},{crop:"watermelon",e:"🍉",t:130,nm:"Watermelon",cost:22},{crop:"goldenapple",e:"🍏",t:200,nm:"Golden Apple",cost:40},{crop:"eggplant",e:"🍆",t:95,nm:"Eggplant",cost:15},{crop:"broccoli",e:"🥦",t:90,nm:"Broccoli",cost:14},{crop:"peach",e:"🍑",t:110,nm:"Peach",cost:18},{crop:"pineapple",e:"🍍",t:140,nm:"Pineapple",cost:24},{crop:"lemon",e:"🍋",t:100,nm:"Lemon",cost:16},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null},{crop:"dragonfruit",e:"🐉",t:220,nm:"Dragon Fruit",cost:50},{crop:"starfruit",e:"⭐",t:190,nm:"Star Fruit",cost:45},{crop:"moonberry",e:"🌙",t:240,nm:"Moonberry",cost:55},{crop:"sunpetal",e:"🏵️",t:1200,nm:"Sun Petal",cost:550,slow:true},{crop:"eternalseed",e:"🪷",t:900,nm:"Lotus of Ages",cost:400,slow:true},{crop:"ancientroot",e:"🪵",t:1500,nm:"Ancient Root",cost:750,slow:true}];
 let selSeed=null;
+const GARDEN_UPGRADES=[
+ {id:"sprinkler",e:"🚿",nm:"Sprinkler",meta:"crops grow +30% faster",cost:220},
+ {id:"beehive",e:"🐝",nm:"Bee Hive",meta:"+50% coins from harvests",cost:260},
+ {id:"greenhouse",e:"🏡",nm:"Greenhouse",meta:"+15% growth · more ⭐ perfect",cost:360},
+ {id:"raincatcher",e:"🌧️",nm:"Rain Catcher",meta:"new plants auto-watered",cost:350},
+ {id:"sunlamp",e:"💡",nm:"Sun Lamp",meta:"+20% faster growth",cost:550},
+ {id:"goldcan",e:"🏺",nm:"Golden Watering Can",meta:"+40% coins from harvests",cost:750},
+ {id:"compost",e:"♻️",nm:"Compost Bin",meta:"harvests may yield 🧪 fertilizer",cost:650},
+ {id:"luckyclover",e:"🍀",nm:"Lucky Clover",meta:"+20% perfect-crop chance",cost:900,asc:3},
+ {id:"prism",e:"🔮",nm:"Prism Trellis",meta:"chance to double yield again",cost:1200,asc:5}
+];
 const RECIPES=[
  {id:"fruitsalad",nm:"Fruit Salad",e:"🥗",need:{berry:2,strawberry:1,grapes:1}},
  {id:"veggiestew",nm:"Veggie Stew",e:"🍲",need:{carrot:2,tomato:1,broccoli:1}},
@@ -1898,7 +1940,7 @@ function renderCook(){let h='<div class="sub">Combine crops you grew into hearty
   h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));}
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function gardenLevel(){return Math.min(12,1+Math.floor((G.stats.harvests||0)/6));}
-function growTime(seed){if(seed.slow)return seed.t;return seed.t*(G.garden&&G.garden.sprinkler?0.7:1)*(G.garden&&G.garden.greenhouse?0.85:1)*(1-Math.min(0.33,(gardenLevel()-1)*0.03));}
+function growTime(seed){if(seed.slow)return seed.t;return seed.t*(G.garden&&G.garden.sprinkler?0.7:1)*(G.garden&&G.garden.greenhouse?0.85:1)*(G.garden&&G.garden.sunlamp?0.8:1)*(1-Math.min(0.33,(gardenLevel()-1)*0.03));}
 function gardenPetHop(){const g=$("#gardenPet");if(g){g.classList.remove("hop");void g.offsetWidth;g.classList.add("hop");}}
 function ensureGardenOrder(){const d=dayKey();if(G.garden.order&&G.garden.order.date===d)return;const pool=SEEDS.filter(s=>s.cost!=null);const sd=rnd(pool);const need=2+Math.floor(Math.random()*3);G.garden.order={crop:sd.crop,need:need,reward:need*Math.max(8,Math.round((sd.cost||10)*0.9)),date:d,done:false};}
 function renderGardenOrder(){const o=G.garden.order,el=$("#gardenOrder");if(!el)return;if(!o){el.innerHTML="";return;}
@@ -1933,8 +1975,8 @@ function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.fi
   if(!pl.watered){pl.watered=true;pl.plantedAt-=gt*1000*0.20;react("💧");gardenPetHop();SFX.clean();toast("💧 Watered "+seed.nm+" — grows faster!");renderGarden();save();return;}
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.fert=true;pl.plantedAt=now()-gt*1000-1;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer used — ready now!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
-function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:false};SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0));if(perf){coins=Math.round(coins*2.2);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));G.coins+=coins;addXP(pet(),perf?7:4);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
+function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
+function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;{var _evh=currentEvent();if(_evh&&_evh.harvest)amt*=_evh.harvest;}G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(4,Math.round((seed.cost||10)*0.6))*(G.garden.beehive?1.5:1)*(G.garden.goldcan?1.4:1)),bonus="";if(Math.random()<0.18){const bx=10+Math.floor(Math.random()*16);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0));if(perf){coins=Math.round(coins*2.2);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?7:4);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
@@ -1968,10 +2010,13 @@ const TRICKS=[
  {id:"timewarp",e:"⏳",nm:"Time Warp",anim:"spin",req:p=>(G.ascensions||0)>=5,hint:"✨ 5 ascensions"},
  {id:"galaxydance",e:"🌌",nm:"Galaxy Dance",anim:"dance",req:p=>(G.ascensions||0)>=8,hint:"✨ 8 ascensions"},
  {id:"shadowclone",e:"🌑",nm:"Shadow Clone",anim:"flip",req:p=>(G.ascensions||0)>=4,hint:"✨ 4 ascensions"},
- {id:"stardusttrick",e:"💫",nm:"Stardust",anim:"pulse",req:p=>(G.stats.harvests||0)>=50,hint:"50 harvests"}
+ {id:"stardusttrick",e:"💫",nm:"Stardust",anim:"pulse",req:p=>(G.stats.harvests||0)>=50,hint:"50 harvests"},
+ {id:"cosmicstorm",e:"🌠",nm:"Cosmic Storm",anim:"spin",req:p=>(G.ascensions||0)>=6,hint:"✨ 6 ascensions"},
+ {id:"eternitytrick",e:"♾️",nm:"Eternity",anim:"pulse",req:p=>!!(G.ach.eternal_p||G.ach.gaia),hint:"evolve a mythic form"},
+ {id:"megabloom",e:"🌺",nm:"Mega Bloom",anim:"sway",req:p=>(G.stats.harvests||0)>=100,hint:"100 harvests"}
 ];
 function openTricks(){if(!guard())return;renderTricks();openModal("trickModal");}
-const TRICK_FX={spin:["💫"],jump:["⬆️","✨"],roll:["💫","✨"],wave:["👋"],run:["💨","💨","🏃"],sparkle:["✨","⭐","✨"],dance:["🎶","🎵","🎶"],backflip:["💫","✨","💫"],fly:["☁️","💨","🕊️"],sing:["🎵","🎶","🎵"],kiss:["💗","💕","💗"],fireworks:["🎆","🎇","✨","🎆"],roar:["💢","🔊"],teleport:["✨","💫","✨"],moonwalk:["🎵","🕺"],handshake:["🤝","✨"],flex:["💪","✨"],skate:["🛼","💨"],magic:["🎩","✨","🐰"],rockstar:["🎸","🎶","🤘"],phoenixdance:["🔥","🕊️","✨"],timewarp:["⏳","✨","💫"],galaxydance:["🌌","⭐","✨"],shadowclone:["🌑","💨","🌑"],stardusttrick:["💫","⭐","✨"]};
+const TRICK_FX={spin:["💫"],jump:["⬆️","✨"],roll:["💫","✨"],wave:["👋"],run:["💨","💨","🏃"],sparkle:["✨","⭐","✨"],dance:["🎶","🎵","🎶"],backflip:["💫","✨","💫"],fly:["☁️","💨","🕊️"],sing:["🎵","🎶","🎵"],kiss:["💗","💕","💗"],fireworks:["🎆","🎇","✨","🎆"],roar:["💢","🔊"],teleport:["✨","💫","✨"],moonwalk:["🎵","🕺"],handshake:["🤝","✨"],flex:["💪","✨"],skate:["🛼","💨"],magic:["🎩","✨","🐰"],rockstar:["🎸","🎶","🤘"],phoenixdance:["🔥","🕊️","✨"],timewarp:["⏳","✨","💫"],galaxydance:["🌌","⭐","✨"],shadowclone:["🌑","💨","🌑"],stardusttrick:["💫","⭐","✨"],cosmicstorm:["🌠","💫","⭐"],eternitytrick:["♾️","✨","💫"],megabloom:["🌺","🌸","✨"]};
 function trickFx(id){const arr=TRICK_FX[id]||["✨"];arr.forEach((e,i)=>setTimeout(()=>react(e),i*140));}
 function trickCount(p,id){return (p.trickCt&&p.trickCt[id])||0;}
 function trickLevel(p,id){return Math.min(5,1+Math.floor(trickCount(p,id)/4));}
