@@ -1,65 +1,70 @@
-# Puffy & Citrus 🐡🍊 — a Tamaguchi game
+# Puffy & Citrus 🐡🍊
 
-A cute, full-featured virtual-pet game made with 💚 for Belle Pepper.
-Raise two pets — Puffy the pufferfish and Citrus the orange — feed them, play
-mini-games, keep them happy, and watch them evolve into very different grown-up
-forms depending on how well you care for them.
+A cute browser-based virtual pet game. Raise two pets — Puffy the pufferfish and
+Citrus the orange — feed them, play, and watch them grow into one of six adult
+forms each, depending on how well you care for them.
 
-The whole game is a single file: **`index.html`** (no build step, runs anywhere).
+The whole game is a single file, `index.html` — no build step, runs anywhere.
+Made with 💚 for Belle Pepper.
 
 ## Features
 
-- Two pets with independent stats: hunger, happiness, energy, hygiene, health.
-- Branching evolution: egg → baby → child → teen → one of **four** adult forms
-  per pet, decided by your care grade (S/A/C/D). Great care → a Star Puffer or a
-  Blossom Tree; neglect → a Blobfish or a Sour Lemon.
-- Name each pet on hatch, and celebrate a birthday every in-game day.
-- Levels & XP, daily quests, and daily login bonuses.
-- Three mini-games: Bubble Snack, Memory Match, and Whack-a-Snack.
-- A shop with foods, medicine, soap, buyable **scenes** (backgrounds) and **hats**.
-- Seasons (auto from the real date), changing weather, and random events.
-- Sweet notes from Belle, a Bell Pepper favorite food, a Pepper Hat, and a
-  "Belle's Kitchen" scene. 💌
-- Sound effects, sickness & medicine, poop to clean, and a day/night cycle.
-- Saves automatically (browser `localStorage`; device storage in the phone app)
-  and catches up your pets' stats for the time you were away.
+- Two pets with their own stats: hunger, happiness, energy, hygiene, health.
+- Branching evolution (egg → baby → child → teen → adult) with **six** adult
+  forms per pet based on your care grade — from Cosmic Puffer / Golden Orchard
+  down to Blobfish / Sour Lemon.
+- Story cutscenes: an intro and an animated reveal on every evolution.
+- Three mini-games, fishing, a garden, a daily prize wheel, and tricks.
+- Friendship bond between the pets, daily quests, levels, achievements, a
+  sticker album, and a collection log of every form you've discovered.
+- Shop with foods, scenes, and hats. Seasons, weather, and day/night.
+- Optional cloud saves + login (Supabase) so progress follows you anywhere.
 
-## Play in a browser
+## Play
 
-Double-click `index.html`. That's it.
+Open `index.html` in any browser. Progress saves automatically.
 
-## Play on your phone (Expo Go, before hosting)
+On a phone: host it (below) and "Add to Home Screen", or run it through Expo Go —
+see [`expo-app/`](expo-app/README.md).
 
-See [`expo-app/README.md`](expo-app/README.md). Short version:
+## Deploy to GitHub Pages
 
 ```bash
-cd expo-app
-npm install
-npx expo install react-native-webview @react-native-async-storage/async-storage
-npx expo start    # scan the QR code with the Expo Go app
-```
-
-## Host on GitHub Pages
-
-A workflow is already included at `.github/workflows/deploy.yml`. It publishes
-the repo automatically on every push to `main`, serving `index.html` at your
-Pages URL.
-
-### First-time repo setup
-
-```bash
-cd <this Tamaguchi folder>
 git init
 git add .
-git commit -m "Puffy & Citrus tamaguchi game"
+git commit -m "Puffy & Citrus"
 git branch -M main
-git remote add origin https://github.com/<your-username>/<your-repo>.git
+git remote add origin https://github.com/<you>/<repo>.git
 git push -u origin main
 ```
 
-Then, on GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-The next push (or re-run the action) deploys it. Your game will be live at
-`https://<your-username>.github.io/<your-repo>/`.
+Then on GitHub: **Settings → Pages → Source: GitHub Actions**. The included
+workflow deploys on every push to `main`; your game goes live at
+`https://<you>.github.io/<repo>/`.
 
-> The `expo-app/` folder is harmless to host but isn't needed for the website —
-> GitHub Pages just serves `index.html`.
+## Cloud saves (optional)
+
+Skip this and the game still works — it just saves locally. To sync across
+devices with a username/password login:
+
+1. **Database** — in Supabase: SQL Editor → run [`supabase_setup.sql`](supabase_setup.sql).
+2. **Auth** — Authentication → Email: turn **off** "Confirm email".
+3. **Keys** — add two repo secrets (Settings → Secrets and variables → Actions):
+
+   | Secret | Where to find it |
+   |---|---|
+   | `SUPABASE_URL` | Project Settings → API → Project URL |
+   | `SUPABASE_ANON_KEY` | Project Settings → API → `anon` `public` key |
+
+The anon key is safe to expose in a browser — Row Level Security protects each
+player's data. For local testing, copy `config.example.js` to `config.js`.
+
+## Project structure
+
+```
+index.html            the game
+config.example.js     template for local Supabase keys
+supabase_setup.sql    database + security setup
+expo-app/             optional Expo Go wrapper for phones
+.github/workflows/    GitHub Pages deploy
+```

@@ -7,6 +7,10 @@ import GAME_HTML from './gameHtml';
 
 const SAVE_KEY = 'puffyCitrus_v2';
 
+// Optional: fill these in to enable cloud sync + login inside the phone app too.
+// (Same values as your GitHub secrets. Leave blank to keep the app local-only.)
+const SUPABASE = { url: '', anonKey: '' };
+
 export default function App() {
   const [saved, setSaved] = useState(null); // null = still loading
   const lastWrite = useRef('');
@@ -32,9 +36,10 @@ export default function App() {
   }
 
   // Inject the saved game state so the web game can pick it up on boot
-  const inject = saved
-    ? `window.__INITIAL_SAVE__ = ${JSON.stringify(saved)}; true;`
-    : 'true;';
+  const inject =
+    (saved ? `window.__INITIAL_SAVE__ = ${JSON.stringify(saved)};` : '') +
+    (SUPABASE.url ? `window.__SUPABASE__ = ${JSON.stringify(SUPABASE)};` : '') +
+    'true;';
 
   // The game posts its full state on every save; we persist it to the device
   const onMessage = (e) => {
