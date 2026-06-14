@@ -17,3 +17,11 @@ expo-app/supabase.config.js
 npm-debug.*
 .env
 synctest_big.txt
+
+# dev / preview artifacts (design mockups, not part of the game)
+_*.png
+pet_*.png
+hats_*.png
+habitat_art_preview*.png
+mythic_detailed_check.png
+mythic_forms_gallery.html
