@@ -57,7 +57,7 @@
   .cust.head{top:2px;} .cust.head.hatv svg{width:100px;height:76px;} .cust.head.emo{top:6px;font-size:46px;}
   .cust.face{top:60px;} .cust.face.hatv svg{width:92px;height:66px;} .cust.face.emo{top:88px;font-size:24px;}
   .cust.neck{top:120px;} .cust.neck.hatv svg{width:110px;height:50px;} .cust.neck.emo{top:128px;font-size:28px;}
-  .cust.back{top:44px;z-index:2;} .cust.back.hatv svg{width:188px;height:150px;} .cust.back.emo{top:56px;font-size:52px;z-index:2;}
+  .cust.back{top:18px;z-index:2;width:264px;} .cust.back.hatv svg{width:264px;height:200px;} .cust.back.emo{top:56px;font-size:60px;z-index:2;}
   .cust.hand{top:108px;left:82%;} .cust.hand.hatv svg{width:48px;height:38px;} .cust.hand.emo{top:112px;left:82%;font-size:24px;}
   .react{position:absolute;font-size:26px;pointer-events:none;animation:floatUp 1.1s ease-out forwards;z-index:5;}
   @keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.6);}30%{opacity:1;}100%{opacity:0;transform:translateY(-46px) scale(1.2);}}
@@ -1937,20 +1937,20 @@ function moodOf(p){if(p.dead)return "dead";if(p.asleep)return "sleeping";if(p.si
   if(p.energy<16)return "tired";
   if(avg>72&&p.happy>60)return "happy";return "neutral";}
 function hatSVG(id){var V='<svg viewBox="0 0 60 44" xmlns="http://www.w3.org/2000/svg">',E='</svg>';var H={
- shades:'<rect x="4" y="17" width="18" height="11" rx="5" fill="#222"/><rect x="38" y="17" width="18" height="11" rx="5" fill="#222"/><rect x="22" y="20" width="16" height="3" fill="#222"/><path d="M4 19 H-2 M56 19 H62" stroke="#222" stroke-width="3"/>',
- divermask:'<path d="M2 22 H8 M52 22 H58" stroke="#3a6a8a" stroke-width="3"/><rect x="7" y="15" width="46" height="15" rx="7.5" fill="#bfe6ff" opacity="0.38" stroke="#3a6a8a" stroke-width="2.6"/><line x1="30" y1="15" x2="30" y2="30" stroke="#3a6a8a" stroke-width="1.6" opacity="0.6"/>',
- goggles:'<circle cx="13" cy="22" r="9.5" fill="#bfe6ff" opacity="0.42" stroke="#446" stroke-width="2.6"/><circle cx="47" cy="22" r="9.5" fill="#bfe6ff" opacity="0.42" stroke="#446" stroke-width="2.6"/><path d="M22.5 22 H37.5 M3 22 H-3 M57 22 H63" stroke="#446" stroke-width="2.6"/>',
+ shades:'<rect x="4" y="17" width="18" height="11" rx="5" fill="#222" opacity="0.55"/><rect x="38" y="17" width="18" height="11" rx="5" fill="#222" opacity="0.55"/><rect x="22" y="21" width="16" height="2.5" fill="#222"/><path d="M4 19 H-2 M56 19 H62" stroke="#222" stroke-width="3"/>',
+ divermask:'<path d="M2 22 H8 M52 22 H58" stroke="#3a6a8a" stroke-width="3"/><rect x="7" y="15" width="46" height="15" rx="7.5" fill="#bfe6ff" opacity="0.18" stroke="#3a6a8a" stroke-width="2.4"/><line x1="30" y1="15" x2="30" y2="30" stroke="#3a6a8a" stroke-width="1.4" opacity="0.45"/>',
+ goggles:'<circle cx="13" cy="22" r="9.5" fill="#bfe6ff" opacity="0.2" stroke="#3a5a78" stroke-width="2.4"/><circle cx="47" cy="22" r="9.5" fill="#bfe6ff" opacity="0.2" stroke="#3a5a78" stroke-width="2.4"/><path d="M22.5 22 H37.5 M3 22 H-3 M57 22 H63" stroke="#3a5a78" stroke-width="2.4"/>',
  glasses:'<circle cx="13" cy="22" r="9" fill="none" stroke="#5a4a3a" stroke-width="2.6"/><circle cx="47" cy="22" r="9" fill="none" stroke="#5a4a3a" stroke-width="2.6"/><path d="M22 22 H38 M4 22 H-2 M56 22 H62" stroke="#5a4a3a" stroke-width="2.2"/>',
  monocle:'<circle cx="45" cy="22" r="9.5" fill="none" stroke="#caa24a" stroke-width="3"/><path d="M45 31 q3 9 -4 13" stroke="#caa24a" stroke-width="2" fill="none"/>',
  scarf:'<path d="M12 16 q18 9 36 0 v7 q-18 9 -36 0 z" fill="#e0533a"/><path d="M40 22 l9 17 l-9 3 z" fill="#c8421f"/>',
  bowtie:'<path d="M30 22 L13 14 L13 30 Z" fill="#c0392b"/><path d="M30 22 L47 14 L47 30 Z" fill="#c0392b"/><rect x="26" y="17" width="8" height="10" rx="2" fill="#9a2a1a"/>',
  necklace:'<path d="M10 13 Q30 37 50 13" fill="none" stroke="#ffd24a" stroke-width="3"/><circle cx="30" cy="31" r="4.5" fill="#5fb6ff"/>',
- cape:'<path d="M16 14 Q30 8 44 14 L54 52 Q30 44 6 52 Z" fill="#7a2a8a"/><path d="M16 14 Q30 20 44 14 L40 22 Q30 26 20 22 Z" fill="#9a3aa8"/>',
+ cape:'<path d="M14 9 Q30 4 46 9 L55 42 Q30 35 5 42 Z" fill="#7a2a8a"/><path d="M14 9 Q30 15 46 9 L42 17 Q30 21 18 17 Z" fill="#9a3aa8"/>',
  trident:'<rect x="28" y="8" width="4" height="36" fill="#caa24a"/><path d="M20 12 V0 M30 12 V-3 M40 12 V0" stroke="#caa24a" stroke-width="3.5"/><path d="M20 11 H40" stroke="#caa24a" stroke-width="3.5"/>',
  auroracrown:'<path d="M10 40 L10 17 L20 28 L30 11 L40 28 L50 17 L50 40 Z" fill="#9b7bff" stroke="#7a5ad0" stroke-width="1.2"><animate attributeName="fill" values="#9b7bff;#5fffc0;#ff9ed6;#9b7bff" dur="4s" repeatCount="indefinite"/></path><circle cx="30" cy="22" r="3.2" fill="#fff"/>',
- galaxyvisor:'<rect x="3" y="17" width="54" height="11" rx="5.5" fill="#15103a" opacity="0.85"/><g fill="#fff"><circle cx="15" cy="22" r="1.3"><animate attributeName="opacity" values="0;1;0" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="30" cy="21" r="1.3"><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="45" cy="23" r="1.3"><animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite"/></circle></g>',
+ galaxyvisor:'<rect x="3" y="17" width="54" height="11" rx="5.5" fill="#2a2466" opacity="0.5"/><g fill="#fff"><circle cx="15" cy="22" r="1.3"><animate attributeName="opacity" values="0;1;0" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="30" cy="21" r="1.3"><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="45" cy="23" r="1.3"><animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite"/></circle></g>',
  phoenixscarf:'<path d="M12 16 q18 9 36 0 v7 q-18 9 -36 0 z" fill="#ff7a2a"><animate attributeName="fill" values="#ff7a2a;#ffd24a;#ff4a2a;#ff7a2a" dur="1.4s" repeatCount="indefinite"/></path><path d="M40 22 l9 17 l-9 3 z" fill="#ff4a2a"/>',
- angelwings:'<g><animateTransform attributeName="transform" type="scale" values="1 1;1.06 0.96;1 1" dur="2.2s" repeatCount="indefinite" additive="sum"/><path d="M30 30 Q4 4 0 40 Q6 30 15 33 Q5 40 13 47 Q21 38 30 37 Z" fill="#ffffff" stroke="#e6e6f0" stroke-width="1"/><path d="M30 30 Q56 4 60 40 Q54 30 45 33 Q55 40 47 47 Q39 38 30 37 Z" fill="#ffffff" stroke="#e6e6f0" stroke-width="1"/></g>',
+ angelwings:'<g><animateTransform attributeName="transform" type="rotate" values="-3 30 32;3 30 32;-3 30 32" dur="3s" repeatCount="indefinite"/><path d="M27 32 C 12 30 3 20 3 6 C 16 9 24 18 28 28 C 21 25 13 27 8 31 C 17 30 23 31 27 35 Z" fill="#f4f7ff" stroke="#9fb0e0" stroke-width="1.4"/><path d="M33 32 C 48 30 57 20 57 6 C 44 9 36 18 32 28 C 39 25 47 27 52 31 C 43 30 37 31 33 35 Z" fill="#f4f7ff" stroke="#9fb0e0" stroke-width="1.4"/></g>',
  bow:'<g transform="translate(30,30)"><path d="M0 0 L-22 -11 L-22 11 Z" fill="#ff7eb6"/><path d="M0 0 L22 -11 L22 11 Z" fill="#ff7eb6"/><path d="M0 0 L-22 -11 L-12 0 Z" fill="#ff5b9a" opacity=".5"/><path d="M0 0 L22 -11 L12 0 Z" fill="#ff5b9a" opacity=".5"/><circle r="6" fill="#e85a9a"/></g>',
  party:'<polygon points="30,3 17,40 43,40" fill="#ffd24a"/><polygon points="30,3 25,21 35,21" fill="#ff7eb6"/><polygon points="22,40 30,28 38,40" fill="#5fb6ff" opacity=".8"/><circle cx="30" cy="3" r="4" fill="#ff5b8a"/>',
  crown:'<path d="M10 40 L10 17 L20 28 L30 11 L40 28 L50 17 L50 40 Z" fill="#ffd24a" stroke="#e0a800" stroke-width="1.5"/><circle cx="30" cy="21" r="3.2" fill="#ff5b8a"/><circle cx="16" cy="26" r="2.4" fill="#5fb6ff"/><circle cx="44" cy="26" r="2.4" fill="#7CC24B"/>',
@@ -3338,6 +3338,7 @@ async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
     const remote=data&&data.data;
     const localTs=cloudFirst?launchTs:(G.updatedAt||0);
     if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=localTs)){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();syncUnlocks();if(!silent)toast("Progress loaded ☁️");}
+    else if(preferRemote){G=freshGame();cloudLoading=false;await cloudSaveNow();if(!silent)toast("Welcome! Fresh cloud save created ☁️");}
     else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud synced ☁️");}
   }catch(e){if(!silent)toast("Cloud offline — playing locally.");}
   cloudLoading=false;cloudFirst=false;render();setSyncStatus("saved");
@@ -3352,7 +3353,7 @@ function setSyncStatus(st){const el=$("#syncStatus");if(!el)return;
   if(st==="offline"){el.style.display="flex";el.className="syncpill warn";el.innerHTML="⚠️ Offline — will retry";el.onclick=function(){cloudDirty=true;cloudSaveNow();};return;}
   el.style.display="none";}
 setInterval(function(){if(sb&&cloudUser&&cloudDirty&&!cloudLoading&&!cloudTimer)cloudSaveNow();},12000);
-async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}cloudUser=null;cloudUsername=null;closeModals();showAuth();}
+async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}cloudUser=null;cloudUsername=null;cloudDirty=false;if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}try{localStorage.removeItem(SAVE_KEY);}catch(e){}G=freshGame();cloudFirst=true;launchTs=0;render();closeModals();showAuth();setSyncStatus();}
 /* ---------- Friends: visiting + gifting ---------- */
 function unameFromUser(u){return (((u&&u.email)||"").split("@")[0])||null;}
 function profileSnapshot(){const mk=p=>({type:p.type,name:p.name||"",form:p.form||null,stage:p.stage,bg:p.bg,hat:p.hat,skin:p.skin||null,gen:p.gen||1,trait:p.trait||null,level:p.level||1});
@@ -3365,15 +3366,20 @@ async function openDashboard(){openModal("dashModal");var body=$("#dashBody");if
     var rows=((r&&r.data)||[]).map(function(x){return {u:x.username,d:x.data||{}};}).filter(function(x){return (x.d.asc||0)>=3;});
     rows.forEach(function(x){x.score=x.d.score||((x.d.level||1)+(x.d.dex||0)*3+(x.d.asc||0)*12+(x.d.ach||0)*2);});
     rows.sort(function(a,b){return b.score-a.score;});rows=rows.slice(0,30);
-    var me=cloudUsername,md=profileSnapshot();
+    var me=cloudUsername,md=profileSnapshot();var myRank=rows.findIndex(function(x){return x.u===me;});
     var h='<div class="sub">🏆 Top legends — pets with <b>3+ ascensions</b></div>';
     if((G.ascensions||0)<3)h+='<div style="background:#fff4e0;border:1px solid #ffd99a;border-radius:10px;padding:8px 10px;font-size:11px;margin-bottom:8px">🔒 You have <b>'+(G.ascensions||0)+'</b> ascension'+((G.ascensions||0)===1?"":"s")+'. Reach <b>3</b> to join the board! ✨</div>';
     if(!rows.length)h+='<div style="text-align:center;padding:16px;color:var(--muted)">No legends yet — be the first to ascend 3 times! 🏆</div>';
-    else{h+='<div style="display:grid;grid-template-columns:auto 1fr auto;gap:5px 8px;font-size:12px;align-items:center">';
-      rows.forEach(function(x,i){var mine=x.u===me;var medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1)+".";
-        h+='<div style="font-weight:800;text-align:center;'+(mine?"color:#e0533a":"")+'">'+medal+'</div><div style="font-weight:'+(mine?"800":"600")+';'+(mine?"color:#e0533a":"")+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(x.u)+(mine?" (you)":"")+'</div><div style="text-align:right;color:var(--muted);font-size:10px">Lv '+(x.d.level||1)+' · 🧬'+(x.d.dex||0)+' · ✨'+(x.d.asc||0)+'</div>';});
-      h+='</div>';}
-    h+='<div class="menuhd">📊 Your stats</div><div style="font-size:12px;line-height:1.9">⭐ Max level: <b>'+md.level+'</b><br>🧬 Forms discovered: <b>'+md.dex+'</b><br>🏆 Achievements: <b>'+md.ach+'</b><br>✨ Ascensions: <b>'+md.asc+'</b><br>🎣 Fish caught: <b>'+md.fish+'</b> · 🧺 Harvests: <b>'+md.harv+'</b> · 🍽️ Cooked: <b>'+md.cooked+'</b><br>🌟 Legend score: <b>'+md.score+'</b></div>';
+    else{h+='<div style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;margin:4px 0">';
+      rows.forEach(function(x,i){var mine=x.u===me;var medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
+        var bg=mine?"#fff0ea":(i<3?"#fff8e8":"#f4f1ea");var bd=mine?"#ffb59a":(i<3?"#ffe0a0":"#e6e0d4");
+        h+='<div style="display:flex;align-items:center;gap:10px;background:'+bg+';border:1px solid '+bd+';border-radius:12px;padding:8px 11px">'
+          +'<div style="min-width:30px;text-align:center;font-size:'+(i<3?"20px":"14px")+';font-weight:800;color:'+(mine?"#e0533a":"#8a7a5a")+'">'+medal+'</div>'
+          +'<div style="flex:1;min-width:0"><div style="font-weight:800;font-size:13px;'+(mine?"color:#e0533a":"")+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(x.u)+(mine?" (you)":"")+'</div><div style="font-size:10px;color:var(--muted)">Lv '+(x.d.level||1)+' · 🧬 '+(x.d.dex||0)+' forms · ✨ '+(x.d.asc||0)+'</div></div>'
+          +'<div style="text-align:right;font-weight:800;font-size:13px;color:#b07415">'+(x.score||0)+'</div></div>';});
+      h+='</div>';
+      if(myRank<0&&(G.ascensions||0)>=3)h+='<div style="text-align:center;font-size:11px;color:var(--muted);margin-top:2px">You'+"'"+'re ranked just outside the top — keep climbing! 🌟</div>';}
+    h+='<div class="menuhd">📊 Your stats</div><div style="font-size:12px;line-height:1.9;background:#f7f4ec;border-radius:12px;padding:10px 12px">⭐ Max level: <b>'+md.level+'</b><br>🧬 Forms discovered: <b>'+md.dex+'</b> · 🏆 Achievements: <b>'+md.ach+'</b><br>✨ Ascensions: <b>'+md.asc+'</b> · 🌟 Legend score: <b>'+md.score+'</b><br>🎣 Fish: <b>'+md.fish+'</b> · 🧺 Harvests: <b>'+md.harv+'</b> · 🍽️ Cooked: <b>'+md.cooked+'</b></div>';
     body.innerHTML=h;
   }catch(e){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:18px">Couldn\'t load the board right now — try again later.</div>';}}
 async function publishProfile(){if(!sb||!cloudUser||!cloudUsername)return;try{await sb.from("profiles").upsert({user_id:cloudUser.id,username:cloudUsername,data:profileSnapshot(),updated_at:new Date().toISOString()});}catch(e){}}
