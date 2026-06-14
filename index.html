@@ -343,6 +343,23 @@
   .modal{background:#00000055;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px);}
   .iconbtn{transition:transform .08s,background .15s;border-radius:10px;}
   .stagebadge{box-shadow:0 3px 10px rgba(90,70,40,.18);backdrop-filter:blur(2px);}
+  .sktree{display:flex;flex-direction:column;gap:0;}
+  .sknode{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #f0e6d6;border-radius:14px;padding:8px 10px;cursor:pointer;box-shadow:var(--cardsh);text-align:left;}
+  .sknode .ske{font-size:24px;width:30px;text-align:center;}
+  .sknode .skb{flex:1;}
+  .sknode .skn{font-family:var(--display);font-weight:800;font-size:13px;}
+  .sknode .skd{font-size:10px;color:var(--muted);line-height:1.3;}
+  .sknode .skl{font-size:10px;font-weight:800;color:#b07415;margin-top:1px;}
+  .sknode.maxed{border-color:#9ad36b;background:#f4fce9;} .sknode.maxed .skl{color:#3b8b1f;}
+  .sknode.can{border-color:var(--orange);box-shadow:0 0 0 2px #ffe2b0,var(--cardsh);}
+  .sknode.lock{opacity:.55;filter:grayscale(.3);} .sknode.lock .skl{color:#8a8290;}
+  .sklink{width:3px;height:13px;background:#e7dcc9;margin-left:24px;}
+  .sklink.on{background:#9ad36b;}
+  .bossbar{height:16px;background:#3a2030;border-radius:9px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.4);}
+  .bossbar>i{display:block;height:100%;background:linear-gradient(90deg,#ff7a4a,#ff2a4a);transition:width .35s;box-shadow:inset 0 2px 0 rgba(255,255,255,.3);}
+  @keyframes bshake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px) rotate(-2deg)}60%{transform:translateX(7px) rotate(2deg)}}
+  #bossArt.shake{animation:bshake .32s;}
+  .tfish{position:absolute;cursor:pointer;user-select:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -509,6 +526,24 @@
     <div class="closeRow"><h2>🎉 Fun &amp; Games</h2><button class="iconbtn" data-close>✕</button></div>
     <div class="sub" id="funSub"></div>
     <div class="grid" id="funList"></div>
+  </div></div>
+
+  <div class="modal" id="bossModal"><div class="sheet">
+    <div class="closeRow"><h2 id="bossTitle">⚔️ Boss Raid</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub" id="bossSub"></div>
+    <div id="bossArt" style="text-align:center"></div>
+    <div style="margin:8px 0"><div class="bossbar"><i id="bossHp"></i></div><div id="bossHpTxt" style="text-align:center;font-size:11px;font-weight:800;color:#b03a3a;margin-top:4px"></div></div>
+    <div id="bossMsg" style="text-align:center;font-size:13px;font-weight:700;color:var(--ink);min-height:18px"></div>
+    <button class="btn orange" id="bossAtk">⚔️ Attack!</button>
+    <div id="bossInfo" style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6"></div>
+  </div></div>
+
+  <div class="modal" id="tourneyModal"><div class="sheet">
+    <div class="closeRow"><h2>🏆 Fishing Tournament</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub" id="tourneySub"></div>
+    <div id="tourneyArea" style="position:relative;height:240px;background:radial-gradient(120% 100% at 50% 0,#bdeefc,#dff6ff);border-radius:16px;overflow:hidden;display:none"></div>
+    <div id="tourneyBoard"></div>
+    <button class="btn" id="tourneyBtn">Start tournament 🎣</button>
   </div></div>
 
   <div class="modal" id="hubModal"><div class="sheet">
@@ -933,6 +968,10 @@ const ACHIEVEMENTS=[
   {id:"gachawhale",e:"🪙",t:"High Roller",d:"Roll the capsule 100 times"},
   {id:"jackpot",e:"🌈",t:"JACKPOT!",d:"Hit a 1% legendary capsule"},
   {id:"fusionist",e:"✨",t:"Fusionist",d:"Fuse two forms in the Fusion Lab"},
+  {id:"bossslayer",e:"⚔️",t:"Boss Slayer",d:"Defeat a weekly raid boss"},
+  {id:"bosslord",e:"🛡️",t:"Raid Lord",d:"Defeat 10 weekly raid bosses"},
+  {id:"tourneyjoin",e:"🎣",t:"Contender",d:"Enter a fishing tournament"},
+  {id:"tourneychamp",e:"🏆",t:"Champion Angler",d:"Finish #1 in a fishing tournament"},
   {id:"royal",e:"👑",t:"Royalty",d:"Evolve a Royal Puffer (gacha jackpot)"},
   {id:"infinity",e:"♾️",t:"Infinite",d:"Evolve an Infinity Orange (40 forms)"},
   {id:"form_corsairpuffer",e:"⚓",t:"Corsair",d:"Evolve a Corsair Puffer"},
@@ -1154,6 +1193,7 @@ function migrate(s){const f=freshGame();const g=Object.assign(f,s);
   g.dex=g.dex||{};for(const _lk in (g.legacy||{}))(g.legacy[_lk]||[]).forEach(function(ff){if(ff)g.dex[ff]=true;});["puffy","citrus"].forEach(function(_pk){if(g.pets[_pk]&&g.pets[_pk].form)g.dex[g.pets[_pk].form]=true;});g.ascensions=Math.max(g.ascensions||0,((g.pets.puffy.gen||1)-1)+((g.pets.citrus.gen||1)-1));
   ["puffy","citrus"].forEach(function(_k){if(g.pets[_k]&&g.pets[_k].dead){g.pets[_k].dead=false;g.pets[_k].health=Math.max(40,g.pets[_k].health||0);}});
   if(g.fusionReg)delete g.fusionReg;
+  if(g.formFusions)for(var _fk in g.formFusions){if(!g.formFusions[_fk].perk)g.formFusions[_fk].perk="coin";}
   ["puffy","citrus"].forEach(function(_k){var pp=g.pets[_k];if(pp){if(pp.hat&&String(pp.hat).slice(0,3)==="fz_")pp.hat="none";if(pp.skin&&String(pp.skin).slice(0,3)==="fz_"&&!(g.formFusions&&g.formFusions[pp.skin]))pp.skin=null;}});
   return g;}
 function save(){G.updatedAt=now();const data=JSON.stringify(G);
@@ -1217,19 +1257,25 @@ const REVEAL_TIP={
 };
 function checkReveals(){if(!G.revealed)G.revealed={};for(const id in REVEALS){if(featUnlocked(id)&&!G.revealed[id]){G.revealed[id]=true;SFX.coin();if(REVEAL_TIP[id]&&typeof queueCutscene==="function"){queueCutscene([{art:REVEALS[id][0],big:REVEALS[id][1]+" unlocked!",text:REVEAL_TIP[id],bg:CS_TUT_BG}]);}else toast("🎉 New unlocked: "+REVEALS[id][0]+" "+REVEALS[id][1]+"!");}}}
 const PRESTIGE_UPGRADES=[
- {id:"coinboost",e:"🪙",nm:"Golden Touch",desc:"+5% coins per level",max:10,cost:1},
- {id:"xpboost",e:"⭐",nm:"Quick Learner",desc:"+5% XP per level",max:10,cost:1},
- {id:"growth",e:"🌱",nm:"Green Fingers",desc:"+5% garden growth speed per level",max:6,cost:1},
- {id:"tough",e:"💪",nm:"Hardy Spirit",desc:"-8% stat decay per level",max:5,cost:1},
- {id:"luck",e:"🍀",nm:"Lucky Star",desc:"+3% perfect-crop chance per level",max:5,cost:1},
- {id:"headstart",e:"🚀",nm:"Head Start",desc:"new generations begin +2 levels per level",max:5,cost:2}
+ {id:"coinboost",e:"🪙",nm:"Golden Touch",desc:"+5% coins per level",max:10,cost:1,branch:"Fortune",dep:null},
+ {id:"xpboost",e:"⭐",nm:"Quick Learner",desc:"+5% XP per level",max:10,cost:1,branch:"Fortune",dep:"coinboost"},
+ {id:"headstart",e:"🚀",nm:"Head Start",desc:"new gens begin +2 levels per level",max:5,cost:2,branch:"Fortune",dep:"xpboost"},
+ {id:"growth",e:"🌱",nm:"Green Fingers",desc:"+5% garden growth per level",max:6,cost:1,branch:"Nature",dep:null},
+ {id:"luck",e:"🍀",nm:"Lucky Star",desc:"+3% perfect-crop chance per level",max:5,cost:1,branch:"Nature",dep:"growth"},
+ {id:"tough",e:"💪",nm:"Hardy Spirit",desc:"-8% stat decay per level",max:5,cost:1,branch:"Nature",dep:"luck"},
+ {id:"raider",e:"⚔️",nm:"Raid Captain",desc:"+1 daily boss attack per level",max:3,cost:2,branch:"Combat",dep:null},
+ {id:"berserker",e:"🔥",nm:"Berserker",desc:"+12% boss damage per level",max:5,cost:1,branch:"Combat",dep:"raider"},
+ {id:"tourney",e:"🏆",nm:"Tournament Pro",desc:"+6% tournament score per level",max:5,cost:1,branch:"Angler",dep:null},
+ {id:"netmaster",e:"🎣",nm:"Net Master",desc:"+8% fishing coins per level",max:5,cost:1,branch:"Angler",dep:"tourney"},
+ {id:"fusiondisc",e:"✨",nm:"Fusion Savant",desc:"-10% fusion cost per level",max:5,cost:2,branch:"Mystic",dep:null}
 ];
+function prestigeDepOk(u){if(!u.dep)return true;return prestigeLevel(u.dep)>=1;}
 function prestigeLevel(id){return (G.prestigeUp&&G.prestigeUp[id])||0;}
 function prestigeSpent(){var t=0;for(var id in (G.prestigeUp||{})){var u=PRESTIGE_UPGRADES.find(function(x){return x.id===id;});if(u)t+=u.cost*G.prestigeUp[id];}return t;}
 function prestigeAvail(){return (G.prestige||0)-prestigeSpent();}
 function ascBonus(){return Math.min(1,0.05*(G.ascensions||0));}
-function coinMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("coinboost");if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;m*=1+cozyCoinBonus()+furnitureSets().coin;return m;}
-function xpMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("xpboost");if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;m*=1+habitatXpBonus()+furnitureSets().xp;return m;}
+function coinMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("coinboost");if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;if(wornFusionPerk()==="coin")m*=1.15;m*=1+cozyCoinBonus()+furnitureSets().coin;return m;}
+function xpMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("xpboost");if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;if(wornFusionPerk()==="xp")m*=1.15;m*=1+habitatXpBonus()+furnitureSets().xp;return m;}
 function cozyCount(){var t=0;if(G.placedByBg)for(var b in G.placedByBg)t+=G.placedByBg[b].length;return t;}
 function cozyDecayMul(){return Math.max(0.5,1-Math.min(0.22,cozyCount()*0.01)-furnitureSets().decay);}
 function cozyCoinBonus(){return Math.min(0.15,cozyCount()*0.0075);}
@@ -2590,7 +2636,7 @@ function confirmName(){const key=nameTarget;if(!key)return;const v=($("#nameInpu
 /* ---------- Modal helpers ---------- */
 let modalZ=20;
 function openModal(id){const m=$("#"+id);if(!m)return;modalZ++;m.style.zIndex=modalZ;m.classList.add("open");}
-function closeModals(){$$(".modal").forEach(m=>{if(m.id==="nameModal"&&pet().needsName)return;m.classList.remove("open");m.style.zIndex="";});modalZ=20;stopGame();flushCutscenes();}
+function closeModals(){$$(".modal").forEach(m=>{if(m.id==="nameModal"&&pet().needsName)return;m.classList.remove("open");m.style.zIndex="";});modalZ=20;stopGame();if(typeof clearTourney==="function")clearTourney();flushCutscenes();}
 
 /* ---------- Welcome back ---------- */
 function welcomeBack(snap,away){const p0=G.pets,lines=[];
@@ -2607,15 +2653,25 @@ function welcomeBack(snap,away){const p0=G.pets,lines=[];
 function formatDur(s){s=Math.max(0,Math.round(s));if(s<60)return s+"s";const m=Math.floor(s/60);if(m<60)return m+"m "+(s%60)+"s";const h=Math.floor(m/60);return h+"h "+(m%60)+"m";}
 function artFor(type,stage,form){return petArt({type,hatched:true,stage,form:form||null},"happy");}
 function _innerArt(svg){return svg.replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"");}
+var FUSE_PERKS={coin:{e:"🪙",t:"+15% coins"},xp:{e:"⭐",t:"+15% XP"},power:{e:"⚔️",t:"+25% raid power"},luck:{e:"🍀",t:"+12% fishing luck"}};
 function fusedFormArt(fid,m){var fz=G.formFusions&&G.formFusions[fid];if(!fz)return null;
   var A=_innerArt(artFor(fz.aType,"adult",fz.a));var B=_innerArt(artFor(fz.bType,"adult",fz.b));
+  var uid="x"+String(fid).replace(/[^a-z0-9]/gi,"");
+  var defs='<defs><clipPath id="L'+uid+'"><rect x="-240" y="-260" width="240" height="520"/></clipPath><clipPath id="R'+uid+'"><rect x="0" y="-260" width="240" height="520"/></clipPath>'+
+    '<linearGradient id="seam'+uid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>';
   var aura='<g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="9s" repeatCount="indefinite"/>'+
-    '<circle cx="0" cy="0" r="150" fill="none" stroke="#ff7eb6" stroke-width="7" stroke-dasharray="10 26" opacity="0.5"><animate attributeName="stroke" values="#ff7eb6;#5fffc0;#ffd24a;#9b7bff;#ff7eb6" dur="3s" repeatCount="indefinite"/></circle>'+
-    '<circle cx="0" cy="0" r="128" fill="none" stroke="#9b7bff" stroke-width="3" stroke-dasharray="4 18" opacity="0.4"><animate attributeName="stroke" values="#9b7bff;#ffd24a;#5fffc0;#ff7eb6;#9b7bff" dur="4s" repeatCount="indefinite"/></circle></g>';
-  var twin='<g opacity="0.6" transform="translate(98 -106)"><circle cx="0" cy="0" r="40" fill="white" opacity="0.14"/><g transform="scale(0.4)"><g><animateTransform attributeName="transform" type="scale" values="1;1.09;1" dur="2.2s" repeatCount="indefinite"/>'+B+'</g></g></g>';
-  var sp=[[-120,-66,1.6],[122,34,2],[-94,92,1.4],[58,-124,1.8],[6,-152,1.5]];
+    '<circle cx="0" cy="0" r="152" fill="none" stroke="#ff7eb6" stroke-width="8" stroke-dasharray="12 28" opacity="0.55"><animate attributeName="stroke" values="#ff7eb6;#5fffc0;#ffd24a;#9b7bff;#ff7eb6" dur="3s" repeatCount="indefinite"/></circle>'+
+    '<circle cx="0" cy="0" r="128" fill="none" stroke="#9b7bff" stroke-width="4" stroke-dasharray="4 20" opacity="0.4"><animate attributeName="stroke" values="#9b7bff;#ffd24a;#5fffc0;#ff7eb6;#9b7bff" dur="4s" repeatCount="indefinite"/></circle></g>';
+  var glow='<circle cx="0" cy="0" r="100" fill="#fff" opacity="0.10"><animate attributeName="opacity" values="0.04;0.16;0.04" dur="2.6s" repeatCount="indefinite"/></circle>';
+  var halves='<g clip-path="url(#L'+uid+')">'+A+'</g><g clip-path="url(#R'+uid+')">'+B+'</g>';
+  var seam='<rect x="-5" y="-78" width="10" height="156" rx="5" fill="url(#seam'+uid+')"><animate attributeName="opacity" values="0.5;1;0.5" dur="1.4s" repeatCount="indefinite"/></rect>'+
+    '<g fill="#fff">'+[[-66,1.4],[-20,1.8],[34,1.5],[72,1.7]].map(function(s,i){return '<circle cx="0" cy="'+s[0]+'" r="'+s[1]+'"><animate attributeName="cy" values="'+s[0]+';'+(s[0]-60)+'" dur="'+(1.6+i*0.4)+'s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0" dur="'+(1.6+i*0.4)+'s" repeatCount="indefinite"/></circle>';}).join("")+'</g>';
+  var face='<g>'+eyes(m)+blush(m)+mouth(m)+'</g>';
+  var gem='<g transform="translate(0 -96)"><g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="6s" repeatCount="indefinite"/><path d="M0 -13 L11 0 L0 13 L-11 0 Z" fill="#fff" opacity="0.95"><animate attributeName="fill" values="#ff7eb6;#5fffc0;#ffd24a;#9b7bff;#ff7eb6" dur="3s" repeatCount="indefinite"/></path><path d="M0 -13 L11 0 L0 13 L-11 0 Z" fill="none" stroke="#fff" stroke-width="1.5"/></g></g>';
+  var sp=[[-122,-66,1.8],[124,34,2.2],[-96,94,1.5],[60,-126,2],[110,-90,1.6]];
   var sparks='<g fill="#fff">'+sp.map(function(s,i){return '<circle cx="'+s[0]+'" cy="'+s[1]+'" r="'+s[2]+'"><animate attributeName="opacity" values="0;1;0" dur="'+(1.2+i*0.3)+'s" repeatCount="indefinite"/></circle>';}).join("")+'</g>';
-  return '<svg viewBox="-178 -192 356 372"><g>'+aura+A+twin+sparks+'</g></svg>';}
+  return '<svg viewBox="-178 -196 356 380">'+defs+'<g>'+aura+glow+halves+seam+face+gem+sparks+'</g></svg>';}
+function wornFusionPerk(){var pp=pet();if(pp&&pp.skin&&G.formFusions&&G.formFusions[pp.skin])return G.formFusions[pp.skin].perk||null;return null;}
 function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to hatch! 🥚");return;}
   const a=ageSec(p),order=["egg","baby","child","teen","adult"],ci=order.indexOf(p.stage);
   const REACH={egg:0,baby:30,child:120,teen:1500,adult:5400};
@@ -2796,7 +2852,7 @@ function fishRoll(auto){
   var tot=0;for(var k in w)tot+=w[k];var roll=Math.random()*tot,rar="common";for(var kk in w){if(roll<w[kk]){rar=kk;break;}roll-=w[kk];}
   var pool=FISH.filter(function(f){return f.rar===rar;});return {fish:rnd(pool)};}
 function catchFish(f){G.inv[f.id]=(G.inv[f.id]||0)+1;G.fishdex=G.fishdex||{};var firstDex=!G.fishdex[f.id];G.fishdex[f.id]=true;
-  var val=Math.round(f.val*0.7*coinMul(pet()));G.coins+=val;G.stats.fishCaught=(G.stats.fishCaught||0)+1;
+  var val=Math.round(f.val*0.7*coinMul(pet())*(1+0.08*prestigeLevel("netmaster")));G.coins+=val;G.stats.fishCaught=(G.stats.fishCaught||0)+1;
   if(G.stats.fishCaught>=10)unlock("angler");if(G.stats.fishCaught>=50)unlock("fish50");if(G.stats.fishCaught>=100)unlock("fish100");if(G.stats.fishCaught>=500)unlock("fish500");if(G.stats.fishCaught>=1000)unlock("fish1000");
   if(f.rar==="mythic")unlock("legendfish");if(Object.keys(G.fishdex).length>=FISH.length)unlock("fishmaster");
   return {val:val,firstDex:firstDex};}
@@ -3087,6 +3143,7 @@ function doTrick(){const p=pet(),known=p.tricks||[];if(!known.length){toast("Tea
 /* ---------- Fun hub ---------- */
 function openFun(){if(!guard())return;const list=$("#funList");list.innerHTML="";
   const items=[["🎮","Mini-games","3 games",openGame,"game"],["🎡","Daily Wheel",(G.wheelDate===dayKey()?"used today":"free spin!"),openWheel,"wheel"],["🤝","Play Together","+ friendship",playTogether,"together"],["🎓","Tricks","teach & perform",openTricks,"tricks"],["🧭","Expedition",(G.exped?(expReady()?"ready! 🎁":"on a trip…"):"send out"),openExped,"exped"]].filter(function(it){return featUnlocked(it[4]);});
+  ensureBoss();items.push(["⚔️","Boss Raid",(G.boss.defeated?"defeated ✓":(G.boss.atkLeft+" attacks today")),openBoss]);ensureTourney();items.push(["🏆","Tournament",((G.tourney&&G.tourney.best)?("best "+G.tourney.best+" pts"):"weekly event!"),openTourney]);
   items.forEach(it=>{const c=document.createElement("div");c.className="card";c.innerHTML='<div class="e">'+it[0]+'</div><div class="nm">'+it[1]+'</div><div class="meta">'+it[2]+'</div>';c.onclick=it[3];list.appendChild(c);});
   $("#funSub").innerHTML="🤝 Bond: <b>"+Math.round(G.bond)+"%</b> · "+bondTitle();openModal("funModal");}
 function openHub(title,sub,items){const list=$("#hubList");list.innerHTML="";$("#hubTitle").innerHTML=title;$("#hubSub").innerHTML=sub;
@@ -3101,14 +3158,20 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
   ]);}
 function openPrestige(){renderPrestige();openModal("prestigeModal");}
 function renderPrestige(){const body=$("#prestigeBody");
-  $("#prestigeSub").innerHTML="✨ <b>"+prestigeAvail()+"</b> prestige to spend · earned "+(G.prestige||0)+" total (1 per ascension). Upgrades are permanent and survive every ascension!";
-  let h='<div class="grid">';
-  PRESTIGE_UPGRADES.forEach(function(u){const lv=prestigeLevel(u.id),maxed=lv>=u.max,can=!maxed&&prestigeAvail()>=u.cost;
-    h+='<div class="card'+(can?"":" locked")+'" data-pu="'+u.id+'"><div class="e">'+u.e+'</div><div class="nm">'+u.nm+'</div><div class="ft" style="font-size:9px">'+u.desc+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(maxed?"#3b8b1f":"#b07415")+'">'+(maxed?("✓ MAX ("+u.max+")"):("Lv "+lv+"/"+u.max+" · "+u.cost+"✨"))+'</div></div>';});
-  h+='</div>';body.innerHTML=h;
-  $$("#prestigeBody .card[data-pu]").forEach(function(c){c.onclick=function(){buyPrestige(c.dataset.pu);};});}
+  $("#prestigeSub").innerHTML="✨ <b>"+prestigeAvail()+"</b> to spend · "+(G.prestige||0)+" earned (1 per ascension). Permanent — survives every ascension!";
+  var branches={},order=[];PRESTIGE_UPGRADES.forEach(function(u){if(!branches[u.branch]){branches[u.branch]=[];order.push(u.branch);}branches[u.branch].push(u);});
+  var icons={Fortune:"🪙",Nature:"🌱",Combat:"⚔️",Angler:"🏆",Mystic:"✨"};
+  var h="";
+  order.forEach(function(bn){h+='<div class="menuhd" style="margin-top:14px">'+(icons[bn]||"")+' '+bn+'</div><div class="sktree">';
+    branches[bn].forEach(function(u,i){var lv=prestigeLevel(u.id),maxed=lv>=u.max,depok=prestigeDepOk(u),can=!maxed&&depok&&prestigeAvail()>=u.cost,depnm=u.dep?(PRESTIGE_UPGRADES.find(function(x){return x.id===u.dep;})||{}).nm:"";
+      if(i>0)h+='<div class="sklink'+(lv>0?" on":"")+'"></div>';
+      h+='<div class="sknode'+(maxed?" maxed":(can?" can":(depok?"":" lock")))+'" data-pu="'+u.id+'"><div class="ske">'+u.e+'</div><div class="skb"><div class="skn">'+u.nm+'</div><div class="skd">'+u.desc+'</div><div class="skl">'+(maxed?("✓ MAX ("+u.max+")"):(depok?("Lv "+lv+"/"+u.max+" · "+u.cost+"✨"):("🔒 needs "+depnm)))+'</div></div></div>';});
+    h+='</div>';});
+  body.innerHTML=h;
+  $$("#prestigeBody .sknode[data-pu]").forEach(function(c){c.onclick=function(){buyPrestige(c.dataset.pu);};});}
 function buyPrestige(id){const u=PRESTIGE_UPGRADES.find(function(x){return x.id===id;});if(!u)return;const lv=prestigeLevel(id);
   if(lv>=u.max){toast("Already maxed ✓");return;}
+  if(!prestigeDepOk(u)){toast("🔒 Unlock "+((PRESTIGE_UPGRADES.find(function(x){return x.id===u.dep;})||{}).nm)+" first!");return;}
   if(prestigeAvail()<u.cost){toast("Not enough prestige ✨ — ascend to earn more!");return;}
   G.prestigeUp=G.prestigeUp||{};G.prestigeUp[id]=lv+1;SFX.level();react("✨");toast(u.e+" "+u.nm+" → Lv "+(lv+1)+"!");renderPrestige();render();save();}
 function openHome(){if(!guard())return;const p=pet();
@@ -3447,8 +3510,8 @@ async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}clou
 function unameFromUser(u){return (((u&&u.email)||"").split("@")[0])||null;}
 function profileSnapshot(){const mk=p=>({type:p.type,name:p.name||"",form:p.form||null,stage:p.stage,bg:p.bg,hat:p.hat,skin:p.skin||null,gen:p.gen||1,trait:p.trait||null,level:p.level||1});
   var st=G.stats||{};var dex=Object.keys(G.dex||{}).length,ach=Object.keys(G.ach||{}).length,lv=maxLevel(),asc=G.ascensions||0;
-  var score=lv+dex*3+asc*12+ach*2;
-  return {pets:{puffy:mk(G.pets.puffy),citrus:mk(G.pets.citrus)},level:lv,coins:G.coins,dex:dex,ach:ach,asc:asc,fish:st.fishCaught||0,harv:st.harvests||0,cooked:st.cooked||0,score:score,placed:G.placedByBg||{},fam:G.familyLevel||1,ts:now()};}
+  var score=lv+dex*3+asc*12+ach*2+(st.bossWins||0)*8+Math.round((G.tourney&&G.tourney.best||0)/40);
+  return {pets:{puffy:mk(G.pets.puffy),citrus:mk(G.pets.citrus)},level:lv,coins:G.coins,dex:dex,ach:ach,asc:asc,fish:st.fishCaught||0,harv:st.harvests||0,cooked:st.cooked||0,boss:st.bossWins||0,tourney:(G.tourney&&G.tourney.best)||0,score:score,placed:G.placedByBg||{},fam:G.familyLevel||1,ts:now()};}
 async function openDashboard(){openModal("dashModal");var body=$("#dashBody");if(!body)return;body.innerHTML='<div class="sub">Loading the Hall of Fame… 🏆</div>';
   if(!cloudConfigured()||!sb||!cloudUser){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;line-height:1.6">The 🏆 Hall of Fame needs cloud play.<br>Log in (⚙️ Menu) to join legends from around the world! ☁️</div>';return;}
   try{const r=await sb.from("profiles").select("username,data").order("updated_at",{ascending:false}).limit(200);
@@ -3559,11 +3622,13 @@ function openWardrobe(tab){wardrobeTab=tab||"hat";$$("#wardrobeModal .seg").forE
 let fuseSel=null;
 function doFuse(aT,a,bT,b){if(a===b&&aT===bT){toast("Pick two different forms!");fuseSel=null;renderWardrobe();return;}
   if((G.ascensions||0)<3){toast("🔒 Fusion Lab unlocks at 3 ascensions");fuseSel=null;renderWardrobe();return;}
-  if(G.coins<600){toast("Need 600🪙 to fuse!");fuseSel=null;renderWardrobe();return;}
+  var fcost=Math.round(600*(1-0.1*prestigeLevel("fusiondisc")));
+  if(G.coins<fcost){toast("Need "+fcost+"🪙 to fuse!");fuseSel=null;renderWardrobe();return;}
   G.formFusions=G.formFusions||{};var id="fz_"+a+"_"+b;
   var ma=formMeta(aT,a),mb=formMeta(bT,b);
-  G.formFusions[id]={aType:aT,a:a,bType:bT,b:b,nm:((ma&&ma.nm)||a).split(" ")[0]+"×"+((mb&&mb.nm)||b).split(" ")[0]};
-  G.coins-=600;var pp=pet();pp.skin=id;fuseSel=null;
+  var pk=["coin","xp","power","luck"][Math.floor(Math.random()*4)];
+  G.formFusions[id]={aType:aT,a:a,bType:bT,b:b,nm:((ma&&ma.nm)||a).split(" ")[0]+"×"+((mb&&mb.nm)||b).split(" ")[0],perk:pk};
+  G.coins-=fcost;var pp=pet();pp.skin=id;fuseSel=null;
   unlock("fusionist");SFX.level();react("✨");react("💫");confetti();toast("✨ Fusion forged & equipped! A one-of-a-kind look 💫");render();save();renderWardrobe();}
 function renderWardrobe(){const p=pet(),grid=$("#wardrobeGrid");grid.innerHTML="";
   if(wardrobeTab==="hat"){grid.className="grid";
@@ -3579,7 +3644,7 @@ function renderWardrobe(){const p=pet(),grid=$("#wardrobeGrid");grid.innerHTML="
     var fb=document.createElement("div");fb.style.cssText="grid-column:1/-1";
     fb.innerHTML='<button class="btn orange" style="width:auto;padding:9px 16px;margin:0 auto 4px;display:block">'+(fuseSel?("✨ Pick 2 forms ("+fuseSel.length+"/2) · tap to cancel"):"✨ Fusion Lab — fuse 2 forms (600🪙)")+'</button>';
     fb.querySelector("button").onclick=function(){if(fuseSel){fuseSel=null;}else{if((G.ascensions||0)<3){toast("🔒 Fusion Lab unlocks at 3 ascensions ✨");return;}fuseSel=[];toast("Pick 2 forms you've collected to fuse! (600🪙)");}renderWardrobe();};grid.appendChild(fb);
-    if(G.formFusions)Object.keys(G.formFusions).forEach(function(fid){var fz=G.formFusions[fid];var on=p.skin===fid;var c=mk("✨ "+fz.nm,fusedFormArt(fid,"happy"),on);c.onclick=function(){if(fuseSel)return;p.skin=fid;toast(petName(p)+" fuses into "+fz.nm+"! ✨");SFX.coin();react("💫");render();save();renderWardrobe();};grid.appendChild(c);});
+    if(G.formFusions)Object.keys(G.formFusions).forEach(function(fid){var fz=G.formFusions[fid];var on=p.skin===fid;var pk=fz.perk&&FUSE_PERKS[fz.perk];var c=mk("✨ "+fz.nm+(pk?(" "+pk.e):""),fusedFormArt(fid,"happy"),on);if(pk){var pe=document.createElement("div");pe.style.cssText="font-size:9px;font-weight:800;color:#7a5ad0;margin-top:-2px";pe.textContent=pk.e+" "+pk.t;c.appendChild(pe);}c.onclick=function(){if(fuseSel)return;p.skin=fid;toast(petName(p)+" fuses into "+fz.nm+"! ✨");SFX.coin();react("💫");render();save();renderWardrobe();};grid.appendChild(c);});
     const def=mk("🌱 Natural look",artFor(p.type,p.stage,p.form),!p.skin);
     def.onclick=()=>{if(fuseSel)return;p.skin=null;toast(petName(p)+" returns to its natural look");render();save();renderWardrobe();};grid.appendChild(def);
     let any=false;["puffy","citrus"].forEach(function(ty){allForms(ty).forEach(fm=>{if(!G.dex[fm.k])return;any=true;const on=p.skin===fm.k;
@@ -3591,6 +3656,88 @@ function renderWardrobe(){const p=pet(),grid=$("#wardrobeGrid");grid.innerHTML="
     c.innerHTML='<div style="height:42px;border-radius:8px;background:linear-gradient(180deg,'+b.sky+','+b.g2+')"></div><div class="nm">'+b.nm+'</div><div class="ft" style="font-size:9px">'+(own?(eq?"✓ equipped":"tap to use"):(b.cost==null?("🔒 "+(b.hint||"achievement")):("🛒 "+b.cost+" in Shop")))+'</div>';
     c.onclick=()=>{if(own){p.bg=id;toast("Scene: "+b.nm);render();save();renderWardrobe();}else if(b.cost==null)toast("🔒 "+(b.hint||"Unlock via achievements"));else toast("Buy it in 🛒 Shop → Scenes");};grid.appendChild(c);});}
   $("#wardrobeSub").textContent=wardrobeTab==="skin"?"Wear any form you've collected — a costume that won't change how your pet grows. 🎭":"Equip hats & scenes you own. 🔒 unlocks come from achievements!";}
+
+/* ---------- Weekly Boss Raid ---------- */
+function weekKey(){var d=new Date();var oneJan=new Date(d.getFullYear(),0,1);var days=Math.floor((d-oneJan)/86400000);var wk=Math.ceil((days+oneJan.getDay()+1)/7);return d.getFullYear()+"-W"+wk;}
+const BOSSES=[
+ {id:"kraken",nm:"Tidal Kraken",e:"🦑",col:"#6a4aa0",hp:1.0},
+ {id:"leviathan",nm:"Abyssal Leviathan",e:"🐉",col:"#1f6e7a",hp:1.15},
+ {id:"reefgolem",nm:"Reef Golem",e:"🗿",col:"#7a6a3a",hp:1.3},
+ {id:"voidwhale",nm:"Void Whale",e:"🌌",col:"#3a2a66",hp:1.5}
+];
+function bossDef(){return BOSSES.find(function(x){return x.id===(G.boss&&G.boss.boss);})||BOSSES[0];}
+function ensureBoss(){var wk=weekKey();
+  if(!G.boss||G.boss.week!==wk){var idx=0;try{idx=parseInt(wk.split("W")[1],10)||0;}catch(e){}var b=BOSSES[idx%BOSSES.length];var asc=G.ascensions||0,lvl=Math.max(maxLevel(),1);var max=Math.round((1400+lvl*130+asc*650)*b.hp);G.boss={week:wk,boss:b.id,max:max,hp:max,dealt:0,defeated:false,atkDay:"",atkLeft:0};}
+  var dk=dayKey();if(G.boss.atkDay!==dk){G.boss.atkDay=dk;G.boss.atkLeft=5+prestigeLevel("raider");}}
+function bossArtSVG(b){var c=b.col;
+  var tent='<g fill="'+c+'" opacity="0.92">'+[-70,-44,44,70].map(function(x,i){var sgn=x<0?-1:1;return '<path d="M'+x+' 34 q '+(28*sgn)+' 48 '+(8*sgn)+' 80"><animate attributeName="d" values="M'+x+' 34 q '+(28*sgn)+' 48 '+(8*sgn)+' 80;M'+x+' 34 q '+(8*sgn)+' 54 '+(30*sgn)+' 76;M'+x+' 34 q '+(28*sgn)+' 48 '+(8*sgn)+' 80" dur="'+(2+i*0.4)+'s" repeatCount="indefinite"/></path>';}).join("")+'</g>';
+  var spikes='<g fill="'+c+'">'+[0,45,90,135,180,225,270,315].map(function(a){var r=a*Math.PI/180,x=Math.cos(r)*70,y=Math.sin(r)*70,x2=Math.cos(r)*92,y2=Math.sin(r)*92,px=-Math.sin(r)*8,py=Math.cos(r)*8;return '<path d="M'+(x+px)+' '+(y+py)+' L'+x2+' '+y2+' L'+(x-px)+' '+(y-py)+' Z"/>';}).join("")+'</g>';
+  var teeth='<g fill="#fff">'+[-16,-6,6,16].map(function(x){return '<path d="M'+x+' 27 l4 9 l4 -9 Z"/>';}).join("")+'</g>';
+  return '<svg viewBox="-115 -120 230 240" width="172" height="172"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="2.6s" repeatCount="indefinite"/>'+
+   '<ellipse cx="0" cy="100" rx="74" ry="13" fill="#00000022"/>'+tent+
+   '<circle cx="0" cy="0" r="70" fill="'+c+'"/>'+spikes+
+   '<circle cx="0" cy="-6" r="56" fill="#ffffff14"/>'+
+   '<circle cx="-26" cy="-8" r="16" fill="#fff"/><circle cx="26" cy="-8" r="16" fill="#fff"/>'+
+   '<circle cx="-22" cy="-4" r="8" fill="#c0152a"><animate attributeName="r" values="8;6;8" dur="1.4s" repeatCount="indefinite"/></circle><circle cx="30" cy="-4" r="8" fill="#c0152a"><animate attributeName="r" values="8;6;8" dur="1.4s" repeatCount="indefinite"/></circle>'+
+   '<path d="M-44 -28 L-12 -16 M44 -28 L12 -16" stroke="#1a1020" stroke-width="5" stroke-linecap="round"/>'+
+   '<path d="M-24 26 Q0 44 24 26 Q0 32 -24 26 Z" fill="#1a1020"/>'+teeth+
+   '<text x="0" y="-46" font-size="22" text-anchor="middle">'+b.e+'</text>'+
+   '</g></svg>';}
+function openBoss(){if(!guard())return;ensureBoss();renderBoss();openModal("bossModal");}
+function renderBoss(){ensureBoss();var b=bossDef();$("#bossTitle").innerHTML="⚔️ "+b.nm;
+  $("#bossSub").innerHTML="Weekly raid — a new beast every week. Whittle it down with daily attacks!";
+  $("#bossArt").innerHTML=bossArtSVG(b);
+  var pct=Math.max(0,G.boss.hp/G.boss.max*100);$("#bossHp").style.width=pct+"%";
+  $("#bossHpTxt").textContent="HP "+Math.max(0,Math.round(G.boss.hp)).toLocaleString()+" / "+G.boss.max.toLocaleString();
+  var atk=$("#bossAtk");
+  if(G.boss.defeated){atk.style.display="none";$("#bossMsg").innerHTML="🏆 <b>Defeated!</b> A new boss arrives next week.";}
+  else if(G.boss.atkLeft<=0){atk.style.display="none";$("#bossMsg").innerHTML="😮‍💨 Out of attacks today — back tomorrow!";}
+  else{atk.style.display="block";atk.textContent="⚔️ Attack! ("+G.boss.atkLeft+" left today)";atk.onclick=bossAttack;if(!G.boss.dealt)$("#bossMsg").textContent="";}
+  $("#bossInfo").innerHTML="💥 Damage scales with level, bond, Berserker prestige & a ⚔️ power-fusion.<br>🗡️ "+(5+prestigeLevel("raider"))+" attacks/day · dealt this week: <b>"+Math.round(G.boss.dealt).toLocaleString()+"</b>";}
+function floatDmg(n,crit){var sc=$("#scene");if(!sc)return;var el=document.createElement("div");el.className="react";el.style.left="50%";el.style.top="28%";el.style.fontWeight="800";el.style.color=crit?"#ffd24a":"#fff";el.style.fontSize=(crit?22:18)+"px";el.style.textShadow="0 1px 3px #000";el.textContent="-"+n.toLocaleString();sc.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove();},1100);}
+function bossAttack(){ensureBoss();if(G.boss.defeated||G.boss.atkLeft<=0)return;var p=pet();
+  var base=120+(p.level||1)*22+(G.ascensions||0)*40+Math.round((G.bond||0)*1.1);
+  var mul=(1+0.12*prestigeLevel("berserker"))*(wornFusionPerk()==="power"?1.25:1);
+  var crit=Math.random()<0.18;var dmg=Math.round(base*(0.8+Math.random()*0.5)*mul*(crit?2:1));
+  G.boss.hp-=dmg;G.boss.dealt+=dmg;G.boss.atkLeft--;p.energy=clamp(p.energy-3);
+  SFX.coin();var art=$("#bossArt");if(art){art.classList.remove("shake");void art.offsetWidth;art.classList.add("shake");}
+  react(crit?"💥":"⚔️");floatDmg(dmg,crit);
+  if(G.boss.hp<=0){G.boss.hp=0;G.boss.defeated=true;var rw=400+(G.ascensions||0)*150+Math.round(G.boss.max*0.05);G.coins+=rw;G.stats.bossWins=(G.stats.bossWins||0)+1;unlock("bossslayer");if((G.stats.bossWins||0)>=10)unlock("bosslord");confetti();SFX.level();react("🏆");setTimeout(function(){toast("🏆 "+bossDef().nm+" defeated! +"+rw+"🪙");},160);}
+  else{$("#bossMsg").textContent=(crit?"💥 CRITICAL! ":"")+"Hit for "+dmg.toLocaleString()+"!";}
+  renderBoss();render();save();}
+
+/* ---------- Fishing Tournament ---------- */
+function ensureTourney(){var wk=weekKey();if(!G.tourney||G.tourney.week!==wk)G.tourney={week:wk,best:0,rank:0,plays:0};}
+function tourneyNPCs(){ensureTourney();var wk=G.tourney.week,seed=0;for(var i=0;i<wk.length;i++)seed+=wk.charCodeAt(i)*(i+3);var names=["Coral","Finn","Marina","Splash","Captain Nori","Pearl","Wavelet","Skipper"];return names.map(function(n,i){return {nm:n,score:300+((seed*(i+7))%760)+i*45};});}
+let tourneyTimers=[];
+function clearTourney(){tourneyTimers.forEach(function(t){clearInterval(t);clearTimeout(t);});tourneyTimers=[];}
+function openTourney(){if(!guard())return;ensureTourney();renderTourney();openModal("tourneyModal");}
+function renderTourney(){ensureTourney();clearTourney();
+  $("#tourneySub").innerHTML="🏆 Weekly tournament · your best: <b>"+(G.tourney.best||0)+"</b> pts"+(G.tourney.rank?(" · last rank #"+G.tourney.rank):"");
+  var rows=tourneyNPCs().concat([{nm:"⭐ You",score:G.tourney.best||0,you:true}]).sort(function(a,b){return b.score-a.score;});
+  var h='<div style="margin:10px 0">';rows.forEach(function(r,i){h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;margin:3px 0;background:'+(r.you?"#fff3da":"#fff")+';border:1px solid '+(r.you?"#ffd98a":"#f0e6d6")+'"><div style="width:24px;font-weight:800;color:#b07415">'+(i===0?"🥇":i===1?"🥈":i===2?"🥉":("#"+(i+1)))+'</div><div style="flex:1;font-weight:700;font-size:13px">'+r.nm+'</div><div style="font-weight:800;color:#7a5ad0">'+r.score+'</div></div>';});h+='</div>';
+  $("#tourneyBoard").innerHTML=h;$("#tourneyBoard").style.display="block";$("#tourneyArea").style.display="none";
+  var b=$("#tourneyBtn");b.style.display="block";b.textContent="Start tournament 🎣 (15s)";b.onclick=startTourney;}
+function startTourney(){var area=$("#tourneyArea");$("#tourneyBoard").style.display="none";area.style.display="block";area.innerHTML="";$("#tourneyBtn").style.display="none";clearTourney();
+  var score=0,tEnd=Date.now()+15000;
+  var hud=document.createElement("div");hud.style.cssText="position:absolute;top:6px;left:0;right:0;text-align:center;font-weight:800;font-size:15px;color:#0a4a6a;z-index:2;font-family:var(--display)";area.appendChild(hud);
+  function tick(){var left=Math.max(0,Math.ceil((tEnd-Date.now())/1000));hud.textContent="⏱️ "+left+"s   🏆 "+score+" pts";}
+  tick();
+  var spawnT=setInterval(function(){if(Date.now()>=tEnd)return;var fishes=[["🐟",10,0.46],["🐠",20,0.28],["🐡",30,0.14],["🦈",55,0.08],["🐉",110,0.04]];var r=Math.random(),acc=0,pick=fishes[0];for(var i=0;i<fishes.length;i++){acc+=fishes[i][2];if(r<=acc){pick=fishes[i];break;}}
+    var el=document.createElement("div");el.className="tfish";el.textContent=pick[0];el.style.fontSize=(26+pick[1]/3)+"px";el.style.left=(7+Math.random()*78)+"%";el.style.top=(20+Math.random()*64)+"%";
+    el.onclick=function(){if(el._done)return;el._done=true;score+=pick[1];el.style.transition="transform .18s,opacity .18s";el.style.transform="scale(1.7)";el.style.opacity="0";tick();setTimeout(function(){if(el.parentNode)el.remove();},180);};
+    area.appendChild(el);setTimeout(function(){if(el.parentNode&&!el._done)el.remove();},1500);},600);
+  var ui=setInterval(tick,250);tourneyTimers.push(spawnT,ui);
+  var endT=setTimeout(function(){clearTourney();area.querySelectorAll(".tfish").forEach(function(e){e.remove();});endTourney(score);},15000);tourneyTimers.push(endT);}
+function endTourney(raw){var p=pet();var sc=Math.round(raw*(1+0.06*prestigeLevel("tourney"))*(wornFusionPerk()==="luck"?1.12:1));
+  ensureTourney();G.tourney.plays=(G.tourney.plays||0)+1;
+  var scores=tourneyNPCs().map(function(n){return n.score;}).concat([sc]).sort(function(a,b){return b-a;});var rank=scores.indexOf(sc)+1;
+  G.tourney.rank=rank;if(sc>(G.tourney.best||0))G.tourney.best=sc;
+  var reward=Math.round(60+sc*0.6+(rank===1?260:rank<=3?160:rank<=5?70:0));G.coins+=reward;addXP(p,22);
+  unlock("tourneyjoin");if(rank===1)unlock("tourneychamp");
+  SFX.level();react(rank<=3?"🏆":"🎣");confetti();
+  toast("🏆 "+sc+" pts · rank #"+rank+" · +"+reward+"🪙");
+  renderTourney();render();save();}
 
 /* ---------- Wire up ---------- */
 $$(".tab").forEach(t=>t.onclick=()=>{G.active=t.dataset.pet;render();save();if(pet().needsName)openNameModal();});
