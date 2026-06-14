@@ -52,9 +52,13 @@
   #petWrap.bob{animation:bob 3s ease-in-out infinite;}
   @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
   #petWrap svg{width:100%;height:100%;overflow:visible;}
-  .hat{position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:48px;line-height:1;pointer-events:none;z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
-  .hat.hatv{font-size:0;}
-  .hat.hatv svg{width:100px;height:76px;display:block;}
+  .cust{position:absolute;left:50%;transform:translateX(-50%);line-height:1;pointer-events:none;z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
+  .cust.hatv{font-size:0;} .cust.hatv svg{display:block;}
+  .cust.head{top:2px;} .cust.head.hatv svg{width:100px;height:76px;} .cust.head.emo{top:6px;font-size:46px;}
+  .cust.face{top:74px;} .cust.face.hatv svg{width:108px;height:56px;} .cust.face.emo{top:82px;font-size:34px;}
+  .cust.neck{top:118px;} .cust.neck.hatv svg{width:114px;height:52px;} .cust.neck.emo{top:126px;font-size:30px;}
+  .cust.back{top:24px;z-index:2;} .cust.back.hatv svg{width:156px;height:156px;} .cust.back.emo{top:40px;font-size:60px;z-index:2;}
+  .cust.hand{top:78px;left:66%;} .cust.hand.hatv svg{width:60px;height:46px;} .cust.hand.emo{top:84px;left:66%;font-size:30px;}
   .react{position:absolute;font-size:26px;pointer-events:none;animation:floatUp 1.1s ease-out forwards;z-index:5;}
   @keyframes floatUp{0%{opacity:0;transform:translateY(10px) scale(.6);}30%{opacity:1;}100%{opacity:0;transform:translateY(-46px) scale(1.2);}}
   .poop{position:absolute;bottom:34px;font-size:22px;animation:plop .4s ease-out;cursor:pointer;z-index:4;}
@@ -414,7 +418,7 @@
 
   <div class="modal" id="shopModal"><div class="sheet">
     <div class="closeRow"><h2>🛒 Shop</h2><button class="iconbtn" data-close>✕</button></div>
-    <div class="segrow"><div class="seg on" data-shoptab="food">Food</div><div class="seg" data-shoptab="care">Care</div><div class="seg" data-shoptab="seed">Seeds</div><div class="seg" data-shoptab="gard">Garden</div><div class="seg" data-shoptab="fish">Fishing</div><div class="seg" data-shoptab="room">Room</div><div class="seg" data-shoptab="form">Forms</div><div class="seg" data-shoptab="bg">Scenes</div><div class="seg" data-shoptab="hat">Hats</div><div class="seg" data-shoptab="gacha">🎰 Lucky</div></div>
+    <div class="segrow"><div class="seg on" data-shoptab="food">Food</div><div class="seg" data-shoptab="care">Care</div><div class="seg" data-shoptab="seed">Seeds</div><div class="seg" data-shoptab="gard">Garden</div><div class="seg" data-shoptab="fish">Fishing</div><div class="seg" data-shoptab="room">Room</div><div class="seg" data-shoptab="form">Forms</div><div class="seg" data-shoptab="bg">Scenes</div><div class="seg" data-shoptab="hat">Customs</div><div class="seg" data-shoptab="gacha">🎰 Lucky</div></div>
     <div class="sub" id="shopSub"></div>
     <div class="grid" id="shopGrid"></div>
   </div></div>
@@ -548,7 +552,7 @@
 
   <div class="modal" id="wardrobeModal"><div class="sheet">
     <div class="closeRow"><h2>👗 Wardrobe</h2><button class="iconbtn" data-close>✕</button></div>
-    <div class="segrow"><div class="seg on" data-wtab="hat">Hats</div><div class="seg" data-wtab="bg">Scenes</div><div class="seg" data-wtab="skin">Looks</div></div>
+    <div class="segrow"><div class="seg on" data-wtab="hat">Customs</div><div class="seg" data-wtab="bg">Scenes</div><div class="seg" data-wtab="skin">Looks</div></div>
     <div class="sub" id="wardrobeSub"></div>
     <div id="wardrobeGrid"></div>
   </div></div>
@@ -582,6 +586,11 @@
     <div id="almanacBody"></div>
   </div></div>
 
+  <div class="modal" id="dashModal"><div class="sheet">
+    <div class="closeRow"><h2>🏆 Hall of Fame</h2><button class="iconbtn" data-close>✕</button></div>
+    <div id="dashBody"></div>
+  </div></div>
+
   <div class="modal" id="menuModal"><div class="sheet">
     <div class="closeRow"><h2>⚙️ Menu</h2><button class="iconbtn" data-close>✕</button></div>
     <div id="menuInfo" style="font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:8px"></div>
@@ -608,6 +617,7 @@
     <button class="btn" id="familyBtn" style="background:#f0b46c">✨ Ascension &amp; Legacy</button>
     <div class="menuhd">Social &amp; account</div>
     <button class="btn" id="friendsBtn" style="background:#8fd0e8">👋 Friends &amp; visiting</button>
+    <button class="btn" id="dashBtn" style="background:#ffd27a">🏆 Hall of Fame</button>
     <button class="btn" id="logoutBtn" style="background:#cbbfae;display:none">☁️ Log out</button>
     <div class="menuhd">Danger zone</div>
     <button class="btn" id="hardReset" style="background:#ff7a7a">🥚 Reset everything</button>
@@ -716,6 +726,23 @@ const HATS={
   divermask:{e:"🤿",nm:"Diver Mask",cost:null,unlock:"angler",hint:"Catch 10 fish"},
   rainbowcrown:{e:"🌈",nm:"Rainbow Crown",cost:null,unlock:"soulmates",hint:"Reach 100% friendship"},
 };
+["shades","divermask","goggles","glasses","monocle","galaxyvisor"].forEach(function(k){if(HATS[k])HATS[k].slot="face";});
+["scarf","bowtie","necklace","phoenixscarf"].forEach(function(k){if(HATS[k])HATS[k].slot="neck";});
+["cape","angelwings"].forEach(function(k){if(HATS[k])HATS[k].slot="back";});
+["trident"].forEach(function(k){if(HATS[k])HATS[k].slot="hand";});
+Object.assign(HATS,{
+  goggles:{e:"🥽",nm:"Diving Goggles",cost:55,slot:"face"},
+  glasses:{e:"👓",nm:"Round Glasses",cost:50,slot:"face"},
+  monocle:{e:"🧐",nm:"Monocle",cost:90,slot:"face"},
+  scarf:{e:"🧣",nm:"Cozy Scarf",cost:60,slot:"neck"},
+  bowtie:{e:"🎀",nm:"Bow Tie",cost:45,slot:"neck"},
+  necklace:{e:"📿",nm:"Bead Necklace",cost:70,slot:"neck"},
+  cape:{e:"🦸",nm:"Hero Cape",cost:140,slot:"back"},
+  auroracrown:{e:"👑",nm:"Aurora Crown ✨",cost:null,slot:"head",unlock:"prism_a",hint:"Evolve a Prism Orange"},
+  galaxyvisor:{e:"🛸",nm:"Galaxy Visor ✨",cost:null,slot:"face",unlock:"collectorall",hint:"Discover every form"},
+  phoenixscarf:{e:"🔥",nm:"Phoenix Scarf ✨",cost:null,slot:"neck",unlock:"cosmos",hint:"Evolve a Supernova Orange"},
+  angelwings:{e:"🪽",nm:"Angel Wings ✨",cost:null,slot:"back",unlock:"ascend5",hint:"✨ 5 ascensions"}
+});
 const BGS={
   meadow:{nm:"Meadow",cost:0,sky:"#bdeefc",g1:"#cdeeb0",g2:"#a9da7f"},
   beach:{nm:"Beach",cost:140,sky:"#aee6f5",g1:"#ffe7a8",g2:"#f3cf78"},
@@ -1910,6 +1937,20 @@ function moodOf(p){if(p.dead)return "dead";if(p.asleep)return "sleeping";if(p.si
   if(p.energy<16)return "tired";
   if(avg>72&&p.happy>60)return "happy";return "neutral";}
 function hatSVG(id){var V='<svg viewBox="0 0 60 44" xmlns="http://www.w3.org/2000/svg">',E='</svg>';var H={
+ shades:'<rect x="8" y="15" width="18" height="13" rx="4" fill="#222"/><rect x="34" y="15" width="18" height="13" rx="4" fill="#222"/><rect x="25" y="19" width="10" height="3" fill="#222"/><path d="M8 17 H2 M58 17 H52" stroke="#222" stroke-width="3"/>',
+ divermask:'<rect x="11" y="11" width="38" height="23" rx="9" fill="#bfe6ff" stroke="#3a6a8a" stroke-width="3" opacity="0.92"/><line x1="30" y1="11" x2="30" y2="34" stroke="#3a6a8a" stroke-width="2"/><path d="M11 22 H2 M49 22 H58" stroke="#3a6a8a" stroke-width="3"/>',
+ goggles:'<circle cx="21" cy="22" r="11" fill="#bfe6ff" stroke="#446" stroke-width="3"/><circle cx="39" cy="22" r="11" fill="#bfe6ff" stroke="#446" stroke-width="3"/><rect x="29" y="20" width="2" height="4" fill="#446"/><path d="M10 22 H2 M50 22 H58" stroke="#446" stroke-width="3"/>',
+ glasses:'<circle cx="21" cy="22" r="10" fill="none" stroke="#5a4a3a" stroke-width="3"/><circle cx="39" cy="22" r="10" fill="none" stroke="#5a4a3a" stroke-width="3"/><path d="M31 22 h-2 M11 22 H4 M49 22 H56" stroke="#5a4a3a" stroke-width="2.5"/>',
+ monocle:'<circle cx="37" cy="22" r="11" fill="none" stroke="#caa24a" stroke-width="3"/><path d="M37 33 q3 8 -4 12" stroke="#caa24a" stroke-width="2" fill="none"/>',
+ scarf:'<path d="M12 16 q18 9 36 0 v7 q-18 9 -36 0 z" fill="#e0533a"/><path d="M40 22 l9 17 l-9 3 z" fill="#c8421f"/>',
+ bowtie:'<path d="M30 22 L13 14 L13 30 Z" fill="#c0392b"/><path d="M30 22 L47 14 L47 30 Z" fill="#c0392b"/><rect x="26" y="17" width="8" height="10" rx="2" fill="#9a2a1a"/>',
+ necklace:'<path d="M10 13 Q30 37 50 13" fill="none" stroke="#ffd24a" stroke-width="3"/><circle cx="30" cy="31" r="4.5" fill="#5fb6ff"/>',
+ cape:'<path d="M30 2 L6 54 Q30 46 54 54 Z" fill="#7a2a8a"/><path d="M30 2 L18 12 L30 16 L42 12 Z" fill="#9a3aa8"/>',
+ trident:'<rect x="28" y="12" width="4" height="32" fill="#caa24a"/><path d="M22 14 V4 M30 14 V2 M38 14 V4" stroke="#caa24a" stroke-width="3"/><path d="M22 13 H38" stroke="#caa24a" stroke-width="3"/>',
+ auroracrown:'<path d="M10 40 L10 17 L20 28 L30 11 L40 28 L50 17 L50 40 Z" fill="#9b7bff" stroke="#7a5ad0" stroke-width="1.2"><animate attributeName="fill" values="#9b7bff;#5fffc0;#ff9ed6;#9b7bff" dur="4s" repeatCount="indefinite"/></path><circle cx="30" cy="22" r="3.2" fill="#fff"/>',
+ galaxyvisor:'<rect x="6" y="15" width="48" height="14" rx="7" fill="#15103a"/><g fill="#fff"><circle cx="16" cy="22" r="1.4"><animate attributeName="opacity" values="0;1;0" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="30" cy="20" r="1.4"><animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="44" cy="23" r="1.4"><animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite"/></circle></g>',
+ phoenixscarf:'<path d="M12 16 q18 9 36 0 v7 q-18 9 -36 0 z" fill="#ff7a2a"><animate attributeName="fill" values="#ff7a2a;#ffd24a;#ff4a2a;#ff7a2a" dur="1.4s" repeatCount="indefinite"/></path><path d="M40 22 l9 17 l-9 3 z" fill="#ff4a2a"/>',
+ angelwings:'<g><animateTransform attributeName="transform" type="scale" values="1 1;1.07 0.95;1 1" dur="2s" repeatCount="indefinite" additive="sum"/><path d="M28 24 Q6 8 3 36 Q16 30 28 30 Z" fill="#ffffff" stroke="#e8e8f0" stroke-width="1"/><path d="M32 24 Q54 8 57 36 Q44 30 32 30 Z" fill="#ffffff" stroke="#e8e8f0" stroke-width="1"/></g>',
  bow:'<g transform="translate(30,30)"><path d="M0 0 L-22 -11 L-22 11 Z" fill="#ff7eb6"/><path d="M0 0 L22 -11 L22 11 Z" fill="#ff7eb6"/><path d="M0 0 L-22 -11 L-12 0 Z" fill="#ff5b9a" opacity=".5"/><path d="M0 0 L22 -11 L12 0 Z" fill="#ff5b9a" opacity=".5"/><circle r="6" fill="#e85a9a"/></g>',
  party:'<polygon points="30,3 17,40 43,40" fill="#ffd24a"/><polygon points="30,3 25,21 35,21" fill="#ff7eb6"/><polygon points="22,40 30,28 38,40" fill="#5fb6ff" opacity=".8"/><circle cx="30" cy="3" r="4" fill="#ff5b8a"/>',
  crown:'<path d="M10 40 L10 17 L20 28 L30 11 L40 28 L50 17 L50 40 Z" fill="#ffd24a" stroke="#e0a800" stroke-width="1.5"/><circle cx="30" cy="21" r="3.2" fill="#ff5b8a"/><circle cx="16" cy="26" r="2.4" fill="#5fb6ff"/><circle cx="44" cy="26" r="2.4" fill="#7CC24B"/>',
@@ -1929,7 +1970,7 @@ function hatSVG(id){var V='<svg viewBox="0 0 60 44" xmlns="http://www.w3.org/200
 };return H[id]?(V+H[id]+E):null;}
 function renderPet(){const p=pet(),wrap=$("#petWrap");
   wrap.innerHTML=petArt(p,moodOf(p));
-  const hat=HATS[p.hat]; if(p.hatched&&!p.dead&&p.hat&&p.hat!=="none"&&hat){const h=document.createElement("div");h.className="hat";var sv=hatSVG(p.hat);if(sv){h.className="hat hatv";h.innerHTML=sv;}else h.textContent=hat.e;wrap.appendChild(h);}
+  const hat=HATS[p.hat]; if(p.hatched&&!p.dead&&p.hat&&p.hat!=="none"&&hat){const slot=hat.slot||"head";const h=document.createElement("div");var sv=hatSVG(p.hat);if(sv){h.className="cust hatv "+slot;h.innerHTML=sv;}else{h.className="cust emo "+slot;h.textContent=hat.e;}wrap.appendChild(h);}
   wrap.classList.toggle("bob",p.hatched&&!p.asleep&&!p.dead);}
 
 /* ---------- FX ---------- */
@@ -3022,7 +3063,7 @@ function openHome(){if(!guard())return;const p=pet();
   openHub("🏡 Home &amp; Style","Build your room, pick a habitat, dress up your pets.",[
     ["🛋️","Decorate Room","place furniture",openDecorate],
     ["🏞️","Habitat",(BGS[p.bg]?BGS[p.bg].nm:"choose scene"),()=>openWardrobe("bg")],
-    ["👗","Wardrobe & Looks","hats, scenes & forms",()=>openWardrobe("hat")]
+    ["👗","Wardrobe & Looks","customs, scenes & forms",()=>openWardrobe("hat")]
   ]);}
 
 /* ---------- Expeditions ---------- */
@@ -3315,7 +3356,26 @@ async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}clou
 /* ---------- Friends: visiting + gifting ---------- */
 function unameFromUser(u){return (((u&&u.email)||"").split("@")[0])||null;}
 function profileSnapshot(){const mk=p=>({type:p.type,name:p.name||"",form:p.form||null,stage:p.stage,bg:p.bg,hat:p.hat,skin:p.skin||null,gen:p.gen||1,trait:p.trait||null,level:p.level||1});
-  return {pets:{puffy:mk(G.pets.puffy),citrus:mk(G.pets.citrus)},level:maxLevel(),coins:G.coins,dex:Object.keys(G.dex||{}).length,asc:G.ascensions||0,placed:G.placedByBg||{},fam:G.familyLevel||1,ts:now()};}
+  var st=G.stats||{};var dex=Object.keys(G.dex||{}).length,ach=Object.keys(G.ach||{}).length,lv=maxLevel(),asc=G.ascensions||0;
+  var score=lv+dex*3+asc*12+ach*2;
+  return {pets:{puffy:mk(G.pets.puffy),citrus:mk(G.pets.citrus)},level:lv,coins:G.coins,dex:dex,ach:ach,asc:asc,fish:st.fishCaught||0,harv:st.harvests||0,cooked:st.cooked||0,score:score,placed:G.placedByBg||{},fam:G.familyLevel||1,ts:now()};}
+async function openDashboard(){openModal("dashModal");var body=$("#dashBody");if(!body)return;body.innerHTML='<div class="sub">Loading the Hall of Fame… 🏆</div>';
+  if(!cloudConfigured()||!sb||!cloudUser){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:20px;line-height:1.6">The 🏆 Hall of Fame needs cloud play.<br>Log in (⚙️ Menu) to join legends from around the world! ☁️</div>';return;}
+  try{const r=await sb.from("profiles").select("username,data").order("updated_at",{ascending:false}).limit(200);
+    var rows=((r&&r.data)||[]).map(function(x){return {u:x.username,d:x.data||{}};}).filter(function(x){return (x.d.asc||0)>=3;});
+    rows.forEach(function(x){x.score=x.d.score||((x.d.level||1)+(x.d.dex||0)*3+(x.d.asc||0)*12+(x.d.ach||0)*2);});
+    rows.sort(function(a,b){return b.score-a.score;});rows=rows.slice(0,30);
+    var me=cloudUsername,md=profileSnapshot();
+    var h='<div class="sub">🏆 Top legends — pets with <b>3+ ascensions</b></div>';
+    if((G.ascensions||0)<3)h+='<div style="background:#fff4e0;border:1px solid #ffd99a;border-radius:10px;padding:8px 10px;font-size:11px;margin-bottom:8px">🔒 You have <b>'+(G.ascensions||0)+'</b> ascension'+((G.ascensions||0)===1?"":"s")+'. Reach <b>3</b> to join the board! ✨</div>';
+    if(!rows.length)h+='<div style="text-align:center;padding:16px;color:var(--muted)">No legends yet — be the first to ascend 3 times! 🏆</div>';
+    else{h+='<div style="display:grid;grid-template-columns:auto 1fr auto;gap:5px 8px;font-size:12px;align-items:center">';
+      rows.forEach(function(x,i){var mine=x.u===me;var medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1)+".";
+        h+='<div style="font-weight:800;text-align:center;'+(mine?"color:#e0533a":"")+'">'+medal+'</div><div style="font-weight:'+(mine?"800":"600")+';'+(mine?"color:#e0533a":"")+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(x.u)+(mine?" (you)":"")+'</div><div style="text-align:right;color:var(--muted);font-size:10px">Lv '+(x.d.level||1)+' · 🧬'+(x.d.dex||0)+' · ✨'+(x.d.asc||0)+'</div>';});
+      h+='</div>';}
+    h+='<div class="menuhd">📊 Your stats</div><div style="font-size:12px;line-height:1.9">⭐ Max level: <b>'+md.level+'</b><br>🧬 Forms discovered: <b>'+md.dex+'</b><br>🏆 Achievements: <b>'+md.ach+'</b><br>✨ Ascensions: <b>'+md.asc+'</b><br>🎣 Fish caught: <b>'+md.fish+'</b> · 🧺 Harvests: <b>'+md.harv+'</b> · 🍽️ Cooked: <b>'+md.cooked+'</b><br>🌟 Legend score: <b>'+md.score+'</b></div>';
+    body.innerHTML=h;
+  }catch(e){body.innerHTML='<div style="text-align:center;color:var(--muted);padding:18px">Couldn\'t load the board right now — try again later.</div>';}}
 async function publishProfile(){if(!sb||!cloudUser||!cloudUsername)return;try{await sb.from("profiles").upsert({user_id:cloudUser.id,username:cloudUsername,data:profileSnapshot(),updated_at:new Date().toISOString()});}catch(e){}}
 const GIFTS=[{k:"coins",e:"🪙",nm:"25 coins",cost:25,amt:25},{k:"seed",e:"🌱",nm:"Berry seed",amt:1},{k:"apple",e:"🍎",nm:"Apple",amt:1},{k:"cake",e:"🎂",nm:"Cake",amt:1}];
 function applyGift(g){if(g.kind==="coins")G.coins+=(g.amount||25);else if(g.kind==="seed")G.seeds.berry=(G.seeds.berry||0)+(g.amount||1);else G.inv[g.kind]=(G.inv[g.kind]||0)+(g.amount||1);}
@@ -3439,7 +3499,7 @@ $("#csSkip").onclick=(e)=>{e.stopPropagation();csEnd();};
 $("#authLogin").onclick=()=>doAuth("login");$("#authSignup").onclick=()=>doAuth("signup");$("#authSkip").onclick=function(){if(confirm("Without an account your progress is only saved on THIS device and could be lost if the browser is cleared. We recommend creating an account so everything saves to the cloud.\n\nPlay offline anyway?")){hideAuth();setSyncStatus();}};$("#logoutBtn").onclick=cloudLogout;
 $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
-$("#belleMascot").onclick=openMailbox;$("#chest").onclick=claimChest;$("#scene").addEventListener("click",placeFurn);$("#decorateBtn").onclick=openDecorate;$("#familyBtn").onclick=()=>{closeModals();openFamily();};$("#friendsBtn").onclick=()=>{closeModals();openFriends();};
+$("#belleMascot").onclick=openMailbox;$("#chest").onclick=claimChest;$("#scene").addEventListener("click",placeFurn);$("#decorateBtn").onclick=openDecorate;$("#familyBtn").onclick=()=>{closeModals();openFamily();};$("#friendsBtn").onclick=()=>{closeModals();openFriends();};$("#dashBtn").onclick=()=>{closeModals();openDashboard();};
 $("#coinChip").onclick=openQuests;$("#questsBtn").onclick=openQuests;$("#journeyChip").onclick=openJourney;$("#lvlChip").onclick=openCollection;
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
 $("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";$("#textBtn").textContent=G.bigText?"🔤 Larger text: On":"🔤 Larger text: Off";$("#cbBtn").textContent=G.cbMode?"🌈 Colorblind aid: On":"🌈 Colorblind aid: Off";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
