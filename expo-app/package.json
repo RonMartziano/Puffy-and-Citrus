@@ -7,7 +7,8 @@
     "start": "expo start",
     "android": "node build-gamehtml.js && expo start --android",
     "ios": "node build-gamehtml.js && expo start --ios",
-    "build:html": "node build-gamehtml.js"
+    "build:html": "node build-gamehtml.js",
+    "build:release": "OBFUSCATE=1 node build-gamehtml.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -15,6 +16,9 @@
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-webview": "13.15.0"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.0"
   },
   "private": true
 }
