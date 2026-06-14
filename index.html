@@ -3216,6 +3216,7 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
   openHub("🧬 Grow &amp; Legacy","Shape who your pets become — then pass on the torch.",[
     ["🧬","Evolution",(p.stage==="adult"?"fully grown ✓":"care grade "+grade),openEvolution],
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
+    ["🏆","Achievements",(Object.keys(G.ach||{}).length+"/"+ACHIEVEMENTS.length+" unlocked"),openQuests],
     ["👪","Ascension & Legacy","ascend & carry on",openFamily],
     ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")+" to spend"),openPrestige]
   ]);}
