@@ -217,6 +217,14 @@
   #cutscene .csDots i.on{background:#ffe6a8;transform:scale(1.2);}
   #cutscene .csNextBtn{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:5;background:#ffe6a8;color:#3a2a10;border:none;font-size:15px;font-weight:800;padding:11px 30px;border-radius:18px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);}
   #cutscene .csSkip{position:absolute;top:10px;right:14px;z-index:5;background:#ffffff26;border:none;color:#fff;font-size:12px;font-weight:700;padding:6px 13px;border-radius:14px;cursor:pointer;}
+  body.bigtext .sub,body.bigtext .lbl,body.bigtext .pct,body.bigtext .nm,body.bigtext .d,body.bigtext .t,body.bigtext .meta,body.bigtext .ft,body.bigtext .qd,body.bigtext .btn,body.bigtext .menuhd{font-size:115%!important;}
+  body.bigtext .stat .lbl{font-weight:800;}
+  body.cb .bar i.low{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.4) 0 3px,transparent 3px 7px)!important;}
+  body.cb .bar i{outline:1px solid rgba(0,0,0,.12);}
+  .syncpill{position:absolute;top:6px;right:8px;z-index:60;display:none;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;cursor:pointer;box-shadow:0 1px 4px #0002;}
+  .syncpill.ok{background:#dff3e0;color:#2f7a3a;}
+  .syncpill.busy{background:#e7eefc;color:#3a5aa8;}
+  .syncpill.warn{background:#ffe2e2;color:#b03030;}
   #authOverlay{position:absolute;inset:0;z-index:95;display:none;align-items:center;justify-content:center;background:radial-gradient(120% 90% at 50% 20%,#ffe6f0,#ffd9a0);padding:24px;}
   #authOverlay.show{display:flex;}
   .authCard{background:#fffdf7;border-radius:22px;padding:22px 18px;width:100%;max-width:320px;text-align:center;box-shadow:var(--shadow);}
@@ -311,6 +319,7 @@
   </div>
 
   <div id="scene">
+    <div class="syncpill" id="syncStatus"></div>
     <div class="sky-obj" id="skyObj">☀️</div>
     <div class="cloud" style="top:26px;animation-delay:0s">☁️</div>
     <div class="cloud" style="top:62px;animation-delay:-14s;font-size:24px">☁️</div>
@@ -556,6 +565,18 @@
     <div id="familyBody"></div>
   </div></div>
 
+  <div class="modal" id="shareModal"><div class="sheet">
+    <div class="closeRow"><h2>📸 Photo</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub">A keepsake card of your two friends 💛</div>
+    <div id="sharePreview" style="width:100%;border-radius:14px;overflow:hidden;margin:6px 0"></div>
+    <button class="btn" id="shareDownload">⬇️ Save photo</button>
+  </div></div>
+
+  <div class="modal" id="almanacModal"><div class="sheet">
+    <div class="closeRow"><h2>📊 Almanac</h2><button class="iconbtn" data-close>✕</button></div>
+    <div id="almanacBody"></div>
+  </div></div>
+
   <div class="modal" id="menuModal"><div class="sheet">
     <div class="closeRow"><h2>⚙️ Menu</h2><button class="iconbtn" data-close>✕</button></div>
     <div id="menuInfo" style="font-size:13px;line-height:1.8;color:var(--muted);margin-bottom:8px"></div>
@@ -564,8 +585,12 @@
     <button class="btn" id="musicBtn" style="background:#bfe0a0">🎵 Music: On</button>
     <button class="btn" id="notifyBtn" style="background:#f0c98a">🔕 Reminders: Off</button>
     <button class="btn" id="motionBtn" style="background:#cfd8e0">🎞️ Motion: On</button>
+    <button class="btn" id="textBtn" style="background:#cfe0d8">🔤 Larger text: Off</button>
+    <button class="btn" id="cbBtn" style="background:#e0d8cf">🌈 Colorblind aid: Off</button>
     <div class="menuhd">Pet &amp; progress</div>
     <button class="btn" id="achBtn" style="background:#ffd27a">🏆 Achievements &amp; quests</button>
+    <button class="btn" id="almanacBtn" style="background:#9ed8c0">📊 Almanac &amp; goals</button>
+    <button class="btn" id="shareBtn" style="background:#f0b9d0">📸 Photo / share card</button>
     <button class="btn" id="renameBtn" style="background:#9ad36b">✏️ Rename current pet</button>
     <div class="menuhd">Story &amp; help</div>
     <button class="btn" id="introBtn" style="background:#b39cf0">📖 Replay intro</button>
@@ -971,7 +996,7 @@ function renderMailbox(){const body=$("#mailBody");G.mail=G.mail||{};G.mailRead=
   let h='<button class="btn orange" id="dailyNoteBtn" style="margin-bottom:8px">🫑 A little note from Belle</button>';
   if(!got.length)h+='<div style="text-align:center;color:var(--muted);font-size:12px;padding:8px">Belle sends letters as you and your pets reach milestones. 💚</div>';
   got.slice().reverse().forEach(function(L){const unread=!G.mailRead[L.id];
-    h+='<div class="letterrow" data-mail="'+L.id+'" style="display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid #eadfce;border-radius:12px;padding:9px 11px;margin-bottom:6px;cursor:pointer">'+(unread?'<span style="color:#ff5d8f">●</span>':'<span style="color:#cdbfae">○</span>')+'<span style="font-size:22px">'+L.e+'</span><div style="flex:1"><div style="font-weight:800;font-size:13px">'+L.t+'</div><div style="font-size:10px;color:var(--muted)">'+(unread?"new — tap to read":"read")+'</div></div></div>';});
+    h+='<div class="letterrow" data-mail="'+L.id+'" style="display:flex;align-items:center;gap:8px;background:'+(unread?"#fff3f7":"#efeae1")+';border:1px solid '+(unread?"#ffc4da":"#e0d8c8")+';border-radius:12px;padding:9px 11px;margin-bottom:6px;cursor:pointer;opacity:'+(unread?"1":".68")+'">'+(unread?'<span style="color:#ff5d8f">●</span>':'<span style="color:#9fb89f">✓</span>')+'<span style="font-size:22px;'+(unread?"":"filter:grayscale(.3)")+'">'+L.e+'</span><div style="flex:1"><div style="font-weight:800;font-size:13px;color:'+(unread?"#3a2a1a":"#8a7d6a")+'">'+L.t+'</div><div style="font-size:10px;color:'+(unread?"#ff5d8f":"var(--muted)")+';font-weight:'+(unread?"700":"400")+'">'+(unread?"NEW — tap to read":"✓ read")+'</div></div></div>';});
   body.innerHTML=h;
   $("#dailyNoteBtn").onclick=()=>{showNote();};
   $$("#mailBody .letterrow").forEach(c=>c.onclick=()=>readLetter(c.dataset.mail));}
@@ -1010,8 +1035,8 @@ const REQ_TYPES=[
  {id:"trick",e:"🎓",say:"Watch me — let's do a trick! 🎓"},
  {id:"sleep",e:"💤",say:"I'm getting sleepy… nap time? 💤"}
 ];
-function makeRequest(){if(G.request)return;if(now()-(G.lastReq||0)<150)return;const p=pet();if(!p.hatched||p.dead||p.asleep||p.needsName)return;
-  const r=rnd(REQ_TYPES);G.request={type:r.id,made:now()};petSay(r.say);if(typeof render==="function")render();}
+function makeRequest(){if(G.request)return;if(now()-(G.lastReq||0)<180000)return;const p=pet();if(!p.hatched||p.dead||p.asleep||p.needsName)return;
+  const r=rnd(REQ_TYPES);G.request={type:r.id,made:now()};G.lastReq=now();petSay(r.say);if(typeof render==="function")render();}
 function reqInfo(){return G.request?REQ_TYPES.find(x=>x.id===G.request.type):null;}
 function fulfillReq(type){if(!G.request)return false;const r=G.request;
   const match=(r.type===type)||(r.type==="feed"&&type==="feed")||(r.type==="fav"&&type==="fav");
@@ -1056,7 +1081,7 @@ function save(){G.updatedAt=now();const data=JSON.stringify(G);
   if(typeof cloudSave==="function")cloudSave();}
 G=loadGame();
 let launchTs=(G&&G.updatedAt)||0,cloudFirst=true;
-try{if(G&&G.reducedMotion&&document.body)document.body.classList.add("rm");}catch(e){}
+try{if(G&&G.reducedMotion&&document.body)document.body.classList.add("rm");if(G&&G.bigText)document.body.classList.add("bigtext");if(G&&G.cbMode)document.body.classList.add("cb");}catch(e){}
 const pet=()=>G.pets[G.active];
 const ageSec=p=>(now()-p.bornAt)/1000;
 
@@ -1846,8 +1871,11 @@ function addXP(p,n){n=Math.round(n*xpMul(p));p.xp+=n;let lv=0;
 const petLevel=()=>pet().level;
 
 /* ---------- Achievements ---------- */
+function achReward(id){const big={collectorall:600,collectorgacha:500,collector16:120,jackpot:400,luckyform:400,fishmaster:400,fish1000:300,fish500:150,fish100:90,legend:300,flawless:200,perfect:100,mythicchef:300,masterchef:120,dynasty:200,duoquest10:200,cozypalace:150,worldbuilder:300,realestate:150,homestead:90};
+  const asc={ascend1:80,ascend3:150,ascend5:250,ascend10:500};
+  if(big[id]!=null)return big[id];if(asc[id]!=null)return asc[id];if(id.indexOf("form_")===0)return 120;return 50;}
 function unlock(id){if(G.ach[id])return;G.ach[id]=true;const a=ACHIEVEMENTS.find(x=>x.id===id);
-  if(a){toast("🏆 "+a.t+" unlocked!");SFX.coin();}
+  if(a){const rw=achReward(id);G.coins+=rw;toast("🏆 "+a.t+" unlocked! +"+rw+"🪙");SFX.coin();}
   for(const hk in HATS){if(HATS[hk].unlock===id&&!G.hatsOwned[hk]){G.hatsOwned[hk]=1;toast("👒 New hat: "+HATS[hk].nm+"!");}}
   for(const bk in BGS){if(BGS[bk].unlock===id&&!G.bgsOwned[bk]){G.bgsOwned[bk]=1;toast("🏞️ New habitat: "+BGS[bk].nm+"!");}}
   save();}
@@ -1886,6 +1914,10 @@ const QUEST_POOL=[
   {id:"spinq",d:"Spin the daily wheel",goal:1,metric:"spin",reward:15},
   {id:"napq",d:"Let a pet take a nap",goal:1,metric:"sleep",reward:10},
   {id:"orderq",d:"Deliver a market order",goal:1,metric:"order",reward:30},
+  {id:"cookq",d:"Cook a dish in the Kitchen",goal:1,metric:"cook",reward:25},
+  {id:"harvest5q",d:"Harvest 5 crops",goal:5,metric:"harvest",reward:35},
+  {id:"hangq",d:"Let the pets hang out together",goal:1,metric:"hang",reward:25},
+  {id:"fish3q",d:"Catch 3 fish",goal:3,metric:"fish",reward:30},
 ];
 function genQuests(){const s=[...QUEST_POOL].sort(()=>Math.random()-.5).slice(0,3);
   return s.map(q=>({id:q.id,d:q.d,goal:q.goal,metric:q.metric,reward:q.reward,prog:0,claimed:false}));}
@@ -1903,7 +1935,8 @@ function showNote(){const msg=rnd(BELLE_NOTES);$("#noteBody").textContent=msg;op
 function maybeEvent(dt){
   if(!G.daily.noteShown && Math.random()<dt*0.004){G.daily.noteShown=true;petSay(rnd(BELLE_NOTES));G.pets.puffy.happy=clamp(G.pets.puffy.happy+4);G.pets.citrus.happy=clamp(G.pets.citrus.happy+4);return;}
   if(Math.random()<dt*0.012)duoChat();
-  if(Math.random()<dt*0.012)makeRequest();
+  if(G.request&&now()-((G.request&&G.request.made)||0)>300000){G.request=null;}
+  if(Math.random()<dt*0.005)makeRequest();
   if(Math.random()<dt*0.002){const ev=rnd(["coins","rainbow","gust","snack"]);
     if(ev==="coins"){const c=8+Math.floor(Math.random()*18);G.coins+=c;SFX.coin();toast("✨ Found "+c+" 🪙 on the ground!");}
     else if(ev==="rainbow"){toast("🌈 A rainbow! Everyone feels great.");unlockSticker("rain");for(const k in G.pets){const q=G.pets[k];q.happy=clamp(q.happy+15);q.health=clamp(q.health+8);}react("🌈");}
@@ -1951,7 +1984,7 @@ function simulate(p,dt,away){
   if(p.asleep){p.energy=clamp(p.energy+dt*0.7);p.hunger=clamp(p.hunger-dt*r*0.4);if(p.energy>=99)p.asleep=false;}
   else{p.hunger=clamp(p.hunger-dt*r);p.happy=clamp(p.happy-dt*r*0.9*(p.trait==="sunny"?0.7:1));p.energy=clamp(p.energy-dt*r*0.7*wmul*(p.trait==="sleepy"?0.6:1));}
   if(!p.asleep&&Math.random()<dt*0.006&&p.poops.length<4)p.poops.push({x:25+Math.random()*50});
-  p.hygiene=clamp(p.hygiene-dt*(r*0.4+p.poops.length*r*1.0)*(p.trait==="tidy"?0.6:1));
+  p.hygiene=clamp(p.hygiene-dt*(r*0.4+p.poops.length*r*1.0)*(p.trait==="tidy"?0.6:1)*((p.shine&&now()<p.shine)?0.45:1));
   if(!p.sick){const risk=(p.poops.length>=2?0.004:0)+(p.health<35?0.004:0)+(p.hygiene<20?0.003:0);if(Math.random()<dt*risk*(p.trait==="hardy"?0.4:1))p.sick=true;}
   let hd=0;if(p.hunger<18)hd-=r*0.8;if(p.happy<15)hd-=r*0.5;if(p.hygiene<18)hd-=r*0.6;if(p.sick)hd-=r;
   if(hd===0&&p.hunger>40&&p.happy>40&&p.hygiene>40)hd+=r*0.5;
@@ -1969,7 +2002,7 @@ function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.
   if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();checkMail();maybeSpawnFloat();} render();save();flushCutscenes();}
 
 /* ---------- Rendering ---------- */
-function setBar(id,v,color){const b=$("#b-"+id);b.style.width=clamp(v)+"%";b.style.background=v<25?"#ff6b6b":color;$("#p-"+id).textContent=Math.round(v);}
+function setBar(id,v,color){const b=$("#b-"+id);b.style.width=clamp(v)+"%";b.style.background=v<25?"#ff6b6b":color;b.classList.toggle("low",v<25);$("#p-"+id).textContent=Math.round(v);}
 let _lastDecorBg=null;
 const SCENE_DECOR={
  meadow:[["🌼",10,70,20,"sway"],["🌷",84,73,20,"sway"],["🌿",30,76,18,"sway"],["🌻",70,72,20,"sway"],["☁️",18,14,24,"fl"],["☁️",62,20,20,"fl"],["🦋",4,34,20,"drift"],["🐝",2,52,18,"drift2"]],
@@ -2056,14 +2089,20 @@ function feed(id){const p=pet();if(G.inv[id]<=0)return;if(p.hunger>=98){toast("T
   if(p.happy>=90)questBump("happy90",1);if(p.hunger>=100)unlock("fullbelly");if(fav)fulfillReq("fav");fulfillReq("feed");
   render();save();if(G.inv[id]<=0)openFeed();}
 function doClean(){if(!guard())return;const p=pet();if(!p.poops.length&&p.hygiene>95){toast("Already squeaky clean! ✨");return;}
-  const hadPoop=p.poops.length;p.poops=[];p.hygiene=clamp(p.hygiene+(G.inv.soap>0?100:(hadPoop?55:40)));if(G.inv.soap>0){G.inv.soap--;toast("Deep clean with soap! 🧴✨");}else toast(hadPoop?"Cleaned up the mess! ✨":"All tidied up! ✨");
+  const hadPoop=p.poops.length;p.poops=[];
+  if((G.inv.bubblebath||0)>0){G.inv.bubblebath--;p.hygiene=100;p.happy=clamp(p.happy+22);p.health=clamp(p.health+8);p.shine=now()+3600000;toast("Deluxe bubble bath! 🛁✨");}
+  else if((G.inv.soap||0)>0){G.inv.soap--;p.hygiene=100;p.happy=clamp(p.happy+12);p.health=clamp(p.health+6);p.shine=now()+1800000;toast("Deep clean with soap! 🧴✨");}
+  else if((G.inv.brush||0)>0){G.inv.brush--;p.hygiene=clamp(p.hygiene+(hadPoop?70:55));p.happy=clamp(p.happy+10);toast("Brushed and groomed! 🪮✨");}
+  else{p.hygiene=clamp(p.hygiene+(hadPoop?55:40));toast(hadPoop?"Cleaned up the mess! ✨":"All tidied up! ✨");}
   p.discipline=clamp(p.discipline+1);if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;addXP(p,10);SFX.clean();bubbleBurst(8);petBounce();questBump("clean",1);G.stats.cleans=(G.stats.cleans||0)+1;if(G.stats.cleans>=10)unlock("clean10");fulfillReq("clean");render();save();}
 function doSleep(){if(!guard())return;const p=pet();p.asleep=!p.asleep;if(p.asleep){questBump("sleep",1);fulfillReq("sleep");}toast(p.asleep?"Lights off... 💤":"Good morning! ☀️");react(p.asleep?"💤":"☀️");render();save();}
 function doHealOrWake(){}
 function doHeal(){if(!guard())return;const p=pet();
-  if(!p.sick&&p.health>=95){toast("Feeling perfectly healthy! 💪");petSay("I feel great!");return;}
-  if((G.inv.medicine||0)<=0){toast("No medicine — buy some in 🛒 Shop → Care.");return;}
-  G.inv.medicine--;p.sick=false;p.health=clamp(p.health+40);unlock("doctor");SFX.happy();react("💊");petSay("All better, thank you! 💕");toast("Medicine given — feeling better!");addXP(p,4);render();save();}
+  if(p.sick){if((G.inv.medicine||0)<=0){toast("No medicine — buy some in 🛒 Shop → Care.");return;}G.inv.medicine--;p.sick=false;p.health=clamp(p.health+40);unlock("doctor");SFX.happy();react("💊");petSay("All better, thank you! 💕");toast("Medicine given — feeling better!");addXP(p,4);render();save();return;}
+  if(p.health<95&&(G.inv.vitamin||0)>0){G.inv.vitamin--;p.health=clamp(p.health+30);p.energy=clamp(p.energy+30);p.happy=clamp(p.happy+6);SFX.happy();react("💉");petSay("Feeling stronger! 💪");toast("Vitamin boost — +health & energy!");addXP(p,4);render();save();return;}
+  if(p.health>=95){if((G.inv.vitamin||0)>0){G.inv.vitamin--;p.energy=clamp(p.energy+40);p.happy=clamp(p.happy+6);SFX.happy();react("💉");toast("Vitamin boost — +energy!");render();save();return;}toast("Feeling perfectly healthy! 💪");petSay("I feel great!");return;}
+  if((G.inv.medicine||0)>0){G.inv.medicine--;p.health=clamp(p.health+40);SFX.happy();react("💊");toast("Medicine given — feeling better!");addXP(p,4);render();save();return;}
+  toast("No medicine or vitamins — buy some in 🛒 Shop → Care.");}
 function patPet(){if(buildMode)return;const p=pet();if(p.dead||!p.hatched||p.needsName)return;if(p.asleep){toast("Shh, sleeping 💤");return;}
   if(p.sick&&Math.random()<0.6)petSay("achoo… I feel sick 🤧 (tap 💊 Heal)");
   petBounce();if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;
@@ -2081,7 +2120,7 @@ function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";grid.style.gri
       c.innerHTML=`<div class="e">${f.e}</div><div class="nm">${f.nm}</div><div class="meta">🍽️+${f.hunger}${f.season?" · "+f.season:""}</div><div class="price">🪙 ${price(f.cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyFood(id,price(f.cost));grid.appendChild(c);});}
   else if(shopTab==="care"){grid.className="grid";
-    [["medicine","💊","Medicine",25,"Cures sickness"],["soap","🧴","Soap",15,"Deep clean"]].forEach(([id,e,nm,cost,meta])=>{
+    [["medicine","💊","Medicine",25,"Cures sickness, +40 health"],["soap","🧴","Soap",15,"Full clean + 30m shine (slower mess)"],["bubblebath","🛁","Bubble Bath",45,"Deluxe clean + happy + 60m shine"],["vitamin","💉","Vitamins",35,"Restores health & energy"],["brush","🪮","Grooming Brush",20,"+hygiene & happiness anytime"]].forEach(([id,e,nm,cost,meta])=>{
       const c=document.createElement("div");c.className="card"+(G.coins<price(cost)?" locked":"");
       c.innerHTML=`<div class="e">${e}</div><div class="nm">${nm}</div><div class="meta">${meta}</div><div class="price">🪙 ${price(cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyItem(id,price(cost));grid.appendChild(c);});}
@@ -2201,7 +2240,7 @@ function openQuests(){const ql=$("#questList");ql.innerHTML="";
   $("#questSub").textContent="Resets daily. Finish for coins!";
   const al=$("#achList");al.innerHTML="";let done=0;
   ACHIEVEMENTS.forEach(a=>{const got=!!G.ach[a.id];if(got)done++;const d=document.createElement("div");d.className="ach"+(got?" done":"");
-    d.innerHTML=`<span class="e">${a.e}</span><div><div class="t">${a.t}</div><div class="d">${a.d}</div></div>${got?'<span class="chk">✓</span>':''}`;al.appendChild(d);});
+    d.innerHTML=`<span class="e">${a.e}</span><div><div class="t">${a.t}</div><div class="d">${a.d}</div><div class="d" style="color:#b07415;font-weight:700">🪙 ${achReward(a.id)} reward</div></div>${got?'<span class="chk">✓</span>':''}`;al.appendChild(d);});
   $("#achSub").textContent=done+" of "+ACHIEVEMENTS.length+" unlocked";openModal("questModal");}
 
 /* ---------- Mini-games ---------- */
@@ -2364,10 +2403,62 @@ function recordForm(p){if(!p.form)return;G.dex[p.form]=true;
   if(p.form==="primalpuffer")unlock("primal");if(p.form==="voidpuffer")unlock("voidlord");if(p.form==="worldtree")unlock("worldtree_a");if(p.form==="celestialorange")unlock("celestial");
   if(Object.keys(G.dex).length>=8)unlock("explorer");if(Object.keys(G.dex).length>=16)unlock("collector16");if(Object.keys(G.dex).length>=(allForms("puffy").length+allForms("citrus").length))unlock("collectorall");}
 function formHint(type,fm){if(fm.tag==="★"){const sp=SPECIALS[type].find(x=>x.k===fm.k);return sp?sp.reqText:"special";}if(fm.tag==="🎰")return "🎰 won from the Lucky Capsule";if(fm.tag==="🛒")return "buy in Shop";return EVO_REQ[fm.tag]||("grade "+fm.tag);}
-function openCollection(){let html="";["puffy","citrus"].forEach(type=>{html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">';allForms(type).forEach(fm=>{const got=G.dex[fm.k];html+='<div class="evoForm '+(got?"on":"locked")+'"'+(got?' data-wear="'+type+'|'+fm.k+'" style="cursor:pointer"':'')+'><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?("🔓 "+formHint(type,fm)+" · tap to wear ✨"):formHint(type,fm))+'</div></div>';});html+='</div>';});$("#collForms").innerHTML=html;
+function _esc(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function buildShareSVG(){const a=G.pets.puffy,b=G.pets.citrus;const bg=BGS[a.bg]||BGS.meadow;
+  const artA=petArt(a,"happy").replace('<svg viewBox=','<svg x="55" y="150" width="260" height="260" preserveAspectRatio="xMidYMid meet" viewBox=');
+  const artB=petArt(b,"happy").replace('<svg viewBox=','<svg x="385" y="150" width="260" height="260" preserveAspectRatio="xMidYMid meet" viewBox=');
+  const day=Math.max(a.birthdays||0,b.birthdays||0);
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" font-family="system-ui,-apple-system,sans-serif">'+
+   '<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+bg.sky+'"/><stop offset="1" stop-color="'+bg.g2+'"/></linearGradient></defs>'+
+   '<rect width="700" height="500" fill="url(#sg)"/>'+
+   '<rect x="12" y="12" width="676" height="476" rx="26" fill="none" stroke="#ffffffcc" stroke-width="5"/>'+
+   '<text x="350" y="60" text-anchor="middle" font-size="34" font-weight="800" fill="#3a2a1a">Puffy &amp; Citrus</text>'+
+   '<text x="350" y="92" text-anchor="middle" font-size="15" fill="#4a3a2a">Day '+day+' · ✨'+(G.ascensions||0)+' ascensions · 🧬 '+Object.keys(G.dex||{}).length+' forms · 🏆 '+Object.keys(G.ach||{}).length+'</text>'+
+   artA+artB+
+   '<text x="185" y="448" text-anchor="middle" font-size="20" font-weight="800" fill="#2a1a10">'+_esc(a.name||"Puffy")+' · Lv '+(a.level||1)+'</text>'+
+   '<text x="515" y="448" text-anchor="middle" font-size="20" font-weight="800" fill="#2a1a10">'+_esc(b.name||"Citrus")+' · Lv '+(b.level||1)+'</text>'+
+   '<text x="350" y="478" text-anchor="middle" font-size="14" fill="#4a3a2a">Made with 💚 for Belle Pepper</text>'+
+   '</svg>';}
+function shareCard(){if(!guard())return;const svg=buildShareSVG();const p=$("#sharePreview");if(p)p.innerHTML=svg;openModal("shareModal");}
+function downloadShare(){const svg=buildShareSVG();const blob=new Blob([svg],{type:"image/svg+xml;charset=utf-8"});const url=URL.createObjectURL(blob);
+  function dl(href,name){const a=document.createElement("a");a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove();}
+  try{const img=new Image();img.onload=function(){try{const cv=document.createElement("canvas");cv.width=1400;cv.height=1000;const ctx=cv.getContext("2d");ctx.drawImage(img,0,0,1400,1000);const png=cv.toDataURL("image/png");URL.revokeObjectURL(url);dl(png,"puffy-and-citrus.png");toast("📸 Saved your photo!");}catch(e){dl(url,"puffy-and-citrus.svg");toast("📸 Saved (SVG)!");}};img.onerror=function(){dl(url,"puffy-and-citrus.svg");toast("📸 Saved (SVG)!");};img.src=url;}catch(e){dl(url,"puffy-and-citrus.svg");}}
+function openAlmanac(){const st=G.stats||{};
+  const fmtT=function(ms){ms=ms||0;const h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000);return h?(h+"h "+m+"m"):(m+"m");};
+  const totalForms=allForms("puffy").length+allForms("citrus").length;
+  const rows=[["⏱️ Playtime",fmtT(st.playMs)],["💰 Coins earned",Math.round(st.coinsEarned||0)],["🪙 Coins now",G.coins],["🍽️ Dishes cooked",st.cooked||0],["🎣 Fish caught",st.fishCaught||0],["🧺 Crops harvested",st.harvests||0],["🍳 Times fed",st.feeds||0],["🕹️ Games played",st.gamesPlayed||0],["🎡 Wheel spins",st.spins||0],["📦 Orders filled",st.orders||0],["🗺️ Expeditions",st.expeditions||0],["⭐ Perfect crops",st.perfectCrops||0],["🤝 Hangouts",st.hangouts||0],["📋 Duo quests",st.duoQuestsDone||0],["✨ Ascensions",G.ascensions||0],["🎰 Gacha rolls",st.gachaRolls||0],["🧬 Forms found",Object.keys(G.dex||{}).length+"/"+totalForms],["🏆 Achievements",Object.keys(G.ach||{}).length+"/"+ACHIEVEMENTS.length]];
+  let h='<div class="sub">Your lifetime record &amp; goals 📊</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">';
+  rows.forEach(function(r){h+='<div style="background:#ffffff80;border-radius:10px;padding:7px 9px"><div style="color:var(--muted);font-size:10px">'+r[0]+'</div><div style="font-weight:800;font-size:14px">'+r[1]+'</div></div>';});
+  h+='</div><div class="menuhd">🎯 Next forms to chase</div>';
+  ["puffy","citrus"].forEach(function(type){const p=G.pets[type];let any="";
+    SPECIALS[type].forEach(function(f){if(G.dex[f.k])return;let met=false;try{met=!!f.req(p);}catch(e){}
+      any+='<div style="display:flex;gap:8px;align-items:flex-start;margin:3px 0;font-size:11px"><span style="min-width:54px;font-weight:800;color:'+(met?"#3b8b1f":"#b07415")+'">'+(met?"✓ ready":"…")+'</span><span style="color:'+(met?"#3b8b1f":"var(--muted)")+'"><b>'+f.nm+'</b> · '+f.reqText+'</span></div>';});
+    if(any)h+='<div style="margin:6px 0"><div style="font-weight:800;font-size:12px;margin-bottom:2px">'+(type==="puffy"?"🐡 Puffy":"🍊 Citrus")+'</div>'+any+'</div>';
+    else h+='<div style="margin:6px 0;font-size:11px;color:#3b8b1f"><b>'+(type==="puffy"?"🐡 Puffy":"🍊 Citrus")+'</b> — every special form discovered! 🎉</div>';});
+  $("#almanacBody").innerHTML=h;openModal("almanacModal");}
+let collPet="all",collStat="all",collType="all";
+function openCollection(){renderCollection();openModal("collModal");}
+function renderCollection(){
+  const chip=(v,cur,g,label)=>'<span class="seedchip'+(cur===v?" on":"")+'" data-cg="'+g+'" data-cv="'+v+'">'+label+'</span>';
+  let html='<div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:8px">'+
+    chip("all",collPet,"pet","All")+chip("puffy",collPet,"pet","🐡")+chip("citrus",collPet,"pet","🍊")+
+    '<span style="width:10px;display:inline-block"></span>'+chip("all",collStat,"stat","Any")+chip("owned",collStat,"stat","Owned")+chip("locked",collStat,"stat","Locked")+
+    '<span style="width:10px;display:inline-block"></span>'+chip("all",collType,"type","Any")+chip("★",collType,"type","★ Special")+chip("🎰",collType,"type","🎰 Gacha")+chip("🛒",collType,"type","🛒 Shop")+chip("grade",collType,"type","Grades")+
+    '</div>';
+  let shown=0;const types=collPet==="all"?["puffy","citrus"]:[collPet];
+  types.forEach(type=>{let cards="";
+    allForms(type).forEach(fm=>{const got=!!G.dex[fm.k];
+      if(collStat==="owned"&&!got)return;if(collStat==="locked"&&got)return;
+      if(collType!=="all"){const isGrade=["★","🎰","🛒"].indexOf(fm.tag)<0;if(collType==="grade"){if(!isGrade)return;}else if(fm.tag!==collType)return;}
+      shown++;
+      cards+='<div class="evoForm '+(got?"on":"locked")+'"'+(got?' data-wear="'+type+'|'+fm.k+'" style="cursor:pointer"':'')+'><div class="fg">'+fm.tag+'</div><div class="fa">'+artFor(type,"adult",fm.k)+'</div><div class="fn">'+(got?fm.nm:"🔒 ???")+'</div><div class="ft" style="font-size:9px">'+(got?("🔓 "+formHint(type,fm)+" · tap to wear ✨"):formHint(type,fm))+'</div></div>';});
+    if(cards)html+='<h2 style="font-size:14px;margin:10px 0 4px">'+(type==="puffy"?"🐡 Puffy forms":"🍊 Citrus forms")+'</h2><div class="evoForms">'+cards+'</div>';});
+  if(!shown)html+='<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">No forms match this filter.</div>';
+  $("#collForms").innerHTML=html;
+  $$("#collForms .seedchip").forEach(c=>c.onclick=function(){const g=c.dataset.cg,v=c.dataset.cv;if(g==="pet")collPet=v;else if(g==="stat")collStat=v;else collType=v;renderCollection();});
   $$("#collForms .evoForm[data-wear]").forEach(function(c){c.onclick=function(){var pr=c.dataset.wear.split("|");wearCollected(pr[0],pr[1]);};});
   $("#collStickers").innerHTML=STICKERS.map(s=>{const u=G.stickers[s.id];return '<div class="sticker '+(u?"":"lock")+'"><div class="se">'+(u?s.e:"❔")+'</div><div class="st">'+(u?s.t:(s.h||"???"))+'</div></div>';}).join("");
-  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(allForms("puffy").length+allForms("citrus").length)+" · tap a found form to wear it ✨";openModal("collModal");}
+  $("#collSub").textContent="Forms found: "+Object.keys(G.dex).length+"/"+(allForms("puffy").length+allForms("citrus").length)+" · tap a found form to wear it ✨";}
 function wearCollected(ty,key){const p=pet();const m=formMeta(ty,key);if(ty!==p.type){toast("Switch to your "+(ty==="puffy"?"Pufferfish":"Orange")+" tab to wear this look");return;}p.skin=key;SFX.coin();react("✨");toast("Now showing "+(m?m.nm:"that form")+"! ✨");render();save();}
 
 /* ---------- Bond ---------- */
@@ -2448,7 +2539,7 @@ function claimAuto(){if(!G.autofish||now()<G.autofish.returnsAt)return;const n=G
   if(G.fishGear&&G.fishGear.goldennet){const bonus=Math.round(total*0.4);G.coins+=bonus;total+=bonus;}
   G.autofish=null;G.autofishCd=now()+1200000;addXP(pet(),30);SFX.level();react("🎁");toast("🤖 Auto-catch: "+n+" fish · +"+total+"🪙"+(best?" · best "+best.e+" "+best.nm:""));renderFish();render();save();}
 function openFishDex(){const d=$("#fishDex");if(d.style.display!=="none"){d.style.display="none";return;}d.style.display="block";
-  let h='<div class="evoForms">';["common","uncommon","rare","epic","mythic"].forEach(function(rar){FISH.filter(f=>f.rar===rar).forEach(function(f){const got=G.fishdex&&G.fishdex[f.id];h+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+RAR_NM[f.rar].replace(/ .*/,"")+'</div><div class="fa" style="font-size:38px">'+(got?f.e:"❔")+'</div><div class="fn">'+(got?f.nm:"???")+'</div><div class="ft" style="font-size:9px">'+(got?(f.val+"🪙"):"")+'</div></div>';});});h+='</div>';d.innerHTML=h;}
+  let h='<div class="evoForms">';["common","uncommon","rare","epic","mythic"].forEach(function(rar){FISH.filter(f=>f.rar===rar).forEach(function(f){const got=G.fishdex&&G.fishdex[f.id];h+='<div class="evoForm '+(got?"on":"locked")+'"><div class="fg">'+RAR_NM[f.rar].replace(/ .*/,"")+'</div><div class="fa" style="font-size:38px">'+(got?f.e:"❔")+'</div><div class="fn">'+(got?f.nm:"???")+'</div><div class="ft" style="font-size:9px">'+(got?(f.val+"🪙 · ×"+(G.inv[f.id]||0)):"")+'</div></div>';});});h+='</div>';d.innerHTML=h;}
 
 /* ---------- Garden ---------- */
 const SEEDS=[{crop:"berry",e:"🫐",t:45,nm:"Berry",cost:6},{crop:"seaweed",e:"🥬",t:60,nm:"Seaweed",cost:8},{crop:"carrot",e:"🥕",t:70,nm:"Carrot",cost:10},{crop:"strawberry",e:"🍓",t:80,nm:"Strawberry",cost:12},{crop:"tomato",e:"🍅",t:90,nm:"Tomato",cost:13},{crop:"corn",e:"🌽",t:100,nm:"Corn",cost:14},{crop:"bellpepper",e:"🫑",t:120,nm:"Bell Pepper",cost:20},{crop:"mushroom",e:"🍄",t:80,nm:"Mushroom",cost:14},{crop:"grapes",e:"🍇",t:85,nm:"Grapes",cost:15},{crop:"chili",e:"🌶️",t:95,nm:"Chili",cost:16},{crop:"watermelon",e:"🍉",t:130,nm:"Watermelon",cost:22},{crop:"goldenapple",e:"🍏",t:200,nm:"Golden Apple",cost:40},{crop:"eggplant",e:"🍆",t:95,nm:"Eggplant",cost:15},{crop:"broccoli",e:"🥦",t:90,nm:"Broccoli",cost:14},{crop:"peach",e:"🍑",t:110,nm:"Peach",cost:18},{crop:"pineapple",e:"🍍",t:140,nm:"Pineapple",cost:24},{crop:"lemon",e:"🍋",t:100,nm:"Lemon",cost:16},{crop:"coconut",e:"🥥",t:140,nm:"Coconut Palm",cost:null},{crop:"dragonfruit",e:"🐉",t:220,nm:"Dragon Fruit",cost:50},{crop:"starfruit",e:"⭐",t:190,nm:"Star Fruit",cost:45},{crop:"moonberry",e:"🌙",t:240,nm:"Moonberry",cost:55},{crop:"sunpetal",e:"🏵️",t:2400,nm:"Sun Petal",cost:550,slow:true},{crop:"eternalseed",e:"🪷",t:1800,nm:"Lotus of Ages",cost:400,slow:true},{crop:"ancientroot",e:"🪵",t:3600,nm:"Ancient Root",cost:900,slow:true},{crop:"phoenixbloom",e:"🌺",t:3000,nm:"Phoenix Bloom",cost:1300,slow:true,ach:"verdant"},{crop:"voidlotus",e:"🪻",t:3300,nm:"Void Lotus",cost:1500,slow:true,ach:"abyssal"}];
@@ -2504,13 +2595,18 @@ const RECIPES=[
  {id:"genesisplate",nm:"Genesis Plate",e:"✨",need:{ambrosia:1,abyssbanquet:1,fortunefeast:1,eternalseed:5}}
 ];
 function canCook(r){for(const k in r.need)if((G.inv[k]||0)<r.need[k])return false;return true;}
-function cook(id){const r=RECIPES.find(x=>x.id===id);if(!r)return;if(!canCook(r)){toast("Not enough crops for "+r.nm+" — grow more! 🌱");return;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");if(["ambrosia","elixirsupreme","timecake","oceanfeast","sunfeast","phoenixroast","voidstew","fortunefeast","lunarfeast","emberplatter","crystalsushi","abyssbanquet","titanstew","worldfeast","genesisplate"].indexOf(id)>=0)unlock("mythicchef");addXP(pet(),10);SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();}
+function cook(id,quiet){const r=RECIPES.find(x=>x.id===id);if(!r)return false;if(!canCook(r)){if(!quiet)toast("Not enough crops for "+r.nm+" — grow more! 🌱");return false;}for(const k in r.need)G.inv[k]-=r.need[k];G.inv[r.id]=(G.inv[r.id]||0)+1;G.stats.cooked=(G.stats.cooked||0)+1;questBump("cook",1);if(G.stats.cooked>=10)unlock("chefcook");if(Object.keys(r.need).some(function(k){return FOODS[k]&&FOODS[k].dish;}))unlock("masterchef");if(["ambrosia","elixirsupreme","timecake","oceanfeast","sunfeast","phoenixroast","voidstew","fortunefeast","lunarfeast","emberplatter","crystalsushi","abyssbanquet","titanstew","worldfeast","genesisplate"].indexOf(id)>=0)unlock("mythicchef");addXP(pet(),10);if(quiet)return true;SFX.coin();react(r.e);toast("Cooked "+r.e+" "+r.nm+"! Feed it for a big boost 🍽️");renderCook();save();return true;}
 function openCook(){if(!guard())return;renderCook();openModal("cookModal");}
 function cropEmoji(k){const sd=SEEDS.find(s=>s.crop===k);if(sd)return sd.e;const fz=FISH.find(x=>x.id===k);if(fz)return fz.e;return (FOODS[k]&&FOODS[k].e)||"❓";}
 function renderCook(){let h='<div class="sub">🍽️ Dishes cooked: <b>'+(G.stats.cooked||0)+'</b> · combine crops &amp; fish into dishes, then feed for a big boost!</div><div class="grid">';
   RECIPES.filter(r=>!r.ach||G.ach[r.ach]).forEach(r=>{const f=FOODS[r.id],ok=canCook(r);const adv=Object.keys(r.need).some(k=>FOODS[k]&&FOODS[k].dish);const need=Object.keys(r.need).map(k=>cropEmoji(k)+(G.inv[k]||0)+"/"+r.need[k]).join("  ");
-    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+(adv?' 🔱':'')+'</div>'+(adv?'<div class="ft" style="font-size:8px;font-weight:800;color:#b07415;letter-spacing:.5px">🔱 MASTER DISH</div>':'')+'<div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+(f.energy?' ⚡+'+f.energy:'')+(f.coins?' 🪙+'+f.coins:'')+(f.bond?' 💞bond':'')+(f.xp?' ⭐+'+f.xp:'')+(f.cure?' 💊cure':'')+(f.hygiene?' 🫧clean':'')+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div><div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
-  h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));}
+    h+='<div class="card'+(ok?"":" locked")+'" data-rid="'+r.id+'"><div class="e">'+r.e+'</div><div class="nm">'+r.nm+(adv?' 🔱':'')+'</div>'+(adv?'<div class="ft" style="font-size:8px;font-weight:800;color:#b07415;letter-spacing:.5px">🔱 MASTER DISH</div>':'')+'<div class="ft" style="font-size:9px">'+need+'</div><div class="ft" style="font-size:9px;color:#3b8b1f">🍽️+'+f.hunger+' 😊+'+f.happy+' ❤️+'+f.health+(f.energy?' ⚡+'+f.energy:'')+(f.coins?' 🪙+'+f.coins:'')+(f.bond?' 💞bond':'')+(f.xp?' ⭐+'+f.xp:'')+(f.cure?' 💊cure':'')+(f.hygiene?' 🫧clean':'')+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(ok?"#3b8b1f":"#8a8290")+'">'+(ok?"🍳 cook":"need crops")+'</div>'+(ok?'<div class="ft cookmax" data-max="'+r.id+'" style="font-size:9px;font-weight:800;color:#b07415;cursor:pointer">🍳 cook ×max</div>':'')+((G.inv[r.id]||0)>0?'<div class="ft selldish" data-sell="'+r.id+'" style="font-size:9px;font-weight:800;color:#b07415;cursor:pointer">💰 sell +'+dishSell(f)+'</div>':'')+'<div class="own">have '+(G.inv[r.id]||0)+'</div></div>';});
+  h+='</div>';$("#cookBody").innerHTML=h;$$("#cookBody .card").forEach(c=>c.onclick=()=>cook(c.dataset.rid));$$("#cookBody .cookmax").forEach(c=>c.onclick=function(e){e.stopPropagation();cookMax(c.dataset.max);});$$("#cookBody .selldish").forEach(c=>c.onclick=function(e){e.stopPropagation();sellDish(c.dataset.sell);});}
+function harvestAll(){const before=G.coins;let n=0;G.garden.plots.forEach(function(pl,i){if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);if(!seed)return;if((now()-pl.plantedAt)/1000>=growTime(seed)){harvest(i,true);n++;}});if(n){SFX.coin();react("🧺");gardenPetHop();toast("🧺 Harvested "+n+" crop"+(n>1?"s":"")+" · +"+(G.coins-before)+"🪙");}else toast("Nothing's ready yet 🌱");renderGarden();save();}
+function plantAll(){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed you own first!");return;}let n=0;for(let i=0;i<G.garden.plots.length;i++){if(G.garden.plots[i])continue;if((G.seeds[selSeed]||0)<=0)break;if(plant(i,true))n++;}if(n){SFX.clean();react("🌱");gardenPetHop();toast("🌱 Planted "+n+"× "+((SEEDS.find(s=>s.crop===selSeed)||{}).nm||"seed"));}else toast("No empty plots!");renderGarden();save();}
+function cookMax(id){let n=0;while(n<10&&cook(id,true))n++;if(n){const r=RECIPES.find(x=>x.id===id);SFX.coin();react(r.e);toast("🍳 Cooked "+n+"× "+r.nm+"!");renderCook();save();}else toast("Not enough crops 🌱");}
+function dishSell(f){return Math.max(8,Math.round((0.45*((f.hunger||0)+(f.happy||0)+(f.health||0)+(f.energy||0))+(f.coins||0))*coinMul(pet())));}
+function sellDish(id){if((G.inv[id]||0)<=0)return;const f=FOODS[id];if(!f)return;const v=dishSell(f);G.inv[id]--;G.coins+=v;SFX.coin();react("💰");toast("Sold "+f.e+" "+f.nm+" · +"+v+"🪙");renderCook();save();}
 function openGarden(){if(!guard())return;renderGarden();openModal("gardenModal");}
 function gardenLevel(){return Math.min(12,1+Math.floor((G.stats.harvests||0)/6));}
 function growTime(seed){if(seed.slow)return seed.t;return seed.t*(G.garden&&G.garden.sprinkler?0.7:1)*(G.garden&&G.garden.greenhouse?0.85:1)*(G.garden&&G.garden.sunlamp?0.8:1)*(1-Math.min(0.30,0.05*prestigeLevel("growth")))*(1-Math.min(0.33,(gardenLevel()-1)*0.03));}
@@ -2536,8 +2632,10 @@ function renderGarden(){
   else owned.forEach(sd=>{sel+='<div class="seedchip'+(selSeed===sd.crop?" on":"")+'" data-seed="'+sd.crop+'">'+sd.e+' '+sd.nm+' ×'+(G.seeds[sd.crop]||0)+'</div>';});
   var _ups=[];if(G.garden.sprinkler)_ups.push('🚿 Sprinkler');if(G.garden.beehive)_ups.push('🐝 Bee Hive');if(G.garden.greenhouse)_ups.push('🏡 Greenhouse');
   sel+='</div>'+(_ups.length?'<div style="text-align:center;font-size:10px;color:#3b8b1f;margin-bottom:6px">'+_ups.join(' · ')+' active ✓</div>':'');
+  sel+='<div style="display:flex;gap:8px;justify-content:center;margin-top:2px"><button class="btn" id="plantAllBtn" style="width:auto;padding:7px 14px">🌱 Plant all</button><button class="btn" id="harvestAllBtn" style="width:auto;padding:7px 14px;background:#7CC24B">🧺 Harvest all</button></div>';
   $("#gardenSub").innerHTML=sel;
   $$("#gardenSub .seedchip").forEach(ch=>ch.onclick=()=>{selSeed=ch.dataset.seed;renderGarden();});
+  {var _pa=$("#plantAllBtn");if(_pa)_pa.onclick=plantAll;var _ha=$("#harvestAllBtn");if(_ha)_ha.onclick=harvestAll;}
   const g=$("#gardenGrid");g.innerHTML="";G.garden.plots.forEach((pl,i)=>{const c=document.createElement("div");c.className="plot";
     if(!pl){c.innerHTML='<div class="pe">🟫</div><div class="ps">tap to plant</div>';c.onclick=()=>plant(i);}
     else{const seed=SEEDS.find(s=>s.crop===pl.crop),gt=growTime(seed),el=(now()-pl.plantedAt)/1000,ready=el>=gt,pct=Math.min(100,el/gt*100);
@@ -2548,8 +2646,8 @@ function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.fi
   if(!pl.watered){pl.watered=true;pl.plantedAt-=gt*1000*0.20;react("💧");gardenPetHop();SFX.clean();toast("💧 Watered "+seed.nm+" — grows faster!");renderGarden();save();return;}
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.fert=true;pl.plantedAt-=gt*1000*0.20;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer — grows 20% faster!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
-function plant(i){if(!selSeed||(G.seeds[selSeed]||0)<=0){toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();}
-function harvest(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;if(harvestMoonActive())amt*=2;G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(3,0.45*Math.sqrt(seed.t||60))*(G.garden.beehive?1.25:1)*(G.garden.goldcan?1.25:1)),bonus="";if(Math.random()<0.12){const bx=5+Math.floor(Math.random()*8);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0)+0.03*prestigeLevel("luck"));if(perf){coins=Math.round(coins*1.8);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");fulfillReq("harvest");toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();}
+function plant(i,quiet){if(!selSeed||(G.seeds[selSeed]||0)<=0){if(!quiet)toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return false;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;if(quiet)return true;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();return true;}
+function harvest(i,quiet){const pl=G.garden.plots[i];if(!pl)return 0;const seed=SEEDS.find(s=>s.crop===pl.crop);let amt=1+Math.floor(Math.random()*2);if(Math.random()<Math.min(0.55,0.05*gardenLevel()))amt*=2;if(G.garden.prism&&Math.random()<0.30)amt*=2;if(harvestMoonActive())amt*=2;G.inv[seed.crop]=(G.inv[seed.crop]||0)+amt;let coins=Math.round(Math.max(3,0.45*Math.sqrt(seed.t||60))*(G.garden.beehive?1.25:1)*(G.garden.goldcan?1.25:1)),bonus="";if(Math.random()<0.12){const bx=5+Math.floor(Math.random()*8);coins+=bx;bonus=" +🎁"+bx;}var perf=Math.random()<(0.04+gardenLevel()*0.01+(G.garden.greenhouse?0.08:0)+(pl.fert?0.15:0)+(G.garden.luckyclover?0.20:0)+0.03*prestigeLevel("luck"));if(perf){coins=Math.round(coins*1.8);G.stats.perfectCrops=(G.stats.perfectCrops||0)+1;if(G.stats.perfectCrops>=10)unlock("perfectfarm");}coins=Math.round(coins*coinMul(pet()));if(G.garden.compost&&Math.random()<0.25)G.inv.fertilizer=(G.inv.fertilizer||0)+1;G.coins+=coins;addXP(pet(),perf?14:9);G.garden.plots[i]=null;react("🧺");gardenPetHop();unlockSticker("harvest");G.stats.harvests=(G.stats.harvests||0)+1;if(G.stats.harvests>=10)unlock("greenthumb");if(G.stats.harvests>=50)unlock("harvest50");if(G.stats.harvests>=100)unlock("harvest100");if(G.stats.harvests>=150)unlock("harvest150");questBump("harvest",1);G.stats.cropKinds=G.stats.cropKinds||{};G.stats.cropKinds[seed.crop]=1;if(Object.keys(G.stats.cropKinds).length>=5)unlock("farmer");SFX.coin();if(perf)react("⭐");fulfillReq("harvest");if(quiet)return coins;toast((perf?"⭐ Perfect! ":"")+"Harvested "+amt+"× "+seed.nm+" · +"+coins+"🪙"+bonus);renderGarden();save();return coins;}
 
 /* ---------- Daily wheel ---------- */
 const WHEEL=[{e:"🪙",t:"+40 coins",fn:()=>{G.coins+=40;}},{e:"🍰",t:"+1 Cake",fn:()=>{G.inv.cake=(G.inv.cake||0)+1;}},{e:"🫑",t:"+1 Bell Pepper",fn:()=>{G.inv.bellpepper=(G.inv.bellpepper||0)+1;}},{e:"💊",t:"+1 Medicine",fn:()=>{G.inv.medicine=(G.inv.medicine||0)+1;}},{e:"🪙",t:"+15 coins",fn:()=>{G.coins+=15;}},{e:"⭐",t:"+50 XP",fn:()=>{addXP(pet(),50);}},{e:"🧴",t:"+1 Soap",fn:()=>{G.inv.soap=(G.inv.soap||0)+1;}},{e:"💎",t:"Jackpot +80!",fn:()=>{G.coins+=80;}}];
@@ -2624,7 +2722,7 @@ function duoHangout(){const a=G.pets.puffy,b=G.pets.citrus;if(!a.hatched||!b.hat
   G.lastHang=now();G.hangouts=(G.hangouts||0)+1;closeModals();
   a.happy=clamp(a.happy+8);b.happy=clamp(b.happy+8);addBond(6);
   const ln=gpick(HANGOUT_LINES);petSay(ln[0]);setTimeout(function(){petSay(ln[1]);},1600);
-  react("💬");SFX.happy();if(G.hangouts>=5)unlock("hangout5");if(G.hangouts>=25)unlock("hangout25");
+  react("💬");SFX.happy();questBump("hang",1);if(G.hangouts>=5)unlock("hangout5");if(G.hangouts>=25)unlock("hangout25");
   toast("🤝 They hung out together! +bond +happy");render();save();}
 const DUOQ=[
  {id:"feed",nm:"Feast Together",e:"🍽️",need:6,stat:function(){return G.stats.feeds||0;},label:"Feed 6 times"},
@@ -2847,10 +2945,12 @@ function openDecorate(){if(!guard())return;closeModals();buildMode=true;buildSel
 function exitBuild(){buildMode=false;$("#buildBar").style.display="none";$("#scene").classList.remove("building");renderRoom();save();}
 function renderBuildBar(){const own=Object.keys(G.furnitureOwned||{}).filter(k=>(G.furnitureOwned[k]||0)>0);
   let h='<div class="bbrow">';if(!own.length)h+='<span style="font-size:11px;opacity:.85">Buy furniture in 🛒 Shop → Room first</span>';
-  else own.forEach(k=>{const f=FURNITURE.find(x=>x.id===k);h+='<span class="bchip'+(buildSel===k?" on":"")+'" data-k="'+k+'">'+f.e+'</span>';});
+  else own.forEach(k=>{const f=FURNITURE.find(x=>x.id===k);var pl=0;for(var b3 in G.placedByBg)G.placedByBg[b3].forEach(function(it){if(it.id===k)pl++;});const avail=Math.max(0,(G.furnitureOwned[k]||0)-pl);h+='<span class="bchip'+(buildSel===k?" on":"")+(avail<=0?" used":"")+'" data-k="'+k+'">'+f.e+'<small style="font-size:9px;vertical-align:super">'+avail+'</small></span>';});
   h+='</div><div class="bbhint" style="opacity:.95;color:#3b8b6f">🛋️ Coziness: '+cozyCount()+' pieces → −'+Math.round((1-cozyDecayMul())*100)+'% stat decay · +'+Math.round(cozyCoinBonus()*100)+'% coins  ·  🏡 '+habitatCount()+' habitats → +'+Math.round(habitatXpBonus()*100)+'% XP</div><div class="bbhint">tap a piece, then tap the habitat to place · tap a placed piece to remove</div><div class="bbhint" style="opacity:.7">each habitat keeps its own layout 🏡</div><button class="bbdone" id="bbDone">Done ✓</button>';
   $("#buildBar").innerHTML=h;$$("#buildBar .bchip").forEach(c=>c.onclick=function(){buildSel=c.dataset.k;renderBuildBar();});$("#bbDone").onclick=exitBuild;}
-function placeFurn(e){if(!buildMode||!buildSel)return;const sc=$("#scene"),r=sc.getBoundingClientRect();let x=50,y=50;if(r.width){x=Math.round((e.clientX-r.left)/r.width*100);y=Math.round((e.clientY-r.top)/r.height*100);}const k=pet().bg;G.placedByBg=G.placedByBg||{};G.placedByBg[k]=G.placedByBg[k]||[];G.placedByBg[k].push({id:buildSel,x:Math.max(4,Math.min(94,x||50)),y:Math.max(8,Math.min(86,y||50))});{var _tot=0;for(var _b in G.placedByBg)_tot+=G.placedByBg[_b].length;if(_tot>=10)unlock("decorator2");if(_tot>=5)unlock("cozyhome");if(_tot>=25)unlock("cozypalace");}SFX.clean();renderRoom();save();}
+function placeFurn(e){if(!buildMode||!buildSel)return;
+  {var _pl=0;for(var _b2 in G.placedByBg)G.placedByBg[_b2].forEach(function(it){if(it.id===buildSel)_pl++;});if(_pl>=((G.furnitureOwned||{})[buildSel]||0)){var _ff=FURNITURE.find(x=>x.id===buildSel);toast("All your "+((_ff&&_ff.nm)||"pieces")+" are placed — buy more in 🛒 Shop → Room.");return;}}
+  const sc=$("#scene"),r=sc.getBoundingClientRect();let x=50,y=50;if(r.width){x=Math.round((e.clientX-r.left)/r.width*100);y=Math.round((e.clientY-r.top)/r.height*100);}const k=pet().bg;G.placedByBg=G.placedByBg||{};G.placedByBg[k]=G.placedByBg[k]||[];G.placedByBg[k].push({id:buildSel,x:Math.max(4,Math.min(94,x||50)),y:Math.max(8,Math.min(86,y||50))});{var _tot=0;for(var _b in G.placedByBg)_tot+=G.placedByBg[_b].length;if(_tot>=10)unlock("decorator2");if(_tot>=5)unlock("cozyhome");if(_tot>=25)unlock("cozypalace");}SFX.clean();renderRoom();save();}
 
 /* ---------- Family / generations ---------- */
 function openFamily(){renderFamily();openModal("familyModal");}
@@ -2949,7 +3049,7 @@ function queueCutscene(slides){csQueue.push(slides);flushCutscenes();}
 function flushCutscenes(){if(csPlaying||csQueue.length===0)return;if(document.querySelector(".modal.open"))return;playCutscene(csQueue.shift());}
 
 /* ---------- Cloud sync (Supabase) ---------- */
-let sb=null,cloudUser=null,cloudTimer=null,cloudLoading=false,cloudUsername=null,visitTarget=null;
+let sb=null,cloudUser=null,cloudTimer=null,cloudLoading=false,cloudUsername=null,visitTarget=null,cloudDirty=false;
 function cloudConfigured(){return !!(window.__SUPABASE__&&window.__SUPABASE__.url&&window.__SUPABASE__.anonKey&&window.supabase);}
 function uemail(u){return (u||"").trim().toLowerCase().replace(/[^a-z0-9_.-]/g,"")+"@puffycitrus.app";}
 function authErr(m){const e=$("#authErr");if(e)e.textContent=m||"";}
@@ -2958,7 +3058,7 @@ function hideAuth(){$("#authOverlay").classList.remove("show");}
 async function cloudInit(){if(!cloudConfigured())return;
   try{sb=window.supabase.createClient(window.__SUPABASE__.url,window.__SUPABASE__.anonKey,{global:{fetch:(u,o)=>fetch(u,Object.assign({cache:"no-store"},o||{}))}});
     const {data}=await sb.auth.getSession();
-    if(data&&data.session){cloudUser=data.session.user;cloudUsername=unameFromUser(cloudUser);await cloudLoad();fetchGifts();publishProfile();}else showAuth();
+    if(data&&data.session){cloudUser=data.session.user;cloudUsername=unameFromUser(cloudUser);await cloudLoad();fetchGifts();publishProfile();setSyncStatus("saved");}else{showAuth();setSyncStatus();}
   }catch(e){/* stay local */}}
 async function doAuth(mode){if(!sb)return;const u=$("#authUser").value,pw=$("#authPass").value;
   if(!u||!u.trim()){authErr("Please enter a username.");return;}
@@ -2976,7 +3076,7 @@ async function doAuth(mode){if(!sb)return;const u=$("#authUser").value,pw=$("#au
     else{const sess=res.data&&res.data.session;cloudUser=res.data&&(res.data.user||(sess&&sess.user));
       if(mode==="signup"&&!sess){authErr("Account created! Now tap Log in. 💚");}
       else if(!cloudUser){authErr("Please tap Log in.");}
-      else{hideAuth();cloudUsername=unameFromUser(cloudUser)||u.trim().toLowerCase();await cloudLoad(false,true);publishProfile();fetchGifts();toast("Welcome, "+u.trim()+"! ☁️");}}
+      else{hideAuth();cloudUsername=unameFromUser(cloudUser)||u.trim().toLowerCase();await cloudLoad(false,true);publishProfile();fetchGifts();setSyncStatus("saved");toast("Welcome, "+u.trim()+"! ☁️");}}
   }catch(e){authErr("Connection problem — try again.");}
   $("#authLogin").disabled=$("#authSignup").disabled=false;}
 async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
@@ -2988,12 +3088,21 @@ async function cloudLoad(silent,preferRemote){if(!sb||!cloudUser)return;
     if(remote&&remote.pets&&(preferRemote||(remote.updatedAt||0)>=localTs)){G=migrate(remote);G.lastSeen=now();for(const k in G.pets)G.pets[k].lastTick=now();syncUnlocks();if(!silent)toast("Progress loaded ☁️");}
     else{cloudLoading=false;await cloudSaveNow();if(!silent)toast("Cloud synced ☁️");}
   }catch(e){if(!silent)toast("Cloud offline — playing locally.");}
-  cloudLoading=false;cloudFirst=false;render();
+  cloudLoading=false;cloudFirst=false;render();setSyncStatus("saved");
   try{localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}}
-function cloudSave(){if(!sb||!cloudUser||cloudLoading)return;if(cloudTimer)return;cloudTimer=setTimeout(function(){cloudTimer=null;cloudSaveNow();},1500);}
+function cloudSave(){if(!sb||!cloudUser)return;cloudDirty=true;setSyncStatus("saving");if(cloudLoading||cloudTimer)return;cloudTimer=setTimeout(function(){cloudTimer=null;cloudSaveNow();},1500);}
 function flushSave(){try{G.updatedAt=now();localStorage.setItem(SAVE_KEY,JSON.stringify(G));}catch(e){}if(sb&&cloudUser&&!cloudLoading){if(cloudTimer){clearTimeout(cloudTimer);cloudTimer=null;}cloudSaveNow();}}
-async function cloudSaveNow(){if(!sb||!cloudUser||cloudLoading)return;try{await sb.from("saves").upsert({user_id:cloudUser.id,data:G,updated_at:new Date().toISOString()});publishProfile();}catch(e){}}
+async function cloudSaveNow(){if(!sb||!cloudUser||cloudLoading)return;try{await sb.from("saves").upsert({user_id:cloudUser.id,data:G,updated_at:new Date().toISOString()});cloudDirty=false;setSyncStatus("saved");publishProfile();}catch(e){cloudDirty=true;setSyncStatus("offline");}}
 function syncUnlocks(){G.hatsOwned=G.hatsOwned||{};G.bgsOwned=G.bgsOwned||{};for(const hk in HATS){if(HATS[hk].unlock&&G.ach[HATS[hk].unlock]&&!G.hatsOwned[hk])G.hatsOwned[hk]=1;}for(const bk in BGS){if(BGS[bk].unlock&&G.ach[BGS[bk].unlock]&&!G.bgsOwned[bk])G.bgsOwned[bk]=1;}}
+function setSyncStatus(st){const el=$("#syncStatus");if(!el)return;
+  if(!cloudConfigured()){el.style.display="none";return;}
+  el.style.display="flex";el.classList.remove("warn","ok","busy");
+  if(!cloudUser){el.className="syncpill warn";el.innerHTML="⚠️ Not synced — log in";el.onclick=showAuth;return;}
+  el.onclick=function(){cloudDirty=true;cloudSaveNow();};
+  if(st==="saved"){el.className="syncpill ok";el.innerHTML="☁️ Saved";}
+  else if(st==="offline"){el.className="syncpill warn";el.innerHTML="⚠️ Offline — will retry";}
+  else{el.className="syncpill busy";el.innerHTML="☁️ Saving…";}}
+setInterval(function(){if(sb&&cloudUser&&cloudDirty&&!cloudLoading&&!cloudTimer)cloudSaveNow();},12000);
 async function cloudLogout(){if(sb){try{await sb.auth.signOut();}catch(e){}}cloudUser=null;cloudUsername=null;closeModals();showAuth();}
 /* ---------- Friends: visiting + gifting ---------- */
 function unameFromUser(u){return (((u&&u.email)||"").split("@")[0])||null;}
@@ -3119,13 +3228,13 @@ $("#mgStart").onclick=startGame;$("#cookBtn").onclick=openCook;$("#fishDexBtn").
 $("#trickTeach").onclick=teachTrick;$("#trickDo").onclick=doTrick;
 $("#csNextBtn").onclick=csNext;$("#introBtn").onclick=()=>{closeModals();playCutscene(INTRO);};$("#howtoBtn").onclick=()=>{closeModals();playCutscene(TUTORIAL);};$("#storyBtn").onclick=()=>{closeModals();playStory();};$("#wardrobeBtn").onclick=()=>{closeModals();openWardrobe();};$("#journeyBtn").onclick=()=>{closeModals();openJourney();};$$("#wardrobeModal .seg").forEach(x=>x.onclick=()=>{wardrobeTab=x.dataset.wtab;$$("#wardrobeModal .seg").forEach(y=>y.classList.toggle("on",y===x));renderWardrobe();});$("#evoAuto").onclick=()=>{pet().targetForm=null;toast("✨ Letting your care decide the path.");save();openEvolution();};
 $("#csSkip").onclick=(e)=>{e.stopPropagation();csEnd();};
-$("#authLogin").onclick=()=>doAuth("login");$("#authSignup").onclick=()=>doAuth("signup");$("#authSkip").onclick=hideAuth;$("#logoutBtn").onclick=cloudLogout;
+$("#authLogin").onclick=()=>doAuth("login");$("#authSignup").onclick=()=>doAuth("signup");$("#authSkip").onclick=function(){if(confirm("Without an account your progress is only saved on THIS device and could be lost if the browser is cleared. We recommend creating an account so everything saves to the cloud.\n\nPlay offline anyway?")){hideAuth();setSyncStatus();}};$("#logoutBtn").onclick=cloudLogout;
 $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
 $("#belleMascot").onclick=openMailbox;$("#chest").onclick=claimChest;$("#scene").addEventListener("click",placeFurn);$("#decorateBtn").onclick=openDecorate;$("#familyBtn").onclick=()=>{closeModals();openFamily();};$("#friendsBtn").onclick=()=>{closeModals();openFriends();};
 $("#coinChip").onclick=openQuests;$("#questsBtn").onclick=openQuests;$("#journeyChip").onclick=openJourney;$("#lvlChip").onclick=openCollection;
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";
-$("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
+$("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";$("#textBtn").textContent=G.bigText?"🔤 Larger text: On":"🔤 Larger text: Off";$("#cbBtn").textContent=G.cbMode?"🌈 Colorblind aid: On":"🌈 Colorblind aid: Off";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
 $("#soundBtn").onclick=()=>{G.sound=!G.sound;$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";if(G.sound){SFX.happy();startMusic();}else stopMusic();save();};
 $("#musicBtn").onclick=()=>{G.music=!G.music;$("#musicBtn").textContent=musicLabel();if(G.music){startMusic();}else stopMusic();save();};
 $("#notifyBtn").onclick=toggleNotify;
@@ -3133,7 +3242,12 @@ $("#eventBanner").onclick=()=>{var ev=currentEvent();if(ev)toast(ev.e+" "+ev.nm+
 document.addEventListener("click",()=>{startMusic();},{once:true});
 $("#renameBtn").onclick=()=>{closeModals();openNameModal(G.active);};
 $("#achBtn").onclick=()=>{closeModals();openQuests();};
+$("#almanacBtn").onclick=()=>{closeModals();openAlmanac();};
+$("#shareBtn").onclick=()=>{closeModals();shareCard();};
+$("#shareDownload").onclick=downloadShare;
 $("#motionBtn").onclick=()=>{G.reducedMotion=!G.reducedMotion;document.body.classList.toggle("rm",G.reducedMotion);$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";save();};
+$("#textBtn").onclick=()=>{G.bigText=!G.bigText;document.body.classList.toggle("bigtext",G.bigText);$("#textBtn").textContent=G.bigText?"🔤 Larger text: On":"🔤 Larger text: Off";save();};
+$("#cbBtn").onclick=()=>{G.cbMode=!G.cbMode;document.body.classList.toggle("cb",G.cbMode);$("#cbBtn").textContent=G.cbMode?"🌈 Colorblind aid: On":"🌈 Colorblind aid: Off";render();save();};
 $("#hardReset").onclick=()=>{if(confirm("Reset everything and start two new eggs?")){localStorage.removeItem(SAVE_KEY);G=freshGame();save();closeModals();render();toast("Fresh start! 🥚🥚");}};
 $("#reviveBtn").onclick=()=>{G.pets[G.active]=freshPet(G.active);render();save();toast("A new egg appears! 🥚");};
 $("#petWrap").onclick=()=>{const p=pet();if(p.dead)return;if(!p.hatched){p.bornAt-=8000;toast("*tap tap* the egg wiggles!");tickAll();return;}patPet();};
@@ -3152,7 +3266,10 @@ if(_away>300)welcomeBack(_snap,_away);
 if(!G.introSeen){G.introSeen=true;G.tutorialSeen=true;save();setTimeout(()=>playCutscene(INTRO,()=>playCutscene(TUTORIAL)),2700);}
 else if(!G.tutorialSeen){G.tutorialSeen=true;save();setTimeout(()=>playCutscene(TUTORIAL),1200);}
 if(G.music===undefined)G.music=true;if(G.notify===undefined)G.notify=false;
-setInterval(()=>{ensureDaily();tickAll();maybeNotify();G.lastSeen=now();},1000);
+setInterval(()=>{ensureDaily();tickAll();maybeNotify();G.lastSeen=now();
+  G.stats=G.stats||{};if(!document.hidden)G.stats.playMs=(G.stats.playMs||0)+1000;
+  if(G._lastCoins==null)G._lastCoins=G.coins;if(G.coins>G._lastCoins)G.stats.coinsEarned=(G.stats.coinsEarned||0)+(G.coins-G._lastCoins);G._lastCoins=G.coins;
+},1000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){ensureDaily();tickAll();G.lastSeen=now();if(cloudUser){cloudLoad(true);fetchGifts();}}else{flushSave();}});
 cloudInit();
 window.addEventListener("pagehide",flushSave);window.addEventListener("beforeunload",flushSave);
