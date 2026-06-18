@@ -246,8 +246,9 @@
   .authTag{font-size:12px;color:var(--muted);margin-bottom:12px;}
   .authErr{color:#d9534f;font-size:12px;min-height:16px;margin:2px 0 4px;font-weight:700;}
   .authSkip{margin-top:12px;font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer;}
-  #speech{position:absolute;left:50%;bottom:200px;transform:translateX(-50%);max-width:230px;background:#fff;color:#3a3340;font-size:13px;font-weight:600;padding:9px 13px;border-radius:16px;box-shadow:var(--shadow);z-index:6;text-align:center;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;}
-  #speech.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+  #speech{position:absolute;left:50%;bottom:200px;transform:translateX(-50%) translateY(4px) scale(.9);max-width:230px;background:#fff;color:#3a3340;font-size:13px;font-weight:700;font-family:var(--font);padding:9px 13px;border-radius:16px;box-shadow:0 6px 18px rgba(90,70,40,.22);z-index:6;text-align:center;opacity:0;transition:opacity .25s,transform .25s cubic-bezier(.2,.9,.3,1.4);pointer-events:none;}
+  #speech::after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-7px;width:0;height:0;border:7px solid transparent;border-top-color:#fff;border-bottom:0;filter:drop-shadow(0 2px 1px rgba(90,70,40,.10));}
+  #speech.show{opacity:1;transform:translateX(-50%) translateY(-6px) scale(1);}
   #speech:after{content:"";position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#fff;border-bottom:0;}
   @keyframes petpop{0%{transform:translateX(-50%) scale(1);}40%{transform:translateX(-50%) scale(1.13);}100%{transform:translateX(-50%) scale(1);}}
   #petWrap.pop{animation:petpop .35s ease;}
@@ -892,13 +893,13 @@ const BGS={
   feasthall:{nm:"Ambrosia Hall",cost:null,unlock:"mythicchef",hint:"Cook a mythic dish",sky:"#3a2f1a",g1:"#caa24a",g2:"#6a4a1a",dark:true},
 };
 const MINIGAMES=[
-  {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats, dodge the 💣!"},
-  {id:"memory",e:"🃏",nm:"Memory Match",desc:"Flip cards and match the pairs."},
-  {id:"whack",e:"🔨",nm:"Whack-a-Snack",desc:"Tap snacks as they pop up, avoid bombs!"},
-  {id:"target",e:"🎯",nm:"Quick Paws",desc:"Tap the target before it jumps away!"},
-  {id:"catch",e:"🧺",nm:"Snack Catch",desc:"Slide the basket to catch treats, dodge 💣!"},
-  {id:"echo",e:"🎵",nm:"Echo",desc:"Watch the colors, then repeat the sequence!"},
-  {id:"frenzy",e:"🐟",nm:"Fish Frenzy",desc:"Tap the fish darting across, dodge the 💣 mines!"},
+  {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats. Do NOT tap the 💣. Simple. (It's not simple.)"},
+  {id:"memory",e:"🃏",nm:"Memory Match",desc:"Flip cards, match pairs, pretend you have a great memory. 🃏"},
+  {id:"whack",e:"🔨",nm:"Whack-a-Snack",desc:"Bonk snacks as they pop up. Bombs are not snacks. 🔨"},
+  {id:"target",e:"🎯",nm:"Quick Paws",desc:"Tap the target before it bolts. It's faster than it looks. 🎯"},
+  {id:"catch",e:"🧺",nm:"Snack Catch",desc:"Slide the basket, catch the treats, dodge the 💣. Butterfingers beware."},
+  {id:"echo",e:"🎵",nm:"Echo",desc:"Watch the colors, repeat the sequence. Like Simon, but tastier. 🎵"},
+  {id:"frenzy",e:"🐟",nm:"Fish Frenzy",desc:"Tap the darting fish, dodge the 💣 mines. Glorious chaos. 🐟"},
 ];
 const ACHIEVEMENTS=[
   {id:"hatch",e:"🐣",t:"First Steps",d:"Hatch an egg"},
@@ -1115,35 +1116,35 @@ function allForms(type){return SPECIALS[type].map(f=>({k:f.k,nm:f.nm,tag:"★"})
 function formMeta(type,key){for(const f of SPECIALS[type])if(f.k===key)return f;for(const f of (GACHA_FORMS[type]||[]))if(f.k===key)return f;for(const f of (SHOP_FORMS[type]||[]))if(f.k===key)return f;for(const t of FORM_TIERS)if(FORMS[type][t].k===key)return FORMS[type][t];return null;}
 function formName(p){const m=p.form?formMeta(p.type,p.form):null;if(m)return m.nm;const t=FORMS[p.type][careGrade(p)];return t?t.nm:"Adult";}
 const BELLE_NOTES=[
-  "You're the sweetest thing in my garden. 🌶️💚",
-  "Thinking of you — go give Puffy a little pat from me!",
-  "Citrus says hi, and so do I. I love you, Belle Pepper. 🫑",
-  "Hope your day is as bright as an orange in the sun. 🍊",
-  "A little reminder: you make everything better. 💛",
-  "Take a breath, drink some water, smile. You've got this!",
-  "If Puffy puffs up, that means he's extra happy to see you. 🐡",
+  "Pat Puffy for me. He acts tough. He is not tough. 🐡",
+  "Drink some water. Yes — you, the human. 💧",
+  "Citrus says hi. Citrus always says hi. 🍊",
+  "Hope your day's as bright as an orange in the sun. 🍊",
+  "Whatever today is throwing at you — you've got it. 💛",
+  "Reminder: you're doing better than you think.",
+  "If Puffy puffs up, that's love. Or gas. Probably love. 🐡",
   "Saving you the biggest hug for later. 🤗",
-  "You + me = the best pair, like oranges and sunshine.",
-  "P.S. you're my favorite person. Always. 💕",
+  "Go easy on yourself today, okay? 🌱",
+  "P.S. thank you for keeping the little ones alive. 💚",
 ];
 const BELLE_LETTERS=[
- {id:"m_welcome",e:"💌",t:"Welcome, little ones",reward:20,cond:()=>G.pets.puffy.hatched||G.pets.citrus.hatched,body:"My dearest Belle,\nThank you for hatching Puffy & Citrus. Back home in Tuvalu we believe every small life you nurture makes the whole island brighter. Take good care of them — and of yourself. 💚"},
- {id:"m_friends",e:"💞",t:"Two peas in a pod",reward:30,cond:()=>G.bond>=50,body:"Belle! I peeked in and saw Puffy and Citrus playing together. They remind me of us — better as a pair. Keep them close. 🫶"},
- {id:"m_grown",e:"🌟",t:"All grown up",reward:60,cond:()=>G.pets.puffy.stage==="adult"||G.pets.citrus.stage==="adult",body:"They grew up! I'm so proud of how you cared for them. The sea around Tuvalu is calmer when little ones are loved. Thank you for being you. 🌊"},
- {id:"m_garden",e:"🌴",t:"Seeds from home",reward:50,cond:()=>(G.stats.harvests||0)>=20,body:"Your garden is thriving! I sent over some palm seeds from the shore. The islanders say a full garden means a full heart. Yours is the fullest I know. 🌱"},
- {id:"m_lvl15",e:"⭐",t:"Growing strong",reward:80,cond:()=>Math.max(G.pets.puffy.level,G.pets.citrus.level)>=15,body:"Look how far you've come. Whenever I miss you, I imagine you here, raising your little ones with that gentle patience of yours. 💛"},
- {id:"m_ascend",e:"✨",t:"A new beginning",reward:120,cond:()=>(G.ascensions||0)>=1,body:"A new generation! In Tuvalu, the elders pass their stories to the young so nothing is ever truly lost — even as the tides rise. You're keeping that spirit alive. ✨"},
- {id:"m_streak",e:"📅",t:"Every single day",reward:70,cond:()=>(G.streak||0)>=7,body:"You've shown up every day — that steady, quiet love is the most precious kind. It's exactly how you love me, too. Thank you, my anchor. ⚓"},
- {id:"m_journey",e:"🏆",t:"Champion of Belle",reward:200,cond:()=>!!G.ach.journeydone,body:"You finished our whole journey. From the lowest atoll to the highest star — you did it all. I love you more than the ocean is wide, Belle Pepper. 🏆💚"},
- {id:"m_mythic",e:"🐉",t:"A living legend",reward:300,cond:()=>!!(G.ach.eternal_p||G.ach.gaia||G.ach.titan||G.ach.cosmos||G.ach.chronos||G.ach.leviathan||G.ach.solaris||G.ach.prism_a),body:"A mythic friend?! That's the rarest thing in any world. But you'll always be the rarest, most wonderful thing in mine. Forever yours. 🌠"},
- {id:"m_fisher",e:"🎣",t:"The patient sea",reward:120,cond:()=>(G.stats.fishCaught||0)>=200,body:"Two hundred catches! The Tuvaluan fishermen would call you one of their own. Patience by the water is its own kind of prayer. 🌊"},
- {id:"m_chef",e:"👨‍🍳",t:"A taste of home",reward:160,cond:()=>!!G.ach.mythicchef,body:"You cooked something legendary! When I'm homesick I close my eyes and imagine your cooking. It tastes like belonging. 🍲💚"},
- {id:"m_orchard",e:"🧺",t:"An endless harvest",reward:150,cond:()=>(G.stats.harvests||0)>=200,body:"Your little farm feeds a whole island now. The elders say abundance shared is abundance doubled. You've doubled my heart. 🌾"},
- {id:"m_lucky",e:"🎰",t:"Fortune smiles",reward:200,cond:()=>!!G.ach.jackpot,body:"The rarest luck found you! But I've known for years — loving you was the luckiest thing that ever happened to me. 🍀"},
- {id:"m_devoted",e:"🌅",t:"Three lifetimes",reward:260,cond:()=>(G.ascensions||0)>=3,body:"Three new beginnings, and still you return. In Tuvalu we say the tide always comes home. So do you. Always. 🌅"},
- {id:"m_dynasty",e:"♾️",t:"Bloodline of love",reward:500,cond:()=>(G.ascensions||0)>=10,body:"Ten generations! You've built something that will outlast the rising seas — a story of care passed on forever. I'm in awe of you, Belle Pepper. ♾️💚"},
- {id:"m_dex",e:"📖",t:"Every wonder",reward:280,cond:()=>Object.keys(G.dex||{}).length>=30,body:"Thirty forms discovered! Your curiosity lights up the dark like lanterns on the lagoon. Never stop wondering, my love. 🏮"},
- {id:"m_complete",e:"🌈",t:"The whole world",reward:600,cond:()=>!!G.ach.collectorall,body:"You found them all. Every single one. There's nothing left to discover — except how much more I can love you tomorrow than today. 🌈💛"}
+ {id:"m_welcome",e:"💌",t:"Welcome, little ones",reward:20,cond:()=>G.pets.puffy.hatched||G.pets.citrus.hatched,body:"You hatched them! Incredible. I panicked the entire boat ride here wondering if they'd make it — and they did, because of you. Tiny lives, big job. You've got this. 💚 — Belle"},
+ {id:"m_friends",e:"💞",t:"Two peas in a pod",reward:30,cond:()=>G.bond>=50,body:"I peeked in and caught Puffy and Citrus actually getting along. Took them long enough. Reminds me a little of us, honestly. Keep them close. 🫶"},
+ {id:"m_grown",e:"🌟",t:"All grown up",reward:60,cond:()=>G.pets.puffy.stage==="adult"||G.pets.citrus.stage==="adult",body:"THEY GREW UP. I'm not crying, you're crying. (Okay, I'm crying.) You raised them so well — thank you for taking this seriously when it would've been easier not to. 🌟"},
+ {id:"m_garden",e:"🌴",t:"Seeds from home",reward:50,cond:()=>(G.stats.harvests||0)>=20,body:"Your garden's thriving! I tucked some palm seeds from the shore into this letter. The folks here say a full garden means a full heart — yours looks absolutely stuffed. 🌱"},
+ {id:"m_lvl15",e:"⭐",t:"Growing strong",reward:80,cond:()=>Math.max(G.pets.puffy.level,G.pets.citrus.level)>=15,body:"Look how far you've come. On the long days here, I picture you out there patiently raising your two little disasters. Genuinely helps. 💛"},
+ {id:"m_ascend",e:"✨",t:"A new beginning",reward:120,cond:()=>(G.ascensions||0)>=1,body:"A whole new generation! Here the elders pass their stories down so nothing's ever truly lost. You're doing the same thing, in your own quiet way. ✨"},
+ {id:"m_streak",e:"📅",t:"Every single day",reward:70,cond:()=>(G.streak||0)>=7,body:"You've shown up every single day. That boring, unglamorous, no-applause kind of showing-up? That's the real stuff. Don't underestimate it. ⚓"},
+ {id:"m_journey",e:"🏆",t:"The whole journey",reward:200,cond:()=>!!G.ach.journeydone,body:"You finished the entire journey — from the lowest sandbar to the highest star. I knew you'd make it. I just didn't expect to be THIS proud. 🏆💚"},
+ {id:"m_mythic",e:"🐉",t:"A living legend",reward:300,cond:()=>!!(G.ach.eternal_p||G.ach.gaia||G.ach.titan||G.ach.cosmos||G.ach.chronos||G.ach.leviathan||G.ach.solaris||G.ach.prism_a),body:"A MYTHIC one?! Do you understand how rare that is? Frame it. I've been telling everyone on the island — they're confused but very supportive. 🌠"},
+ {id:"m_fisher",e:"🎣",t:"The patient sea",reward:120,cond:()=>(G.stats.fishCaught||0)>=200,body:"Two hundred catches! The fishers here would adopt you on the spot. Sitting by the water, waiting, hoping — that's basically a prayer where I'm from. 🌊"},
+ {id:"m_chef",e:"👨‍🍳",t:"A taste of home",reward:160,cond:()=>!!G.ach.mythicchef,body:"You cooked something legendary! When I'm homesick I just imagine a kitchen that smells like this one must. Tastes like belonging. Save me a plate. 🍲💚"},
+ {id:"m_orchard",e:"🧺",t:"An endless harvest",reward:150,cond:()=>(G.stats.harvests||0)>=200,body:"Your little farm could feed the whole island now. They say abundance shared is abundance doubled — so consider my heart officially doubled. 🌾"},
+ {id:"m_lucky",e:"🎰",t:"Fortune smiles",reward:200,cond:()=>!!G.ach.jackpot,body:"The rarest luck found you! Meanwhile I once won a raffle for a single coconut. We are simply not the same. So happy for you, truly. 🍀"},
+ {id:"m_devoted",e:"🌅",t:"Three lifetimes",reward:260,cond:()=>(G.ascensions||0)>=3,body:"Three new beginnings, and still you come back. The tide always returns to shore here. Apparently, so do you. That means more than you know. 🌅"},
+ {id:"m_dynasty",e:"♾️",t:"A lasting legacy",reward:500,cond:()=>(G.ascensions||0)>=10,body:"TEN generations. You've built something that outlasts, well, basically everything. That's not a score anymore — that's a legacy. I'm in awe of you. ♾️💚"},
+ {id:"m_dex",e:"📖",t:"Every wonder",reward:280,cond:()=>Object.keys(G.dex||{}).length>=30,body:"Thirty forms discovered! Your curiosity lights things up like lanterns on the lagoon. Never lose that — it might be my favorite thing about you. 🏮"},
+ {id:"m_complete",e:"🌈",t:"The whole world",reward:600,cond:()=>!!G.ach.collectorall,body:"You found them ALL. Every single one. There's nothing left to discover… except whatever you decide to pour all that love into next. Can't wait. 🌈💛"}
 ];
 function checkMail(){G.mail=G.mail||{};let got=0;BELLE_LETTERS.forEach(function(L){try{if(!G.mail[L.id]&&L.cond()){G.mail[L.id]=now();got++;}}catch(e){}});if(got){toast("💌 New letter from Belle! Tap the 🫑");}}
 function unreadMail(){G.mail=G.mail||{};G.mailRead=G.mailRead||{};let n=0;for(const id in G.mail)if(!G.mailRead[id])n++;return n;}
@@ -1165,15 +1166,15 @@ function readLetter(id){const L=BELLE_LETTERS.find(x=>x.id===id);if(!L)return;G.
 /* ---- Pet relationship & chatter ---- */
 function bondTitle(){var b=G.bond||0;return b>=100?"Inseparable 💖":b>=75?"Best Friends 🌟":b>=50?"Good Friends 💞":b>=25?"Friends 🤝":"Getting to know each other";}
 const DUO_CHAT=[
- {min:0,a:"hi Citrus! 🍊",b:"hi Puffy! 🐡"},
- {min:0,a:"what's for snack? 😋",b:"hopefully bell peppers! 🫑"},
- {min:0,a:"race you around the pond!",b:"you're on! 💨"},
- {min:25,a:"you're my best buddy 💕",b:"aww, you too! 🥰"},
- {min:25,a:"wanna do a trick together?",b:"yes! ta-da ✨"},
- {min:50,a:"i had the best dream about us 😴",b:"was there cake? 🍰"},
- {min:50,a:"Belle would love this 💚",b:"she really would 🫑"},
- {min:75,a:"besties forever?",b:"forever and ever 🌟"},
- {min:100,a:"i could float beside you all day ♾️",b:"then let's never stop 💖"}
+ {min:0,a:"do you ever worry the sky might just… fall?",b:"every day's a gift, Puffy! ☀️"},
+ {min:0,a:"i puffed up again. it's a condition.",b:"it's a personality, buddy 😄"},
+ {min:0,a:"race you round the pond — wait, is that safe??",b:"only one way to find out! 💨"},
+ {min:25,a:"how are you calm ALL the time?",b:"it's just vitamin C, baby 🍊"},
+ {min:25,a:"if i get eaten, tell my story.",b:"you live indoors, Puffy. you're fine. 💕"},
+ {min:50,a:"nightmare. we ran out of snacks.",b:"was there at least cake in it? 🍰"},
+ {min:50,a:"i think… i might actually be happy?",b:"don't overthink it 🥰"},
+ {min:75,a:"best friends even if the sky falls?",b:"especially then 🌟"},
+ {min:100,a:"i'd float beside you till the end of time ♾️",b:"okay now i'm crying. orange juice, technically 💧"}
 ];
 function compSay(t){const e=$("#compSpeech");if(!e)return;e.textContent=t;e.classList.add("show");clearTimeout(compSayT);compSayT=setTimeout(function(){e.classList.remove("show");},3200);}
 let compSayT=null;
@@ -1183,15 +1184,15 @@ function duoChat(){const a=G.pets.puffy,b=G.pets.citrus;if(!a.hatched||!b.hatche
   petSay(activeIsPuffy?c.a:c.b);setTimeout(function(){compSay(activeIsPuffy?c.b:c.a);},1300);}
 /* ---- Pet needs / requests ---- */
 const REQ_TYPES=[
- {id:"feed",e:"🍎",say:"I'm hungry — feed me something! 🍎"},
- {id:"fav",e:"⭐",say:"I'm craving my favorite food! ⭐"},
- {id:"play",e:"🎮",say:"Can we play a mini-game? 🎮"},
- {id:"fish",e:"🎣",say:"Let's go fishing together! 🎣"},
- {id:"harvest",e:"🧺",say:"I want to harvest some crops! 🧺"},
- {id:"clean",e:"🧼",say:"I feel a bit messy… clean me up? 🧼"},
- {id:"pat",e:"🫶",say:"I'd really love some pats! 🫶"},
- {id:"trick",e:"🎓",say:"Watch me — let's do a trick! 🎓"},
- {id:"sleep",e:"💤",say:"I'm getting sleepy… nap time? 💤"}
+ {id:"feed",e:"🍎",say:"feed me before i file a complaint 🍎"},
+ {id:"fav",e:"⭐",say:"i want the GOOD snack. you know the one. ⭐"},
+ {id:"play",e:"🎮",say:"entertain me, human 🎮"},
+ {id:"fish",e:"🎣",say:"let's go bother some fish 🎣"},
+ {id:"harvest",e:"🧺",say:"the crops are READY, let's GO 🧺"},
+ {id:"clean",e:"🧼",say:"i made a mess. you're welcome. 🧼"},
+ {id:"pat",e:"🫶",say:"pat me. it's not optional. 🫶"},
+ {id:"trick",e:"🎓",say:"watch this, watch this, WATCH 🎓"},
+ {id:"sleep",e:"💤",say:"i require a nap immediately 💤"}
 ];
 function makeRequest(){["puffy","citrus"].forEach(function(k){var p=G.pets[k];if(!p||p.request)return;if(!p.hatched||p.dead||p.asleep||p.needsName)return;if(now()-(p.lastReq||0)<180000)return;
   var other=G.pets[k==="puffy"?"citrus":"puffy"];var avoid=(other&&other.request)?other.request.type:null;
@@ -1202,7 +1203,7 @@ function fulfillReq(type){var p=pet();if(!p||!p.request)return false;if(p.reques
   p.request=null;p.lastReq=now();G.stats.reqDone=(G.stats.reqDone||0)+1;
   const rc=Math.round((22+(p.level||1)*2)*coinMul(p));G.coins+=rc;p.happy=clamp(p.happy+12);addXP(p,18);addBond(4);
   if(G.stats.reqDone>=10)unlock("helper");if(G.stats.reqDone>=50)unlock("helper2");if(G.stats.reqDone>=150)unlock("helper3");
-  SFX.coin();react("🎉");react("💛");petSay("yay, thank you! 💕");toast("💛 Wish granted! +"+rc+"🪙 · +bond");save();return true;}
+  SFX.coin();react("🎉");react("💛");petSay("knew you'd come through 😌");toast("💛 Wish granted! +"+rc+"🪙 · +bond");save();return true;}
 const NAME_SUGGEST={puffy:["Puffy","Bubbles","Spike","Sir Puffs","Pepper Jr."],citrus:["Citrus","Sunny","Zesty","Clemmie","Pip"]};
 
 /* ---------- State ---------- */
@@ -1277,7 +1278,7 @@ const EVENTS=[
 function currentEvent(){const d=new Date(),dow=d.getDay();if(dow!==0&&dow!==6)return null;const day=Math.floor(d.getTime()/86400000);return EVENTS[day%EVENTS.length];}
 function harvestMoonActive(){return new Date().getHours()===19;}
 function maxLevel(){return Math.max(G.pets.puffy.level||1,G.pets.citrus.level||1);}
-function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;const L=maxLevel();switch(id){
+function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;if((G.ascensions||0)>0)return true;const L=maxLevel();switch(id){
   case "play":case "garden":case "game":return true;
   case "fish":return L>=3;
   case "wheel":return L>=4;
@@ -1289,13 +1290,13 @@ function featUnlocked(id){if(G.revealed&&G.revealed[id])return true;const L=maxL
   default:return true;}}
 const REVEALS={fish:["🎣","Fishing"],wheel:["🎡","Daily Wheel"],tricks:["🎓","Tricks"],grow:["🧬","Evolution & Legacy"],home:["🏡","Home & Style"],exped:["🧭","Expeditions"],together:["🤝","Play Together"]};
 const REVEAL_TIP={
- fish:"Cast a line from the Play menu — catch fish to sell, cook into special dishes, and fill your fish-dex. Buy bait & rods in the Shop → Fishing!",
- wheel:"Spin once every day in the Play menu for free coins and treats. Don't miss a day!",
- tricks:"Teach your pets tricks in the Play menu, level them up with ⭐ mastery, then put on Talent & Duo Shows for rewards.",
- grow:"Open the Grow tab to see your pet's evolution path and every form you've discovered. The better your care grade, the rarer the form they become!",
- home:"Pick habitats, dress your pets in hats & 'Looks', and decorate your room with furniture (buy it in Shop → Room, place it via ⚙️ → Decorate). Matching furniture sets give bonuses!",
- exped:"Send a pet on an idle adventure and collect the loot when they return — even while you're away.",
- together:"Your two friends can now hang out and perform Duo Shows together for bond and coins. 🤝"
+ fish:"You found a fishing rod! Cast from the 🎈 Play menu, tap to reel, and try not to flinch when something bites. Sell your catch or cook it into fancy dishes. 🎣",
+ wheel:"A free spin, every single day, in 🎈 Play. Free stuff for doing almost nothing? Don't question it. Just spin. 🎡",
+ tricks:"Teach your pets tricks in 🎈 Play, then make them perform for coins. Slightly exploitative? Sure. They adore it though. 🎓",
+ grow:"The 🧬 Grow tab shows the evolution path and every form you've found. Better care = rarer forms — tap a pet's name badge to aim for a specific one. ✨",
+ home:"Decorate time! Pick habitats, dress your pets in costumes, and furnish the room (buy in 🛒 Shop → Room, place via ⚙️ → Decorate). Matching sets give bonuses. 🛋️",
+ exped:"Send a pet on an idle adventure and grab the loot when they're back — even with the app closed. They'll be fine. Probably. 🧭",
+ together:"Both pets are old enough to team up! Tap 🤝 Duo on the side rail for daily challenges that earn 🔮 Fusion Shards. 💞"
 };
 function checkReveals(){if(!G.revealed)G.revealed={};for(const id in REVEALS){if(featUnlocked(id)&&!G.revealed[id]){G.revealed[id]=true;SFX.coin();if(REVEAL_TIP[id]&&typeof queueCutscene==="function"){queueCutscene([{art:REVEALS[id][0],big:REVEALS[id][1]+" unlocked!",text:REVEAL_TIP[id],bg:CS_TUT_BG}]);}else toast("🎉 New unlocked: "+REVEALS[id][0]+" "+REVEALS[id][1]+"!");}}}
 const PRESTIGE_UPGRADES=[
@@ -2194,6 +2195,7 @@ function maybeEvent(dt){
 
 /* ---------- Simulation ---------- */
 function stageForAge(a){if(a<BABY_END)return "baby";if(a<CHILD_END)return "child";if(a<TEEN_END)return "teen";return "adult";}
+function canGrowUp(p){return !!(p&&p.hatched&&!p.dead&&p.stage==="teen"&&ageSec(p)>=TEEN_END);}
 function careGrade(p){const ratio=p.careGood/(p.careGood+p.careMistakes+1);
   const score=ratio*65+(p.discipline/100)*20+Math.min(15,p.level);
   if(score>=98&&p.level>=20&&p.discipline>=80)return "UR";
@@ -2221,10 +2223,7 @@ function simulate(p,dt,away){
     p.trait=p.trait||TRAITS[Math.floor(Math.random()*TRAITS.length)].id;SFX.happy();toast((p.type==="puffy"?"Puffy hatched! 🐡":"Citrus sprouted! 🍊"));}p.lastTick=now();return;}
   const a=ageSec(p),ns=stageForAge(a);
   if(ns!=="adult"&&ns!==p.stage){p.stage=ns;if(!away)queueCutscene([{art:petArt(p,"happy"),big:petName(p)+" is growing!",text:STAGE_STORY[ns]||"Getting bigger every day!"}]);}
-  if(ns==="adult"&&p.stage!=="adult"){p.stage="adult";p.form=chooseForm(p);recordForm(p);
-    const g=careGrade(p);unlock("adult");if(g==="SS"||g==="SSS"||g==="UR")unlock("perfect");
-    if(g==="SSS"||g==="UR")unlock("flawless");if(g==="UR")unlock("legend");
-    if(!away){SFX.level();confetti();queueCutscene([{art:"✨",big:"Evolution!",text:petName(p)+" begins to change…"},{art:petArt(p,"happy"),big:formName(p)+"!",text:adultStory(g,p)}]);}}
+  // Teen no longer auto-evolves — once the teen stage completes, the player taps "Grow Up" (growUpNow) to choose the adult form.
   // birthday milestones (every 24h of age)
   const days=Math.floor(a/86400);if(days>p.birthdays&&p.hatched){p.birthdays=days;unlock("birthday");unlockSticker("bday");if(days>=7)unlock("devoted");
     G.coins+=30;if(!away){react("🎂");SFX.level();toast("🎂 Happy birthday, "+petName(p)+"! Day "+days+". +30🪙");}}
@@ -2411,7 +2410,7 @@ function render(){const p=pet();
     t.querySelector(".nm").textContent=pp.name||(t.dataset.pet==="puffy"?"Puffy":"Citrus");});
   const ov=$("#deadOverlay");if(p.dead){ov.classList.add("show");$("#deadMsg").textContent=petName(p)+" lived "+(a/3600).toFixed(1)+"h. "+(p.careMistakes<60?"A wonderful, well-loved life. 💛":"Check in a little more often next time. 💛");}else ov.classList.remove("show");
   $$('.act[data-act="sleep"]')[0].querySelector('.e').textContent=p.asleep?"☀️":"💤";
-  {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}{const c=chestReady(),ch=$("#chest");if(ch){if(c>=10&&p.hatched&&!p.dead){ch.style.display="block";$("#chestAmt").textContent=c;}else ch.style.display="none";}}{const pb=$("#playBadge");if(pb)pb.style.display=(expReady()||journeyClaimable())?"flex":"none";}{const jb=$("#journeyBadge");if(jb)jb.style.display=journeyClaimable()?"flex":"none";}{const djb=$("#dockJourneyBadge");if(djb)djb.style.display=journeyClaimable()?"flex":"none";}{var _ready=(p.hatched&&!p.dead&&p.stage==="teen");var _gr=$("#growReady");if(_gr)_gr.style.display=_ready?"block":"none";var _gdb=$("#growDockBadge");if(_gdb)_gdb.style.display=_ready?"flex":"none";var _ev=currentEvent(),_eb=$("#eventBanner");if(_eb){if(_ev&&!_ready){_eb.style.display="block";_eb.textContent=_ev.e+" "+_ev.nm;}else _eb.style.display="none";}}{["play","garden","fish","grow","home"].forEach(function(id){var _db=document.querySelector('.dk[data-dock="'+id+'"]');if(_db)_db.style.display=featUnlocked(id)?"flex":"none";});
+  {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}{const c=chestReady(),ch=$("#chest");if(ch){if(c>=10&&p.hatched&&!p.dead){ch.style.display="block";$("#chestAmt").textContent=c;}else ch.style.display="none";}}{const pb=$("#playBadge");if(pb)pb.style.display=(expReady()||journeyClaimable())?"flex":"none";}{const jb=$("#journeyBadge");if(jb)jb.style.display=journeyClaimable()?"flex":"none";}{const djb=$("#dockJourneyBadge");if(djb)djb.style.display=journeyClaimable()?"flex":"none";}{var _ready=canGrowUp(p);var _gr=$("#growReady");if(_gr)_gr.style.display=_ready?"block":"none";var _gdb=$("#growDockBadge");if(_gdb)_gdb.style.display=_ready?"flex":"none";var _ev=currentEvent(),_eb=$("#eventBanner");if(_eb){if(_ev&&!_ready){_eb.style.display="block";_eb.textContent=_ev.e+" "+_ev.nm;}else _eb.style.display="none";}}{["play","garden","fish","grow","home"].forEach(function(id){var _db=document.querySelector('.dk[data-dock="'+id+'"]');if(_db)_db.style.display=featUnlocked(id)?"flex":"none";});
  var _L=maxLevel(),_both=G.pets.puffy.hatched&&G.pets.citrus.hatched;
  {var rdj=$("#railDuo");if(rdj)rdj.style.display=(_both&&_L>=6)?"flex":"none";}
  {var re2=$("#railEvents");if(re2)re2.style.display=(_L>=6)?"flex":"none";}
@@ -2452,13 +2451,13 @@ function doClean(){if(!guard())return;const p=pet();if(!p.poops.length&&p.hygien
 function doSleep(){if(!guard())return;const p=pet();p.asleep=!p.asleep;if(p.asleep){questBump("sleep",1);fulfillReq("sleep");}toast(p.asleep?"Lights off... 💤":"Good morning! ☀️");react(p.asleep?"💤":"☀️");render();save();}
 function doHealOrWake(){}
 function doHeal(){if(!guard())return;const p=pet();
-  if(p.sick){if((G.inv.medicine||0)<=0){toast("No medicine — buy some in 🛒 Shop → Care.");return;}G.inv.medicine--;p.sick=false;p.health=clamp(p.health+40);unlock("doctor");SFX.happy();react("💊");petSay("All better, thank you! 💕");toast("Medicine given — feeling better!");addXP(p,4);render();save();return;}
+  if(p.sick){if((G.inv.medicine||0)<=0){toast("No medicine — buy some in 🛒 Shop → Care.");return;}G.inv.medicine--;p.sick=false;p.health=clamp(p.health+40);unlock("doctor");SFX.happy();react("💊");petSay("ugh, fine — i feel better. thanks. 💕");toast("Medicine given — feeling better!");addXP(p,4);render();save();return;}
   if(p.health<95&&(G.inv.vitamin||0)>0){G.inv.vitamin--;p.health=clamp(p.health+30);p.energy=clamp(p.energy+30);p.happy=clamp(p.happy+6);SFX.happy();react("💉");petSay("Feeling stronger! 💪");toast("Vitamin boost — +health & energy!");addXP(p,4);render();save();return;}
-  if(p.health>=95){if((G.inv.vitamin||0)>0){G.inv.vitamin--;p.energy=clamp(p.energy+40);p.happy=clamp(p.happy+6);SFX.happy();react("💉");toast("Vitamin boost — +energy!");render();save();return;}toast("Feeling perfectly healthy! 💪");petSay("I feel great!");return;}
+  if(p.health>=95){if((G.inv.vitamin||0)>0){G.inv.vitamin--;p.energy=clamp(p.energy+40);p.happy=clamp(p.happy+6);SFX.happy();react("💉");toast("Vitamin boost — +energy!");render();save();return;}toast("Feeling perfectly healthy! 💪");petSay("ten out of ten, no notes ✨");return;}
   if((G.inv.medicine||0)>0){G.inv.medicine--;p.health=clamp(p.health+40);SFX.happy();react("💊");toast("Medicine given — feeling better!");addXP(p,4);render();save();return;}
   toast("No medicine or vitamins — buy some in 🛒 Shop → Care.");}
 function patPet(){if(buildMode)return;const p=pet();if(p.dead||!p.hatched||p.needsName)return;if(p.asleep){toast("Shh, sleeping 💤");return;}
-  if(p.sick&&Math.random()<0.6)petSay("achoo… I feel sick 🤧 (tap 💊 Heal)");
+  if(p.sick&&Math.random()<0.6)petSay("i don't feel so good… (tap 💊 Heal) 🤧");
   petBounce();if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;
   p.happy=clamp(p.happy+3);p.discipline=clamp(p.discipline+0.5);addXP(p,4);react(rnd(["💕","✨","😊","🫶"]));if(Math.random()<0.5)petSay(rnd(PAT_QUOTES));SFX.clean();questBump("pat",1);if(p.happy>=90)questBump("happy90",1);fulfillReq("pat");render();save();}
 
@@ -2466,9 +2465,9 @@ function patPet(){if(buildMode)return;const p=pet();if(p.dead||!p.hatched||p.nee
 let shopTab="food";
 function openShop(){shopTab="food";$$("#shopModal .seg").forEach(s=>s.classList.toggle("on",s.dataset.shoptab==="food"));renderShop();openModal("shopModal");}
 function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";grid.style.gridTemplateColumns="";const disc=G.daily.discount<1;
-  var SHOPFEAT={food:0,care:0,seed:2,gard:3,fish:3,hat:4,gacha:5,form:5,room:6,bg:6},_SL=maxLevel();
-  $$("#shopModal .seg").forEach(function(sg){sg.style.display=((SHOPFEAT[sg.dataset.shoptab]||0)<=_SL)?"":"none";});
-  if((SHOPFEAT[shopTab]||0)>_SL){shopTab="food";$$("#shopModal .seg").forEach(function(x){x.classList.toggle("on",x.dataset.shoptab==="food");});}
+  var SHOPFEAT={food:0,care:0,seed:2,gard:3,fish:3,hat:4,gacha:5,form:5,room:6,bg:6},_SL=maxLevel(),_ASC=(G.ascensions||0)>0;
+  $$("#shopModal .seg").forEach(function(sg){sg.style.display=(_ASC||(SHOPFEAT[sg.dataset.shoptab]||0)<=_SL)?"":"none";});
+  if(!_ASC&&(SHOPFEAT[shopTab]||0)>_SL){shopTab="food";$$("#shopModal .seg").forEach(function(x){x.classList.toggle("on",x.dataset.shoptab==="food");});}
   $("#shopSub").innerHTML=(disc?"🛍️ <b>Today: 30% off!</b> ":"")+"You have "+G.coins+" 🪙";
   const price=c=>Math.round(c*G.daily.discount);
   if(shopTab==="food"){grid.className="grid";const season=G.weather.season;
@@ -2495,7 +2494,7 @@ function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";grid.style.gri
   else if(shopTab==="gacha"){grid.className="grid";grid.style.gridTemplateColumns="1fr";
     const wrap=document.createElement("div");wrap.style.cssText="text-align:center;padding:4px 2px";
     wrap.innerHTML='<div style="font-size:52px;line-height:1">🎰</div><div style="font-weight:800;font-size:16px">Lucky Capsule</div>'+
-      '<div style="font-size:11px;color:var(--muted);margin:4px 8px 10px">Spend coins for a random prize. The big prizes are <b style="color:'+RAR_COL.legendary+'">⭐ exclusive forms &amp; costumes</b> you can\'t get anywhere else — tiny <b style="color:'+RAR_COL.legendary+'">1% jackpot</b>! Guaranteed <b style="color:'+RAR_COL.epic+'">epic+</b> within 50 rolls. <span style="opacity:.7">(pity '+(G.gachaPity||0)+'/50)</span></div>'+
+      '<div style="font-size:11px;color:var(--muted);margin:4px 8px 10px">Spend coins for a random prize. The big prizes are <b style="color:'+RAR_COL.legendary+'">⭐ exclusive forms &amp; costumes</b> you can\'t get anywhere else — tiny <b style="color:'+RAR_COL.legendary+'">0.1% jackpot</b>! Guaranteed <b style="color:'+RAR_COL.epic+'">epic+</b> within 50 rolls. <span style="opacity:.7">(pity '+(G.gachaPity||0)+'/50)</span></div>'+
       '<div style="display:flex;gap:8px;justify-content:center"><button class="btn" id="gacha1" style="width:auto;padding:11px 18px">Roll ×1 · 120🪙</button><button class="btn orange" id="gacha10" style="width:auto;padding:11px 18px">Roll ×10 · 1000🪙</button></div>'+
       '<details style="margin-top:10px;text-align:left;font-size:11px;color:var(--muted)"><summary style="cursor:pointer;font-weight:700;color:var(--ink)">📊 Drop rates &amp; prizes</summary><div style="padding:6px 2px;line-height:1.7"><div><b style="color:'+RAR_COL.common+'">Common 58%</b> — coins or a common seed</div><div><b style="color:'+RAR_COL.uncommon+'">Uncommon 27%</b> — fertilizer, bait ×2, or coins</div><div><b style="color:'+RAR_COL.rare+'">Rare 11%</b> — rare seeds ×2, a hat, or 220🪙</div><div><b style="color:'+RAR_COL.epic+'">Epic 3%</b> — a shop form, mythic seed, 600🪙, or ⭐ an exclusive form (15%)</div><div><b style="color:'+RAR_COL.legendary+'">Legendary 1%</b> — ⭐ exclusive form/custom, else 2500🪙 jackpot bundle</div><div style="margin-top:4px;opacity:.85">🛡️ Pity: a guaranteed Epic+ at least every 50 rolls.</div></div></details>'+'<div class="grid" id="gachaResult" style="margin-top:12px;grid-template-columns:repeat(auto-fill,minmax(78px,1fr))"></div>';
     grid.appendChild(wrap);
@@ -2534,7 +2533,7 @@ function seedNm(c){const x=SEEDS.find(s=>s.crop===c);return x?x.nm:c;}
 function gachaReward(){
   G.gachaPity=(G.gachaPity||0)+1;G.gachaRolls=(G.gachaRolls||0)+1;
   let r=Math.random()*100,rar;
-  if(G.gachaPity>=50)rar="epic";else if(r<1)rar="legendary";else if(r<4)rar="epic";else if(r<15)rar="rare";else if(r<42)rar="uncommon";else rar="common";
+  if(G.gachaPity>=50)rar="epic";else if(r<0.1)rar="legendary";else if(r<4)rar="epic";else if(r<15)rar="rare";else if(r<42)rar="uncommon";else rar="common";
   if(rar==="epic"||rar==="legendary")G.gachaPity=0;
   const commonSeeds=["berry","carrot","tomato","corn","strawberry","mushroom","grapes"];
   const rareSeeds=["goldenapple","dragonfruit","starfruit","watermelon","pineapple","moonberry"];
@@ -2751,7 +2750,7 @@ function openEvolution(){const p=pet();if(!p.hatched){toast("Wait for the egg to
   SPECIALS[p.type].forEach(f=>{grid+=cell(f.k,"★",f.nm,f.req(p)||!!G.dex[f.k]||!!(G.formsSeen&&G.formsSeen[f.k]),f.reqText);});
   (G.boughtForms&&G.boughtForms[p.type]||[]).forEach(k=>{const m=formMeta(p.type,k);if(m){const isG=(GACHA_FORMS[p.type]||[]).some(x=>x.k===k);grid+=cell(k,isG?"🎰":"🛒",m.nm,true,isG?"won from Lucky Capsule":"");}});
   FORM_TIERS.forEach(g=>{const f=FORMS[p.type][g];grid+=cell(f.k,g,f.nm,(cgi<=FORM_TIERS.indexOf(g))||!!G.dex[f.k]||!!(G.formsSeen&&G.formsSeen[f.k]),EVO_REQ[g]);});
-  $("#evoForms").innerHTML=grid;$("#evoAuto").style.display=isAdult?"none":"block";var _grw=(!isAdult&&p.stage==="teen");var _gb=$("#evoGrowBtn");if(_gb)_gb.style.display=_grw?"block":"none";var _gh=$("#evoGrowHint");if(_gh)_gh.style.display=_grw?"block":"none";
+  $("#evoForms").innerHTML=grid;$("#evoAuto").style.display=isAdult?"none":"block";var _grw=(!isAdult&&canGrowUp(p));var _gb=$("#evoGrowBtn");if(_gb)_gb.style.display=_grw?"block":"none";var _gh=$("#evoGrowHint");if(_gh)_gh.style.display=_grw?"block":"none";
   $("#evoSub").innerHTML=isAdult?(petName(p)+" is fully grown as <b>"+FORMS[p.type][cur].nm+"</b>! 🎉"):("<b>"+petName(p)+"</b> · "+(FORMS[p.type][p.stage]||p.stage)+" · care grade <b>"+cur+"</b><div style='margin-top:8px;font-size:12px;color:var(--muted);line-height:1.6;text-align:left'>To reach a better adult form, raise the care grade:<br>• keep 🍽️ Hunger, 😊 Happy &amp; 🫧 Hygiene above 50%<br>• feed ⭐ favorite foods and play every day<br>• clean messes &amp; heal sickness fast<br>• never let a stat hit zero<br>• 🏆 <b>SS</b>: near-full stats + Lv 8 · <b>SSS</b>: near-perfect + Lv 14 · <b>UR</b>: flawless + max discipline + Lv 20</div>");
   openModal("evoModal");}
 
@@ -3131,13 +3130,13 @@ function talentShow(){const p=pet(),known=(p.tricks||[]).slice();if(known.length
     trickFx(id);const lv=trickLevel(p,id);total+=(3+lv)*combo;p.trickCt=p.trickCt||{};p.trickCt[id]=(p.trickCt[id]||0)+1;if(trickLevel(p,id)>=5)unlock("maestro");
     petSay("Combo x"+combo+"! "+(t?t.e:"✨"));i++;setTimeout(step,820);})();}
 const HANGOUT_LINES=[
- ["Puffy: race you to the reef! 🌊","Citrus: you're on!"],
- ["Citrus: wanna split a bell pepper? 🫑","Puffy: always!"],
- ["Puffy: you're my best friend 💞","Citrus: aww, you too!"],
- ["Citrus: let's nap in the sun ☀️","Puffy: best idea ever"],
- ["Puffy: tag — you're it! 😄","Citrus: hey, no fair!"],
- ["Citrus: look, a shooting star! 🌠","Puffy: make a wish!"],
- ["Puffy: thanks for always being here 🥹","Citrus: forever, buddy"]
+ ["Puffy: is it safe to nap here? 😟","Citrus: it's a couch, Puffy. yes."],
+ ["Citrus: split a bell pepper? 🫑","Puffy: fine, but i get the big half"],
+ ["Puffy: you're my best friend 💞","Citrus: took you long enough to say it 😄"],
+ ["Citrus: sunbathing — join me? ☀️","Puffy: i burn. emotionally and physically."],
+ ["Puffy: tag, you're it!","Citrus: i'm a sphere, this is unfair"],
+ ["Citrus: shooting star! make a wish 🌠","Puffy: i wished for fewer threats to my safety"],
+ ["Puffy: thanks for sticking around 🥹","Citrus: always, you dramatic little balloon"]
 ];
 function duoHangout(){const a=G.pets.puffy,b=G.pets.citrus;if(!a.hatched||!b.hatched||a.dead||b.dead){toast("Both pets must be hatched! 🥚");return;}
   if(now()-(G.lastHang||0)<30000){toast("They're catching their breath… 😊");return;}
@@ -3271,7 +3270,7 @@ function renderDuo(){ensureDuo();$("#duoSub").innerHTML="🔮 Fusion Shards: <b>
   $("#duoBody").innerHTML=h;
   $$("#duoBody .ordbtn[data-duo]").forEach(function(b){b.onclick=function(){claimDuo(b.dataset.duo);};});}
 function claimDuo(id){ensureDuo();var p=G.duo.picks.find(function(x){return x.id===id;});if(!p||p.claimed)return;var ch=duoChalDef(id);if(duoProg(p)<ch.need){toast("Not done yet — keep going!");return;}p.claimed=true;G.duoShards=(G.duoShards||0)+ch.rw;SFX.level();confetti();react("🔮");toast("🔮 +"+ch.rw+" Fusion Shards! ("+G.duoShards+" total)");renderDuo();render();save();}
-function growUpNow(){const p=pet();if(p.stage==="adult"){toast("Already grown! 🌟");return;}if(p.stage!=="teen"){toast("Still too young — let them grow a little more first! 🌱");return;}
+function growUpNow(){const p=pet();if(p.stage==="adult"){toast("Already grown! 🌟");return;}if(!canGrowUp(p)){toast("Still growing — the Grow Up option appears once they're nearly ready! 🌱");return;}
   p.stage="adult";p.form=chooseForm(p);recordForm(p);var g=careGrade(p);unlock("adult");if(g==="SS"||g==="SSS"||g==="UR")unlock("perfect");if(g==="SSS"||g==="UR")unlock("flawless");if(g==="UR")unlock("legend");
   SFX.level();confetti();closeModals();queueCutscene([{art:"✨",big:"Evolution!",text:petName(p)+" begins to change…"},{art:petArt(p,"happy"),big:formName(p)+"!",text:adultStory(g,p)}]);render();save();}
 function startAutoPlay(){if(maxLevel()<5){toast("Reach Lv 5 to unlock Auto-Play 🤖");return;}if(G.autoplay){toast("Already auto-playing!");return;}if(now()<(G.autoplayCd||0)){toast("Arcade bot is resting — "+Math.round(((G.autoplayCd||0)-now())/60000)+"m");return;}if(G.coins<120){toast("Need 120🪙");return;}G.coins-=120;G.autoplay={returnsAt:now()+1800000};SFX.coin();toast("🤖 Auto-Play started — back in ~30m with XP!");openGame();render();save();}
@@ -3344,7 +3343,7 @@ function startExped(id){if(G.exped){toast("An expedition is already underway!");
 function claimExped(){if(!expReady())return;const duo=G.exped.duo;let loot=expLoot(G.exped.id);if(duo){loot=loot.concat(expLoot(G.exped.id));unlock("duotrip");addBond(8);addXP(G.pets.puffy,25);addXP(G.pets.citrus,25);}G.exped=null;G.stats.expeditions=(G.stats.expeditions||0)+1;if((G.stats.expeditions||0)>=5)unlock("explorer2");if((G.stats.expeditions||0)>=10)unlock("expert10");addXP(pet(),25);SFX.level();react("🎁");if(duo)react("💞");toast((duo?"🐡🍊 Duo loot! ":"Brought back: ")+loot.join(" · "));renderExped();render();save();}
 
 /* ---------- Journey (campaign) ---------- */
-const STAGE_STORY={baby:"Out of the shell and into the world! 🐣",child:"Growing curious and playful every day.",teen:"Almost all grown up — so much personality!",adult:"Fully grown and thriving! 🌟"};
+const STAGE_STORY={baby:"Out of the shell and immediately demanding snacks. 🐣",child:"Curious, clumsy, and into absolutely everything.",teen:"All attitude and big feelings now. Tap 🌟 Grow Up when they\u2019re ready!",adult:"Fully grown and thriving — look what you made! 🌟"};
 const ASCENSION_STORY=[
  {art:"🌅",big:"A New Dawn",text:"Belle watches the first ascension light ripple across Tuvalu's lagoon. \"So this is what devotion looks like,\" she whispers. The little ones feel stronger already."},
  {art:"🐚",big:"The Singing Shore",text:"On the second rebirth, the tide leaves behind shells that hum. Belle presses one to her ear and hears your pets' heartbeat echoing back."},
@@ -3509,23 +3508,18 @@ function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="a
 
 /* ---------- Cutscenes / story ---------- */
 const INTRO=[
- {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"Somewhere in the Pacific",text:"Between Australia and Hawai‘i lie the nine tiny atolls of Tuvalu — some of the lowest-lying land on Earth."},
- {bg:"radial-gradient(120% 90% at 50% 20%,#1f7fb0,#072540)",art:"🏝️",big:"A fragile home",text:"Its highest ground is barely above the waves. Around 11,000 people call it home, and love it dearly."},
- {bg:"radial-gradient(120% 90% at 50% 20%,#33455f,#070f1e)",art:"🌊",big:"The tide keeps rising",text:"Here the sea has climbed nearly twice as fast as the world's average. Each year it reaches a little further inland."},
- {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:"💚",big:"Meet Belle Pepper",text:"Belle loves these islands and the people working to protect them. She believes small, daily acts of care truly matter."},
- {bg:"radial-gradient(120% 90% at 50% 28%,#8a5530,#341626)",art:"🥚🥚",big:"Two eggs, entrusted to you",text:"By the lagoon she found two little eggs, and sends them to you with a note: ‘Please look after these for me.’"},
- {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:"🐡 🍊",big:"Puffy & Citrus",text:"A pufferfish of the reef, and an orange — a seed of dry land and roots. Two fragile things worth keeping safe."},
- {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:"🌅",big:"Care is a kind of hope",text:"Feed them, play, and help them grow. Looking after what we love is how we hold on to it. 💛"}
+ {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"A speck in the Pacific",text:"Tuvalu: nine low little islands, about 11,000 people, and more heart per square inch than anywhere on Earth."},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:"💚",big:"Belle sends a parcel",text:"Belle adores those islands. One morning a box turns up at your door: two eggs and a note — ‘Found these by the lagoon. Please don't let them become breakfast.’"},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:"🐡 🍊",big:"Meet Puffy & Citrus",text:"A jittery little pufferfish and an aggressively cheerful orange. Zero survival skills. Total confidence anyway. They're yours now."},
+ {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:"🌅",big:"So… no pressure",text:"Feed them, clean up after them, keep them alive. Looking after small things is how we hold onto the ones we love. Ready? 💛"}
 ];
 const CS_TUT_BG="radial-gradient(120% 90% at 50% 25%,#2a6a8a,#0c2436)";
 const CS_LEVEL_BG="radial-gradient(120% 90% at 50% 30%,#6a55c0,#241d4a)";
 const TUTORIAL=[
- {bg:CS_TUT_BG,art:"🐡🍊",big:"How to play",text:"A quick tour of everything! Tap to continue ›"},
- {bg:CS_TUT_BG,art:"🍎🎮🧼💤",big:"Daily care",text:"Use Feed, Play, Clean and Sleep to keep their stats up — and tap a pet to give it a pat!"},
- {bg:CS_TUT_BG,art:"🎉🎣🌱",big:"Fun & coins",text:"‘Play’ opens mini-games, fishing, a garden, a daily wheel, play-together and tricks — all earn coins."},
- {bg:CS_TUT_BG,art:"🛒",big:"Shop",text:"Spend coins on food, medicine, hats and scenes to dress up your pets and their home."},
- {bg:CS_TUT_BG,art:"⭐🧬",big:"Level up & evolve",text:"Caring earns XP to level up. Tap the name badge above your pet to see evolution progress and how to grow a top form."},
- {bg:CS_TUT_BG,art:"📔📋💌",big:"Collect & extras",text:"The ⭐ chip shows forms & stickers, 📋 has daily quests, and the 🫑 gives a note from Belle. Have fun! 💚"}
+ {bg:CS_TUT_BG,art:"🐡🍊",big:"The basics",text:"These two will not feed themselves. Trust me, they've tried. Tap to continue ›"},
+ {bg:CS_TUT_BG,art:"🍎🧼💤💊",big:"Keep 'em alive",text:"Feed, Clean, Sleep and Heal keep their stats up. Tap a pet for a pat — they're needy and fully aware of it."},
+ {bg:CS_TUT_BG,art:"🎈🌱🎣",big:"Earn coins",text:"The 🎈 Play hub has mini-games, fishing, a garden and more — all pay coins to spend in the 🛒 Shop."},
+ {bg:CS_TUT_BG,art:"🧬💌",big:"Grow & connect",text:"Care earns XP. Raise them well and they evolve into rare forms. And watch the 🫑 — Belle writes. Often. 💚"}
 ];
 const EVO_REQ={UR:"flawless care · Lv 20 · max discipline",SSS:"near-perfect care · Lv 14",SS:"top care + Lv 8",S:"excellent care (grade S)",A:"great care (grade A)",B:"good care (grade B)",C:"so-so care",D:"poor care"};
 const STORY_BG_SEA="radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)";
@@ -3734,8 +3728,8 @@ function renderVisit(){const res=$("#frResult");if(!res||!visitTarget)return;con
   const gg=$("#frGifts");GIFTS.forEach(g=>{const c=document.createElement("div");c.className="card"+(sent?" locked":"");c.innerHTML='<div class="e">'+g.e+'</div><div class="nm">'+g.nm+'</div><div class="ft" style="font-size:9px">'+(g.k==="coins"?("costs "+g.cost+"🪙"):"from your stuff")+'</div>';c.onclick=()=>{if(sent){toast("One gift per friend per day 🎁");return;}sendGift(g);};gg.appendChild(c);});}
 
 /* ---------- Pet speech ---------- */
-const LEVEL_QUOTES=["I'm getting stronger! 💪","Did you see that?!","Level up — yay! ⭐","I feel amazing!","Thank you for looking after me! 💕","Onward and upward!","Ooh, I grew a little!","Best caretaker ever! 🥰"];
-const PAT_QUOTES=["hehe, that tickles!","I like you! 💕","more pats, please","😊","you're the best!","🫶"];
+const LEVEL_QUOTES=["i'm getting STRONGER 💪","did you SEE that?!","level up! still anxious, but stronger.","ascending — emotionally AND numerically","ooh, i grew. don't make it weird.","new level, same me, more swagger ✨","best caretaker in the whole Pacific 🥰","i contain multitudes now"];
+const PAT_QUOTES=["hehe, that tickles!","do that forever 💕","i will allow this 😌","🫶","you may continue","okay that fixed my entire day"];
 let speechT=null;
 function petSay(t){const e=$("#speech");if(!e)return;e.textContent=t;e.classList.add("show");clearTimeout(speechT);speechT=setTimeout(function(){e.classList.remove("show");},3500);}
 
