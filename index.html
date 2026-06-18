@@ -2708,10 +2708,10 @@ function closeModals(){$$(".modal").forEach(m=>{if(m.id==="nameModal"&&pet().nee
 function welcomeBack(snap,away){const p0=G.pets,lines=[];
   for(const k of["puffy","citrus"]){const p=p0[k];if(!p.hatched)continue;const s=snap[k];if(!s)continue;
     const dh=Math.round(p.hunger-s.hunger),dhap=Math.round(p.happy-s.happy);
-    let l=petName(p)+": ";const bits=[];if(p.sick&&!s.sick)bits.push("got sick 🤒");if(p.poops.length>s.poops)bits.push("made a mess 💩");
-    if(dh<-5)bits.push("got hungry");if(dhap<-5)bits.push("misses you");if(p.stage!==s.stage)bits.push("grew up! 🌱");
-    l+=bits.length?bits.join(", "):"was just fine 😊";lines.push(l);}
-  const coins=Math.min(50,Math.floor(away/600));if(coins>0){G.coins+=coins;lines.push("💰 Earned "+coins+" coins while away.");}
+    let l=petName(p)+": ";const bits=[];if(p.sick&&!s.sick)bits.push("caught a sniffle 🤒");if(p.poops.length>s.poops)bits.push("left you a little \u201Cgift\u201D 💩");
+    if(dh<-5)bits.push("is starving (dramatically)");if(dhap<-5)bits.push("missed you terribly 🥺");if(p.stage!==s.stage)bits.push("grew up while you were gone! 🌱");
+    l+=bits.length?bits.join(", "):"held down the fort 😎";lines.push(l);}
+  const coins=Math.min(50,Math.floor(away/600));if(coins>0){G.coins+=coins;lines.push("💰 +"+coins+" coins earned while you were away.");}
   const h=Math.floor(away/3600),m=Math.floor((away%3600)/60);
   $("#welcomeSub").textContent="You were away "+(h?h+"h ":"")+m+"m.";
   $("#welcomeBody").innerHTML=lines.map(l=>"• "+l).join("<br>");openModal("welcomeModal");}
