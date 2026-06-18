@@ -389,6 +389,12 @@
   #menuModal #hardReset{background:#ffe1e1 !important;color:#b03a3a !important;border-color:#f3c0c0;}
   #menuModal #logoutBtn{background:#eef2f6 !important;color:#4a5560 !important;border-color:#dfe6ec;}
   .stat .ico svg{width:17px;height:17px;display:block;margin:0 auto;}
+  @keyframes mote{0%{transform:translate(0,0);opacity:0}12%{opacity:.6}88%{opacity:.6}100%{transform:translate(14px,-46px);opacity:0}}
+  .motep{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 70%);pointer-events:none;z-index:2;animation:mote linear infinite;}
+  #scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 80% at 50% 26%,transparent 54%,rgba(10,8,24,.20));z-index:1;}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+  #petWrap svg{animation:breathe 3.6s ease-in-out infinite;transform-origin:50% 80%;}
+  body.rm #petWrap svg,body.rm .motep{animation:none!important;}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -2396,7 +2402,7 @@ function applyScene(p){const bg=BGS[p.bg]||BGS.meadow;const sc=$("#scene");const
   if((w==="rainy"||w==="snowy")&&!p.asleep){const ch=w==="rainy"?"💧":"❄️";for(let i=0;i<10;i++){const d=document.createElement("div");d.className="wdrop";d.textContent=ch;d.style.left=(Math.random()*100)+"%";d.style.animationDuration=(1+Math.random()*1.5)+"s";d.style.animationDelay=(-Math.random()*2)+"s";wfx.appendChild(d);}}}
 function chestReady(){return Math.min(90,Math.floor((now()-(G.lastChest||now()))/60000));}
 function claimChest(){var c=Math.round(chestReady()*coinMul(pet()));if(c<=0)return;G.coins+=c;G.lastChest=now();SFX.coin();react("🪙");toast("Collected "+c+" 🪙 from the chest! 🎁");render();save();}
-function render(){const p=pet();
+function render(){const p=pet();if(!window._motesInit){window._motesInit=1;try{spawnMotes();}catch(e){}}
   $("#coins").textContent=G.coins;$("#lvl").textContent=p.level;
   $("#xpbar").style.width=Math.min(100,(p.xp/levelNeed(p.level))*100)+"%";
   applyScene(p);
@@ -3744,6 +3750,7 @@ function petSay(t){const e=$("#speech");if(!e)return;e.textContent=t;e.classList
 
 function bubbleBurst(n){n=n||6;const sc=$("#scene");for(let i=0;i<n;i++){const b=document.createElement("div");b.className="react";b.textContent=rnd(["🫧","✨","💧"]);b.style.left=(28+Math.random()*44)+"%";b.style.bottom=(34+Math.random()*30)+"%";b.style.animationDelay=(i*0.07)+"s";sc.appendChild(b);setTimeout(()=>{if(b.parentNode)b.remove();},1400);}}
 function petBounce(){const w=$("#petWrap");if(!w)return;w.classList.add("pop");setTimeout(function(){w.classList.remove("pop");},360);}
+function spawnMotes(){var sc=document.getElementById("scene");if(!sc||sc.querySelector(".motep"))return;for(var i=0;i<11;i++){var d=document.createElement("div");d.className="motep";d.style.left=(5+Math.random()*90)+"%";d.style.top=(20+Math.random()*64)+"%";var dur=7+Math.random()*7;d.style.animationDuration=dur+"s";d.style.animationDelay=(-Math.random()*dur)+"s";var sz=3+Math.random()*4;d.style.width=sz+"px";d.style.height=sz+"px";sc.appendChild(d);}}
 function maybeSpawnFloat(){const p=pet();if(!p.hatched||p.dead||p.asleep)return;if(document.querySelectorAll("#scene .floatItem").length>=2)return;if(Math.random()>=0.05)return;
   const items=[["🪙",function(){G.coins+=2;}],["🫧",function(){p.happy=clamp(p.happy+2);}],["⭐",function(){addXP(p,3);}],["💧",function(){p.hygiene=clamp(p.hygiene+2);}]];
   const it=rnd(items),el=document.createElement("div");el.className="floatItem";el.textContent=it[0];
