@@ -935,13 +935,11 @@ const BGS={
   feasthall:{nm:"Ambrosia Hall",cost:null,unlock:"mythicchef",hint:"Cook a mythic dish",sky:"#3a2f1a",g1:"#caa24a",g2:"#6a4a1a",dark:true},
 };
 const MINIGAMES=[
-  {id:"surf",e:"🌊",nm:"Tide Surfer",desc:"Tap to leap rocks, snatch 🪙 mid-air, ride the tide as far as you can!"},
   {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats. Do NOT tap the 💣. Simple. (It's not simple.)"},
   {id:"memory",e:"🃏",nm:"Memory Match",desc:"Flip cards, match pairs, pretend you have a great memory. 🃏"},
   {id:"whack",e:"🔨",nm:"Whack-a-Snack",desc:"Bonk snacks as they pop up. Bombs are not snacks. 🔨"},
   {id:"target",e:"🎯",nm:"Quick Paws",desc:"Tap the target before it bolts. It's faster than it looks. 🎯"},
   {id:"catch",e:"🧺",nm:"Snack Catch",desc:"Slide the basket, catch the treats, dodge the 💣. Butterfingers beware."},
-  {id:"echo",e:"🎵",nm:"Echo",desc:"Watch the colors, repeat the sequence. Like Simon, but tastier. 🎵"},
   {id:"frenzy",e:"🐟",nm:"Fish Frenzy",desc:"Tap the darting fish, dodge the 💣 mines. Glorious chaos. 🐟"},
 ];
 const ACHIEVEMENTS=[
@@ -2196,22 +2194,21 @@ function isNight(){const h=new Date().getHours();return h<6||h>=20;}
 
 /* ---------- Quests ---------- */
 const QUEST_POOL=[
-  {id:"feed",d:"Feed your pets 3 times",goal:3,metric:"feed",reward:25},
-  {id:"play",d:"Play a mini-game",goal:1,metric:"play",reward:20},
-  {id:"clean",d:"Clean up 2 messes",goal:2,metric:"clean",reward:15},
-  {id:"pat",d:"Pat your pets 5 times",goal:5,metric:"pat",reward:15},
-  {id:"happy",d:"Get a pet to 90% happy",goal:1,metric:"happy90",reward:25},
-  {id:"bell",d:"Feed a Bell Pepper",goal:1,metric:"bell",reward:30},
-  {id:"harvestq",d:"Harvest 3 crops",goal:3,metric:"harvest",reward:25},
-  {id:"fishq",d:"Catch a fish",goal:1,metric:"fish",reward:20},
-  {id:"trickq",d:"Perform a trick",goal:1,metric:"trick",reward:15},
-  {id:"spinq",d:"Spin the daily wheel",goal:1,metric:"spin",reward:15},
-  {id:"napq",d:"Let a pet take a nap",goal:1,metric:"sleep",reward:10},
-  {id:"orderq",d:"Deliver a market order",goal:1,metric:"order",reward:30},
-  {id:"cookq",d:"Cook a dish in the Kitchen",goal:1,metric:"cook",reward:25},
-  {id:"harvest5q",d:"Harvest 5 crops",goal:5,metric:"harvest",reward:35},
-  {id:"hangq",d:"Let the pets hang out together",goal:1,metric:"hang",reward:25},
-  {id:"fish3q",d:"Catch 3 fish",goal:3,metric:"fish",reward:30},
+  {id:"feed",d:"Feed your pets 7 times",goal:7,metric:"feed",reward:40},
+  {id:"play",d:"Play 3 mini-games",goal:3,metric:"play",reward:40},
+  {id:"clean",d:"Clean up 4 messes",goal:4,metric:"clean",reward:30},
+  {id:"pat",d:"Pat your pets 12 times",goal:12,metric:"pat",reward:30},
+  {id:"happy",d:"Get both pets to 90% happy",goal:1,metric:"happy90",reward:35},
+  {id:"bell",d:"Feed 2 Bell Peppers",goal:2,metric:"bell",reward:45},
+  {id:"harvestq",d:"Harvest 8 crops",goal:8,metric:"harvest",reward:45},
+  {id:"fishq",d:"Catch 4 fish",goal:4,metric:"fish",reward:40},
+  {id:"trickq",d:"Perform 4 tricks",goal:4,metric:"trick",reward:30},
+  {id:"spinq",d:"Spin the daily wheel",goal:1,metric:"spin",reward:20},
+  {id:"orderq",d:"Deliver 2 market orders",goal:2,metric:"order",reward:50},
+  {id:"cookq",d:"Cook 2 dishes in the Kitchen",goal:2,metric:"cook",reward:45},
+  {id:"harvest5q",d:"Harvest 12 crops",goal:12,metric:"harvest",reward:60},
+  {id:"hangq",d:"Hang the pets out together twice",goal:2,metric:"hang",reward:40},
+  {id:"fish3q",d:"Catch 7 fish",goal:7,metric:"fish",reward:55},
 ];
 function genQuests(){const s=[...QUEST_POOL].sort(()=>Math.random()-.5).slice(0,3);
   return s.map(q=>({id:q.id,d:q.d,goal:q.goal,metric:q.metric,reward:q.reward,prog:0,claimed:false}));}
@@ -2659,7 +2656,7 @@ function showGame(id){curGame=id;const g=MINIGAMES.find(x=>x.id===id);$("#mgTitl
   $("#mgMenu").style.display="none";$("#mgPlay").style.display="block";$("#mgArea").innerHTML="";$("#mgScore").textContent="0";$("#mgTime").textContent="";$("#mgStart").style.display="block";$("#mgStart").textContent="Start";}
 function stopGame(){if(mg){if(mg.spawn)clearInterval(mg.spawn);if(mg.timer)clearInterval(mg.timer);if(mg.fall)clearInterval(mg.fall);if(mg._iv)clearInterval(mg._iv);mg=null;}}
 function startGame(){stopGame();$("#mgArea").innerHTML="";$("#mgStart").style.display="none";
-  if(curGame==="surf")gameSurf();else if(curGame==="bubble")gameBubble();else if(curGame==="whack")gameWhack();else if(curGame==="target")gameTarget();else if(curGame==="catch")gameCatch();else if(curGame==="echo")gameEcho();else if(curGame==="frenzy")gameFrenzy();else gameMemory();}
+  if(curGame==="bubble")gameBubble();else if(curGame==="whack")gameWhack();else if(curGame==="target")gameTarget();else if(curGame==="catch")gameCatch();else if(curGame==="frenzy")gameFrenzy();else gameMemory();}
 function endGame(score){stopGame();const coins=score*2;G.coins+=coins;const p=pet();p.happy=clamp(p.happy+Math.min(40,score*2));p.energy=clamp(p.energy-8);addXP(p,20+Math.min(70,score*3));
   G.stats.gamesPlayed++;if(G.stats.gamesPlayed>=5)unlock("gamer");if(G.stats.gamesPlayed>=25)unlock("games25");if(G.stats.gamesPlayed>=50)unlock("games50");if(G.stats.gamesPlayed>=100)unlock("games100");if(G.stats.gamesPlayed>=5)unlockSticker("gamer");if(score>(G.stats.high[curGame]||0))G.stats.high[curGame]=score;
   questBump("play",1);fulfillReq("play");if(G.coins>=200)unlock("rich");SFX.level();
@@ -3277,7 +3274,7 @@ function doTrick(){const p=pet(),known=p.tricks||[];if(!known.length){toast("Tea
 
 /* ---------- Fun hub ---------- */
 function openFun(){if(!guard())return;const list=$("#funList");list.innerHTML="";
-  const items=[["🎮","Mini-games","3 games",openGame,"game"],["🎡","Daily Wheel",(G.wheelDate===dayKey()?"used today":"free spin!"),openWheel,"wheel"],["🎓","Tricks","teach & perform",openTricks,"tricks"],["🧭","Expedition",(G.exped?(expReady()?"ready! 🎁":"on a trip…"):"send out"),openExped,"exped"]].filter(function(it){return featUnlocked(it[4]);});
+  const items=[["🎮","Mini-games",MINIGAMES.length+" games",openGame,"game"],["🎡","Daily Wheel",(G.wheelDate===dayKey()?"used today":"free spin!"),openWheel,"wheel"],["🎓","Tricks","teach & perform",openTricks,"tricks"],["🧭","Expedition",(G.exped?(expReady()?"ready! 🎁":"on a trip…"):"send out"),openExped,"exped"]].filter(function(it){return featUnlocked(it[4]);});
   items.forEach(it=>{const c=document.createElement("div");c.className="card";c.innerHTML='<div class="e">'+it[0]+'</div><div class="nm">'+it[1]+'</div><div class="meta">'+it[2]+'</div>';c.onclick=it[3];list.appendChild(c);});
   $("#funSub").innerHTML="🤝 Bond: <b>"+Math.round(G.bond)+"%</b> · "+bondTitle();openModal("funModal");}
 function openHub(title,sub,items){const list=$("#hubList");list.innerHTML="";$("#hubTitle").innerHTML=title;$("#hubSub").innerHTML=sub;
@@ -3319,18 +3316,21 @@ function openHome(){if(!guard())return;const p=pet();
 
 /* ---------- Sanctuary (long-term care goal) ---------- */
 const SANC_DECOR=[{e:"🌷",x:13,y:9},{e:"🏮",x:80,y:40,sway:1},{e:"🦋",x:30,y:52,sway:1},{e:"🌿",x:90,y:7},{e:"🐦",x:18,y:58,sway:1},{e:"🌸",x:68,y:11,sway:1},{e:"🪷",x:7,y:5},{e:"🐚",x:58,y:5},{e:"⛩️",x:48,y:46},{e:"🦋",x:76,y:56,sway:1},{e:"🌼",x:38,y:8,sway:1},{e:"🕊️",x:12,y:46,sway:1}];
-function ensureSanc(){G.sanctuary=G.sanctuary||{pts:0,lv:0};}
+function ensureSanc(){G.sanctuary=G.sanctuary||{pts:0,lv:0};if(G.sanctuary.show===undefined)G.sanctuary.show=true;G.sanctuary.off=G.sanctuary.off||{};}
 function sancNeed(lv){return 100+lv*70;}
 function sancCheck(){ensureSanc();var ch=false;while(G.sanctuary.lv<SANC_DECOR.length&&G.sanctuary.pts>=sancNeed(G.sanctuary.lv)){G.sanctuary.pts-=sancNeed(G.sanctuary.lv);G.sanctuary.lv++;ch=true;G.coins+=60+G.sanctuary.lv*25;}
   if(ch){try{confetti();SFX.level();}catch(e){}toast("🏝️ Your sanctuary grew to Level "+G.sanctuary.lv+"! 🌿");if(G.sanctuary.lv>=5)unlock("sanctuary5");if(G.sanctuary.lv>=SANC_DECOR.length)unlock("sanctuarymax");}}
-function renderSancLayer(){ensureSanc();var L=$("#sancLayer");if(!L)return;if(L._lv===G.sanctuary.lv)return;L._lv=G.sanctuary.lv;var h="";for(var i=0;i<G.sanctuary.lv&&i<SANC_DECOR.length;i++){var d=SANC_DECOR[i];h+='<div class="sd'+(d.sway?" sway":"")+'" style="left:'+d.x+'%;bottom:'+d.y+'%;animation-delay:'+(i*0.3)+'s">'+d.e+'</div>';}L.innerHTML=h;}
+function renderSancLayer(){ensureSanc();var L=$("#sancLayer");if(!L)return;var off=G.sanctuary.off||{};var sig=G.sanctuary.lv+"|"+(G.sanctuary.show?1:0)+"|"+Object.keys(off).sort().join(",");if(L._sig===sig)return;L._sig=sig;if(!G.sanctuary.show){L.innerHTML="";return;}var h="";for(var i=0;i<G.sanctuary.lv&&i<SANC_DECOR.length;i++){if(off[i])continue;var d=SANC_DECOR[i];h+='<div class="sd'+(d.sway?" sway":"")+'" style="left:'+d.x+'%;bottom:'+d.y+'%;animation-delay:'+(i*0.3)+'s">'+d.e+'</div>';}L.innerHTML=h;}
 function openSanctuary(){ensureSanc();renderSanc();openModal("sancModal");}
 function renderSanc(){ensureSanc();var lv=G.sanctuary.lv,pts=G.sanctuary.pts,need=sancNeed(lv),pct=Math.min(100,Math.round(pts/need*100));
   $("#sancSub").innerHTML="🏝️ Sanctuary Level <b>"+lv+"</b> / "+SANC_DECOR.length+" — every act of care helps it grow.";
   var h='<div style="margin:10px 0"><div class="bar" style="height:14px"><i style="width:'+pct+'%;background:linear-gradient(90deg,#84bf69,#4f9a3a)"></i></div><div style="text-align:center;font-size:11px;font-weight:800;color:#3b8b1f;margin-top:4px">'+pts+" / "+need+" to next 🌿</div></div>";
-  h+='<div class="sub" style="margin:6px 0">A little wild sanctuary you\u2019re growing for Puffy & Citrus. The better you care for them, the more it comes alive. 🌿</div>';
-  h+='<div class="grid">';for(var i=0;i<SANC_DECOR.length;i++){var got=i<lv;h+='<div class="card'+(got?"":" locked")+'"><div class="e" style="font-size:26px">'+(got?SANC_DECOR[i].e:"❔")+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(got?"#3b8b1f":"#8a8290")+'">'+(got?"✓ grown":"Lv "+(i+1))+'</div></div>';}h+='</div>';
-  $("#sancBody").innerHTML=h;}
+  h+='<button class="btn" id="sancShow" style="background:'+(G.sanctuary.show?"#84bf69":"#cbbfae")+'">'+(G.sanctuary.show?"🌿 Showing in scene — tap to hide all":"🙈 Hidden — tap to show in scene")+'</button>';
+  h+='<div class="sub" style="margin:8px 0 4px">Tap a grown piece to add or remove it from your home scene. 🌿</div>';
+  h+='<div class="grid">';for(var i=0;i<SANC_DECOR.length;i++){var got=i<lv,offd=!!(G.sanctuary.off&&G.sanctuary.off[i]);h+='<div class="card'+(got?"":" locked")+'" '+(got?'data-sd="'+i+'"':"")+'><div class="e" style="font-size:26px;'+(offd?"opacity:.3":"")+'">'+(got?SANC_DECOR[i].e:"❔")+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(got?(offd?"#b07415":"#3b8b1f"):"#8a8290")+'">'+(got?(offd?"hidden · tap":"✓ shown"):"Lv "+(i+1))+'</div></div>';}h+='</div>';
+  $("#sancBody").innerHTML=h;
+  var sb=$("#sancShow");if(sb)sb.onclick=function(){G.sanctuary.show=!G.sanctuary.show;renderSancLayer();renderSanc();save();};
+  $$("#sancBody .card[data-sd]").forEach(function(c){c.onclick=function(){var idx=+c.dataset.sd;G.sanctuary.off=G.sanctuary.off||{};if(G.sanctuary.off[idx])delete G.sanctuary.off[idx];else G.sanctuary.off[idx]=1;renderSancLayer();renderSanc();save();};});}
 
 /* ---------- Fellowship / Duo Challenges ---------- */
 function openFellowship(){openHub("👥 Fellowship","Connect with other players. 💞",[
@@ -3600,7 +3600,7 @@ const INTRO=[
 <g transform="translate(190,44)"><g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="44s" repeatCount="indefinite"/><g stroke="#ffe487" stroke-width="3.5" stroke-linecap="round"><path d="M0 -30V-40M0 30V40M-30 0H-40M30 0H40M-21 -21l-7 -7M21 21l7 7M21 -21l7 -7M-21 21l-7 7"/></g></g><circle r="19" fill="#ffe070"/></g>
 <g opacity=".9" fill="#fff"><g><animateTransform attributeName="transform" type="translate" values="-50 0;260 0" dur="26s" repeatCount="indefinite"/><ellipse cx="40" cy="34" rx="20" ry="10"/><ellipse cx="56" cy="30" rx="14" ry="9"/></g><g><animateTransform attributeName="transform" type="translate" values="-90 0;260 0" dur="34s" repeatCount="indefinite"/><ellipse cx="150" cy="50" rx="16" ry="8"/><ellipse cx="164" cy="47" rx="11" ry="7"/></g></g>
 <g transform="translate(120,118)"><rect x="-4" y="-2" width="8" height="30" rx="3" fill="#9c6b3f"/><g fill="#4f9a3a"><path d="M0 -4Q-34 -16 -52 -6Q-30 -8 -4 0Z"/><path d="M0 -4Q34 -16 52 -6Q30 -8 4 0Z"/><path d="M0 -4Q-14 -34 -2 -52Q6 -30 4 -4Z"/><path d="M0 -4Q14 -34 26 -50Q14 -28 4 -4Z"/></g><circle cx="3" cy="-3" r="3" fill="#7a4a1a"/></g>
-<g><animateMotion path="M44 150 q34 -46 74 -2" dur="3.4s" repeatCount="indefinite"/><g transform="rotate(0)"><ellipse rx="9" ry="6" fill="#6fd0e0"/><path d="M7 0l7 -4 0 8z" fill="#ff9f33"/><circle cx="-3" cy="-1" r="1.4" fill="#223"/></g></g>
+<g><animateMotion path="M44 150 q34 -46 74 -2" dur="3.4s" repeatCount="indefinite"/><g transform="rotate(0)"><ellipse rx="9" ry="6" fill="#6fd0e0"/><path d="M-9 0l-7 -4 0 8z" fill="#ff9f33"/><circle cx="4" cy="-1" r="1.4" fill="#223"/></g></g>
 <g fill="#e8d6a0"><ellipse cx="120" cy="150" rx="50" ry="12"/></g>
 <g fill="#4aa0c4"><path d="M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z"><animate attributeName="d" values="M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 156 q30 10 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z" dur="4s" repeatCount="indefinite"/></path></g>
 <g fill="#6fc3e0" opacity=".85"><path d="M0 168 q30 -8 60 0 t60 0 t60 0 t60 0 V200 H0Z"><animate attributeName="d" values="M0 168 q30 8 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 168 q30 -8 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 168 q30 8 60 0 t60 0 t60 0 t60 0 V200 H0Z" dur="3.2s" repeatCount="indefinite"/></path></g>
