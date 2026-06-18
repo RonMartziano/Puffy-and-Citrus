@@ -11,8 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --panel:#fdf6ea; --ink:#453d4d; --muted:#9b9088;
-    --teal:#54b6c6; --orange:#ef8f3a;
+    --panel:#fbeed8; --ink:#473c46; --muted:#9a8d80;
+    --teal:#3fa9bb; --orange:#ef823a;
     --hunger:#ef8a5d; --happy:#f3c24a; --energy:#6aa6df; --hygiene:#84bf69; --health:#ec6f89;
     --shadow:0 6px 18px rgba(90,70,40,.18);
     --cardsh:0 4px 14px rgba(90,70,40,.10);
@@ -55,8 +55,8 @@
   #ground{position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,#cdeeb0,#a9da7f);}
   #petWrap{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);width:200px;height:210px;z-index:4;transition:left 2.4s cubic-bezier(.45,.05,.5,1);
     display:flex;align-items:flex-end;justify-content:center;cursor:pointer;}
-  #petWrap.bob{animation:bob 3s ease-in-out infinite;}
-  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
+  #petWrap.bob{animation:bob 3.1s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0) rotate(0) scale(1,1);}25%{transform:translateX(-50%) translateY(-6px) rotate(1.6deg) scale(1.015,.985);}50%{transform:translateX(-50%) translateY(-11px) rotate(0) scale(.985,1.02);}75%{transform:translateX(-50%) translateY(-6px) rotate(-1.6deg) scale(1.015,.985);}}
   #petWrap svg{width:100%;height:100%;overflow:visible;}
   .cust{position:absolute;left:50%;transform:translateX(-50%);line-height:1;pointer-events:none;z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
   .cust.hatv{font-size:0;} .cust.hatv svg{display:block;}
@@ -207,7 +207,7 @@
   .sticker.lock{opacity:.4;}
   .sticker .se{font-size:25px;}.sticker .st{font-size:9px;font-weight:700;margin-top:2px;color:var(--muted);}
   .companion{position:absolute;bottom:50px;left:10px;font-size:30px;animation:bob 3.4s ease-in-out infinite;z-index:3;}
-  .compSpeech{position:absolute;left:10px;bottom:92px;max-width:150px;background:#fff;color:#3a3340;font-size:11px;font-weight:600;padding:6px 9px;border-radius:13px;box-shadow:var(--shadow);z-index:6;opacity:0;transition:opacity .25s;pointer-events:none;}
+  .compSpeech{position:absolute;right:10px;left:auto;bottom:150px;max-width:150px;background:#fff;color:#3a3340;font-size:11px;font-weight:600;padding:6px 9px;border-radius:13px;box-shadow:var(--shadow);z-index:6;opacity:0;transition:opacity .25s;pointer-events:none;}
   .compSpeech.show{opacity:1;}
   .reqBubble{position:absolute;top:46px;left:50%;transform:translateX(-50%);max-width:230px;background:#fff6d8;color:#7a5a10;border:1px solid #f0d98a;border-radius:14px;padding:6px 11px;font-size:11px;font-weight:700;box-shadow:var(--shadow);z-index:6;text-align:center;}
   #cutscene{position:absolute;inset:0;z-index:90;display:none;flex-direction:column;align-items:center;justify-content:center;background:#0b1230;color:#fff;text-align:center;padding:0;cursor:pointer;overflow:hidden;transition:background 1.1s ease;}
@@ -403,7 +403,7 @@
   .visitor .vart{width:74px;height:74px;}
   .visitor .vbub{background:#fff;border-radius:13px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--ink);box-shadow:0 5px 14px rgba(90,70,40,.28);max-width:140px;text-align:center;margin-bottom:5px;position:relative;font-family:var(--font);}
   .visitor .vbub::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0;}
-  #cutscene .csArt{width:196px;height:196px;}
+  #cutscene .csArt{width:232px;height:184px;}
   #cutscene .csArtEmoji{font-size:94px;}
   #cutscene.anim .csArt{animation:csKB 9s ease-out both;}
   @keyframes csKB{0%{transform:scale(.9) translateY(16px);opacity:0}18%{opacity:1}100%{transform:scale(1.13) translateY(-12px)}}
@@ -1226,7 +1226,7 @@ let compSayT=null;
 function duoChat(){const a=G.pets.puffy,b=G.pets.citrus;if(!a.hatched||!b.hatched||a.dead||b.dead||a.asleep||b.asleep)return;
   const pool=DUO_CHAT.filter(c=>(G.bond||0)>=c.min);const c=pool[Math.floor(Math.random()*pool.length)];if(!c)return;
   const active=pet();const activeIsPuffy=G.active==="puffy";
-  petSay(activeIsPuffy?c.a:c.b);setTimeout(function(){compSay(activeIsPuffy?c.b:c.a);},1300);}
+  petSay(activeIsPuffy?c.a:c.b);setTimeout(function(){compSay((activeIsPuffy?"🍊 ":"🐡 ")+(activeIsPuffy?c.b:c.a));},1300);}
 /* ---- Pet needs / requests ---- */
 const REQ_TYPES=[
  {id:"feed",e:"🍎",say:"feed me before i file a complaint 🍎"},
@@ -2147,7 +2147,7 @@ function hatSVG(id){var V='<svg viewBox="0 0 60 44" xmlns="http://www.w3.org/200
 function renderPet(){const p=pet(),wrap=$("#petWrap");if(typeof renderSancLayer==="function")try{renderSancLayer();}catch(e){}
   wrap.innerHTML=petArt(p,moodOf(p));
   const hat=customMeta(p.hat); if(p.hatched&&!p.dead&&p.hat&&p.hat!=="none"&&hat){const slot=hat.slot||"head";const h=document.createElement("div");var sv=hatSVG(p.hat);if(sv){h.className="cust hatv "+slot;h.innerHTML=sv;}else{h.className="cust emo "+slot;h.textContent=hat.e;}wrap.appendChild(h);}
-  wrap.classList.toggle("bob",p.hatched&&!p.asleep&&!p.dead);}
+  wrap.classList.toggle("bob",p.hatched&&!p.asleep&&!p.dead);if(p.asleep)wrap.style.left="50%";var _z=$("#zzz");if(_z)_z.style.left="calc("+(wrap.style.left||"50%")+" + 20px)";}
 
 /* ---------- FX ---------- */
 function react(emoji){const el=document.createElement("div");el.className="react";el.textContent=emoji;
@@ -2229,7 +2229,7 @@ function showNote(){const msg=rnd(BELLE_NOTES);$("#noteBody").textContent=msg;op
 function maybeEvent(dt){
   if(!G.daily.noteShown && Math.random()<dt*0.004){G.daily.noteShown=true;petSay(rnd(BELLE_NOTES));G.pets.puffy.happy=clamp(G.pets.puffy.happy+4);G.pets.citrus.happy=clamp(G.pets.citrus.happy+4);return;}
   if(Math.random()<dt*0.012)duoChat();
-  if(Math.random()<dt*0.16)idleAct();
+  if(Math.random()<dt*0.34)idleAct();
   if(Math.random()<dt*0.012)neglectVisit();
   ["puffy","citrus"].forEach(function(k){var p=G.pets[k];if(p&&p.request&&now()-((p.request.made)||0)>300000)p.request=null;});
   if(Math.random()<dt*0.005)makeRequest();
@@ -2506,7 +2506,7 @@ function doHeal(){if(!guard())return;const p=pet();
 function patPet(){if(buildMode)return;const p=pet();if(p.dead||!p.hatched||p.needsName)return;if(p.asleep){toast("Shh, sleeping 💤");return;}
   if(p.sick&&Math.random()<0.6)petSay("i don't feel so good… (tap 💊 Heal) 🤧");
   petBounce();if(isNight())G.stats.nightCares=(G.stats.nightCares||0)+1;
-  p.happy=clamp(p.happy+3);p.discipline=clamp(p.discipline+0.5);addXP(p,4);react(rnd(["💕","✨","😊","🫶"]));if(Math.random()<0.5)petSay(rnd(PAT_QUOTES));SFX.clean();questBump("pat",1);if(p.happy>=90)questBump("happy90",1);fulfillReq("pat");render();save();}
+  p.happy=clamp(p.happy+3);p.discipline=clamp(p.discipline+0.5);addXP(p,4);if(typeof petAnim==="function")petAnim("wiggle",700);for(var _hi=0;_hi<3;_hi++)(function(d){setTimeout(function(){react(rnd(["💕","✨","😊","🫶","💖","🥰"]));},d);})(_hi*110);if(Math.random()<0.6)petSay(rnd(PAT_QUOTES));SFX.happy();questBump("pat",1);if(p.happy>=90)questBump("happy90",1);fulfillReq("pat");render();save();}
 
 /* ---------- Shop ---------- */
 let shopTab="food";
@@ -2667,22 +2667,28 @@ function endGame(score){stopGame();const coins=score*2;G.coins+=coins;const p=pe
   $("#mgStart").style.display="block";$("#mgStart").textContent="Play again";render();save();}
 function gameSurf(){const area=$("#mgArea");area.innerHTML="";$("#mgScore").textContent=0;$("#mgTime").textContent="0m";
   var W=area.clientWidth||320,H=area.clientHeight||300,gh=44;
-  area.style.background="linear-gradient(180deg,#bdeefc 0%,#e3f6ff 55%,#7fd0e8 55%,#3f9ec2 100%)";
-  var water=document.createElement("div");water.style.cssText="position:absolute;left:0;right:0;bottom:0;height:"+gh+"px;background:linear-gradient(180deg,#6fc6e0,#3f9ec2);box-shadow:inset 0 3px 0 rgba(255,255,255,.35)";area.appendChild(water);
-  var pe=document.createElement("div");pe.textContent=pet().type==="puffy"?"🐡":"🍊";pe.style.cssText="position:absolute;left:42px;bottom:"+gh+"px;font-size:34px;z-index:3;line-height:1;will-change:transform";area.appendChild(pe);
-  var hint=document.createElement("div");hint.style.cssText="position:absolute;top:8px;left:0;right:0;text-align:center;font-weight:800;color:#0a4a6a;font-size:12px;z-index:4;transition:opacity .5s";hint.textContent="Tap to jump 🪨 · grab 🪙 in the air!";area.appendChild(hint);
-  var score=0,dist=0,py=0,vy=0,onG=true,speed=3.4,spT=60,alive=true,items=[];
-  function jump(){if(alive&&onG){vy=-12.4;onG=false;try{beep(540,.05);}catch(e){}}}
+  area.style.background="linear-gradient(180deg,#bdeefc 0%,#e7f7ff 55%,#7fd0e8 55%,#2f93bb 100%)";
+  var far=document.createElement("div");far.style.cssText="position:absolute;left:0;right:0;top:16px;height:48px;background:radial-gradient(ellipse 26px 12px at 40px 24px,#ffffffcc 60%,transparent 62%),radial-gradient(ellipse 20px 10px at 132px 16px,#ffffffaa 60%,transparent 62%);background-size:210px 60px;background-repeat:repeat-x;opacity:.85;z-index:0";area.appendChild(far);
+  var hills=document.createElement("div");hills.style.cssText="position:absolute;left:0;right:0;bottom:"+gh+"px;height:54px;background:radial-gradient(ellipse 92px 54px at 70px 54px,#8fd3e6 70%,transparent 72%);background-size:172px 54px;background-repeat:repeat-x;opacity:.5;z-index:0";area.appendChild(hills);
+  var water=document.createElement("div");water.style.cssText="position:absolute;left:0;right:0;bottom:0;height:"+gh+"px;background:linear-gradient(180deg,#6fc6e0,#2f93bb);box-shadow:inset 0 3px 0 rgba(255,255,255,.4);z-index:1";area.appendChild(water);
+  var pe=document.createElement("div");pe.textContent=pet().type==="puffy"?"🐡":"🍊";pe.style.cssText="position:absolute;left:44px;bottom:"+gh+"px;font-size:38px;z-index:3;line-height:1;will-change:transform";area.appendChild(pe);
+  var hint=document.createElement("div");hint.style.cssText="position:absolute;top:26px;left:0;right:0;text-align:center;font-weight:800;color:#0a4a6a;font-size:12px;z-index:4;transition:opacity .5s";hint.textContent="Tap to jump 🪨 · grab 🪙 mid-air!";area.appendChild(hint);
+  var score=0,dist=0,py=0,vy=0,onG=true,speed=3.4,spT=50,alive=true,items=[],combo=0,best=(G.stats.high&&G.stats.high.surf)||0;
+  function pop(x,y,t,col){var d=document.createElement("div");d.textContent=t;d.style.cssText="position:absolute;left:"+x+"px;bottom:"+y+"px;z-index:5;font-size:15px;font-weight:800;color:"+(col||"#fff")+";pointer-events:none;transition:transform .5s,opacity .5s;text-shadow:0 1px 2px rgba(0,0,0,.3)";area.appendChild(d);requestAnimationFrame(function(){d.style.transform="translateY(-28px)";d.style.opacity="0";});setTimeout(function(){if(d.parentNode)d.remove();},520);}
+  function splash(){for(var i=0;i<5;i++){(function(){var d=document.createElement("div");d.style.cssText="position:absolute;left:"+(52+Math.random()*16)+"px;bottom:"+gh+"px;width:5px;height:5px;border-radius:50%;background:#cdeffb;z-index:2;pointer-events:none;transition:transform .4s,opacity .4s";area.appendChild(d);var dx=Math.random()*40-20,dy=10+Math.random()*22;requestAnimationFrame(function(){d.style.transform="translate("+dx+"px,"+(-dy)+"px)";d.style.opacity="0";});setTimeout(function(){if(d.parentNode)d.remove();},420);})();}}
+  function jump(){if(alive&&onG){vy=-12.6;onG=false;try{beep(540,.05);}catch(e){}}}
   area.onclick=jump;
-  function loop(){if(!alive)return;dist+=speed;if(dist>50)hint.style.opacity="0";
-    py+=vy;vy+=0.74;if(py>=0){py=0;vy=0;onG=true;}pe.style.transform="translateY("+py+"px)";
-    speed=Math.min(9.5,3.4+dist/780);
-    spT-=speed;if(spT<=0){var obs=Math.random()<0.58;var el=document.createElement("div");el.dataset.o=obs?1:0;el.textContent=obs?rnd(["🪨","🐚","🦀"]):"🪙";el.style.cssText="position:absolute;z-index:2;font-size:"+(obs?26:22)+"px;bottom:"+(obs?gh:(gh+48+Math.random()*28))+"px";el._x=W+12;el.style.left=el._x+"px";area.appendChild(el);items.push(el);spT=Math.max(46,108-dist/130)+Math.random()*55;}
+  function loop(){if(!alive)return;dist+=speed;if(dist>60)hint.style.opacity="0";
+    far.style.backgroundPositionX=(-dist*0.15)+"px";hills.style.backgroundPositionX=(-dist*0.45)+"px";
+    var wasAir=!onG;py+=vy;vy+=0.74;if(py>=0){py=0;vy=0;if(wasAir){onG=true;splash();}}
+    pe.style.transform="translateY("+py+"px) rotate("+(onG?Math.sin(dist*0.18)*6:Math.max(-20,py*0.6))+"deg)";
+    speed=Math.min(10,3.4+dist/680);
+    spT-=speed;if(spT<=0){var obs=Math.random()<0.6;var el=document.createElement("div");el.dataset.o=obs?1:0;el.textContent=obs?rnd(["🪨","🐚","🦀","🌊"]):"🪙";el.style.cssText="position:absolute;z-index:2;font-size:"+(obs?27:22)+"px;bottom:"+(obs?gh:(gh+50+Math.random()*26))+"px";el._x=W+12;el.style.left=el._x+"px";area.appendChild(el);items.push(el);spT=Math.max(40,102-dist/120)+Math.random()*48;}
     for(var i=items.length-1;i>=0;i--){var it=items[i];it._x-=speed;it.style.left=it._x+"px";
-      if(it._x<78&&it._x>6){if(it.dataset.o==="1"){if(py>-22)alive=false;}else if(py<-18){score++;$("#mgScore").textContent=score;it.remove();items.splice(i,1);try{beep(820,.04);}catch(e){}continue;}}
+      if(it._x<82&&it._x>2){if(it.dataset.o==="1"){if(py>-22)alive=false;}else if(py<-18){combo++;var add=1+Math.floor(combo/5);score+=add;$("#mgScore").textContent=score;pop(it._x,gh+76,"+"+add,"#ffe070");try{beep(700+Math.min(600,combo*40),.04);}catch(e){}it.remove();items.splice(i,1);continue;}}
       if(it._x<-34){it.remove();items.splice(i,1);}}
-    $("#mgTime").textContent=Math.floor(dist/26)+"m";
-    if(!alive){pe.style.transform="translateY("+py+"px) rotate(54deg)";if(mg&&mg._iv)clearInterval(mg._iv);setTimeout(function(){endGame(score+Math.floor(dist/30));},380);}}
+    $("#mgTime").textContent=Math.floor(dist/24)+"m"+(combo>1?" 🔥x"+combo:"")+(best?"  ★"+best:"");
+    if(!alive){pe.style.transform="translateY("+py+"px) rotate(62deg)";if(mg&&mg._iv)clearInterval(mg._iv);for(var k=0;k<9;k++)splash();setTimeout(function(){endGame(score+Math.floor(dist/26));},440);}}
   mg={_iv:setInterval(loop,33)};}
 function gameFrenzy(){const area=$("#mgArea");let score=0,time=28;$("#mgScore").textContent=0;$("#mgTime").textContent=time+"s";
   const items=[];
@@ -3590,10 +3596,55 @@ function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="a
 
 /* ---------- Cutscenes / story ---------- */
 const INTRO=[
- {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"A speck in the Pacific",snd:"wave",text:"Tuvalu: nine low little islands, about 11,000 people, and more heart per square inch than anywhere on Earth."},
- {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:"💚",big:"Belle sends a parcel",snd:"warm",text:"Belle adores those islands. One morning a box turns up at your door: two eggs and a note — ‘Found these by the lagoon. Please don't let them become breakfast.’"},
- {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:"🐡 🍊",big:"Meet Puffy & Citrus",snd:"meet",text:"A jittery little pufferfish and an aggressively cheerful orange. Zero survival skills. Total confidence anyway. They're yours now."},
- {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:"🌅",big:"So… no pressure",snd:"hope",text:"Feed them, clean up after them, keep them alive. Looking after small things is how we hold onto the ones we love. Ready? 💛"}
+ {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:`<svg viewBox="0 0 240 200">
+<g transform="translate(190,44)"><g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="44s" repeatCount="indefinite"/><g stroke="#ffe487" stroke-width="3.5" stroke-linecap="round"><path d="M0 -30V-40M0 30V40M-30 0H-40M30 0H40M-21 -21l-7 -7M21 21l7 7M21 -21l7 -7M-21 21l-7 7"/></g></g><circle r="19" fill="#ffe070"/></g>
+<g opacity=".9" fill="#fff"><g><animateTransform attributeName="transform" type="translate" values="-50 0;260 0" dur="26s" repeatCount="indefinite"/><ellipse cx="40" cy="34" rx="20" ry="10"/><ellipse cx="56" cy="30" rx="14" ry="9"/></g><g><animateTransform attributeName="transform" type="translate" values="-90 0;260 0" dur="34s" repeatCount="indefinite"/><ellipse cx="150" cy="50" rx="16" ry="8"/><ellipse cx="164" cy="47" rx="11" ry="7"/></g></g>
+<g transform="translate(120,118)"><rect x="-4" y="-2" width="8" height="30" rx="3" fill="#9c6b3f"/><g fill="#4f9a3a"><path d="M0 -4Q-34 -16 -52 -6Q-30 -8 -4 0Z"/><path d="M0 -4Q34 -16 52 -6Q30 -8 4 0Z"/><path d="M0 -4Q-14 -34 -2 -52Q6 -30 4 -4Z"/><path d="M0 -4Q14 -34 26 -50Q14 -28 4 -4Z"/></g><circle cx="3" cy="-3" r="3" fill="#7a4a1a"/></g>
+<g><animateMotion path="M44 150 q34 -46 74 -2" dur="3.4s" repeatCount="indefinite"/><g transform="rotate(0)"><ellipse rx="9" ry="6" fill="#6fd0e0"/><path d="M7 0l7 -4 0 8z" fill="#ff9f33"/><circle cx="-3" cy="-1" r="1.4" fill="#223"/></g></g>
+<g fill="#e8d6a0"><ellipse cx="120" cy="150" rx="50" ry="12"/></g>
+<g fill="#4aa0c4"><path d="M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z"><animate attributeName="d" values="M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 156 q30 10 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 156 q30 -10 60 0 t60 0 t60 0 t60 0 V200 H0Z" dur="4s" repeatCount="indefinite"/></path></g>
+<g fill="#6fc3e0" opacity=".85"><path d="M0 168 q30 -8 60 0 t60 0 t60 0 t60 0 V200 H0Z"><animate attributeName="d" values="M0 168 q30 8 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 168 q30 -8 60 0 t60 0 t60 0 t60 0 V200 H0Z;M0 168 q30 8 60 0 t60 0 t60 0 t60 0 V200 H0Z" dur="3.2s" repeatCount="indefinite"/></path></g>
+</svg>`,big:"A speck in the Pacific",snd:"wave",text:"Tuvalu: nine low little islands, about 11,000 people, and more heart per square inch than anywhere on Earth."},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:`<svg viewBox="0 0 240 200">
+<g transform="translate(60,96)"><ellipse cx="0" cy="74" rx="40" ry="10" fill="#00000018"/>
+ <path d="M-20 70 Q-26 30 -16 18 Q0 6 16 18 Q26 30 20 70Z" fill="#7CC24B"/>
+ <circle cx="0" cy="2" r="20" fill="#ffd9a8"/><path d="M-20 0 Q0 -28 20 0 Q14 -16 0 -16 Q-14 -16 -20 0Z" fill="#5a3a2a"/>
+ <circle cx="-7" cy="2" r="2.3" fill="#3a2a22"/><circle cx="7" cy="2" r="2.3" fill="#3a2a22"/><path d="M-6 9 Q0 13 6 9" stroke="#3a2a22" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <circle cx="-13" cy="6" r="4" fill="#ff9bb0" opacity=".5"/><circle cx="13" cy="6" r="4" fill="#ff9bb0" opacity=".5"/>
+ <g transform="translate(20,24)"><g><animateTransform attributeName="transform" type="rotate" values="-18 0 0;14 0 0;-18 0 0" dur="1.1s" repeatCount="indefinite"/><rect x="0" y="-4" width="26" height="8" rx="4" fill="#7CC24B"/><circle cx="28" cy="0" r="6" fill="#ffd9a8"/></g></g>
+</g>
+<g transform="translate(168,108)"><ellipse cx="0" cy="40" rx="34" ry="9" fill="#00000018"/>
+ <rect x="-26" y="-8" width="52" height="44" rx="6" fill="#ef8f3a"/><rect x="-26" y="-8" width="52" height="14" rx="6" fill="#ffb86b"/>
+ <rect x="-5" y="-8" width="10" height="44" fill="#d97d20"/><path d="M0 -8 Q-14 -24 -22 -12 Q-10 -10 0 -8 Q10 -10 22 -12 Q14 -24 0 -8Z" fill="#ff5d8f"/>
+ <ellipse cx="-9" cy="-18" rx="7" ry="9" fill="#fff" stroke="#e8d6b0" stroke-width="1.5"/><ellipse cx="9" cy="-18" rx="7" ry="9" fill="#fff" stroke="#e8d6b0" stroke-width="1.5"/>
+ <g transform="translate(-9,-18)"><circle r="2.5" fill="#6fd0e0"/></g><g transform="translate(9,-18)"><circle r="2.5" fill="#ff9f33"/></g>
+</g>
+<g fill="#ff5d8f"><g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="110 120;110 60" dur="2.4s" repeatCount="indefinite"/><path d="M0 0 Q-6 -8 -12 -2 Q-16 4 0 14 Q16 4 12 -2 Q6 -8 0 0Z" transform="scale(.7)"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="0.7s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="135 120;135 56" dur="2.8s" begin="0.7s" repeatCount="indefinite"/><path d="M0 0 Q-6 -8 -12 -2 Q-16 4 0 14 Q16 4 12 -2 Q6 -8 0 0Z" transform="scale(.55)"/></g></g>
+</svg>`,big:"Belle sends a parcel",snd:"warm",text:"Belle adores those islands. One morning a box turns up at your door: two eggs and a note — ‘Found these by the lagoon. Please don't let them become breakfast.’"},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:`<svg viewBox="0 0 240 200">
+<g transform="translate(78,120)"><ellipse cx="0" cy="46" rx="34" ry="9" fill="#00000018"/>
+ <g><animateTransform attributeName="transform" type="rotate" values="-7 0 30;7 0 30;-7 0 30" dur="0.9s" repeatCount="indefinite"/>
+  <path d="M-30 18 Q-34 -34 0 -42 Q34 -34 30 18 Z" fill="#bfe6ff"/><path d="M-30 18 Q-34 -34 0 -42 Q34 -34 30 18" fill="#a8d6f0"/>
+  <path d="M-30 8 l10 -8 l8 8 l9 -8 l9 8 l8 -8 l9 8" fill="none" stroke="#fff" stroke-width="2.5"/>
+  <g transform="translate(0,-4)"><circle r="18" fill="#5aa6dc"/><circle cx="-7" cy="-3" r="6" fill="#fff"/><circle cx="7" cy="-3" r="6" fill="#fff"/><circle cx="-6" cy="-2" r="3" fill="#223"/><circle cx="8" cy="-2" r="3" fill="#223"/></g>
+ </g></g>
+<g transform="translate(162,120)"><ellipse cx="0" cy="46" rx="34" ry="9" fill="#00000018"/>
+ <g><animateTransform attributeName="transform" type="rotate" values="7 0 30;-7 0 30;7 0 30" dur="1.0s" repeatCount="indefinite"/>
+  <path d="M-30 18 Q-34 -34 0 -42 Q34 -34 30 18 Z" fill="#ffe1b0"/>
+  <path d="M-30 8 l10 -8 l8 8 l9 -8 l9 8 l8 -8 l9 8" fill="none" stroke="#fff" stroke-width="2.5"/>
+  <g transform="translate(0,-4)"><circle r="18" fill="#ef8f3a"/><circle cx="-7" cy="-3" r="6" fill="#fff"/><circle cx="7" cy="-3" r="6" fill="#fff"/><circle cx="-6" cy="-2" r="3" fill="#223"/><circle cx="8" cy="-2" r="3" fill="#223"/><path d="M0 -20 q8 -8 14 -2" stroke="#5aa247" stroke-width="3" fill="none"/></g>
+ </g></g>
+<g fill="#ffe070"><g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="1.4s" repeatCount="indefinite"/><path d="M120 40 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="1.8s" begin=".5s" repeatCount="indefinite"/><path d="M48 60 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="1.6s" begin=".9s" repeatCount="indefinite"/><path d="M196 66 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z"/></g></g>
+</svg>`,big:"Meet Puffy & Citrus",snd:"meet",text:"A jittery little pufferfish and an aggressively cheerful orange. Zero survival skills. Total confidence anyway. They're yours now."},
+ {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:`<svg viewBox="0 0 240 200">
+<g transform="translate(120,150)"><g><animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="50s" repeatCount="indefinite"/><g stroke="#ffd27a" stroke-width="6" stroke-linecap="round" opacity=".55"><path d="M0 -120V-200M0 120V200M-120 0H-200M120 0H200M-90 -90l-40 -40M90 90l40 40M90 -90l40 -40M-90 90l-40 40"/></g></g></g>
+<g transform="translate(86,120)"><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -14;0 0" dur="1.2s" repeatCount="indefinite"/><ellipse cx="0" cy="40" rx="26" ry="7" fill="#00000018"/><g fill="#5aa6dc"><circle cx="0" cy="-30" r="5"/><circle cx="22" cy="-12" r="5"/><circle cx="28" cy="12" r="5"/><circle cx="0" cy="30" r="5"/><circle cx="-28" cy="12" r="5"/><circle cx="-22" cy="-12" r="5"/></g><circle r="28" fill="#6fd0e0"/><circle cx="-9" cy="-4" r="6" fill="#fff"/><circle cx="9" cy="-4" r="6" fill="#fff"/><circle cx="-8" cy="-3" r="3" fill="#223"/><circle cx="10" cy="-3" r="3" fill="#223"/><path d="M-6 10 q6 6 12 0" stroke="#223" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="-15" cy="6" r="4" fill="#ff8fb0" opacity=".6"/><circle cx="15" cy="6" r="4" fill="#ff8fb0" opacity=".6"/></g></g>
+<g transform="translate(156,120)"><g><animateTransform attributeName="transform" type="translate" values="0 -14;0 0;0 -14" dur="1.2s" repeatCount="indefinite"/><ellipse cx="0" cy="40" rx="26" ry="7" fill="#00000018"/><path d="M2 -30 q10 -10 18 -4 q-8 6 -16 6z" fill="#5aa247"/><circle r="28" fill="#ef8f3a"/><circle cx="-9" cy="-4" r="6" fill="#fff"/><circle cx="9" cy="-4" r="6" fill="#fff"/><circle cx="-8" cy="-3" r="3" fill="#223"/><circle cx="10" cy="-3" r="3" fill="#223"/><path d="M-6 10 q6 6 12 0" stroke="#223" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="-15" cy="6" r="4" fill="#ff8fb0" opacity=".6"/><circle cx="15" cy="6" r="4" fill="#ff8fb0" opacity=".6"/></g></g>
+<g fill="#ff5d8f"><g opacity="0"><animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="120 110;120 50" dur="2.2s" repeatCount="indefinite"/><path d="M0 0 Q-6 -8 -12 -2 Q-16 4 0 14 Q16 4 12 -2 Q6 -8 0 0Z"/></g></g>
+</svg>`,big:"So… no pressure",snd:"hope",text:"Feed them, clean up after them, keep them alive. Looking after small things is how we hold onto the ones we love. Ready? 💛"}
 ];
 const CS_TUT_BG="radial-gradient(120% 90% at 50% 25%,#2a6a8a,#0c2436)";
 const CS_LEVEL_BG="radial-gradient(120% 90% at 50% 30%,#6a55c0,#241d4a)";
