@@ -380,6 +380,15 @@
   @keyframes growpulse{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.06);}}
   @keyframes growpulse2{0%,100%{box-shadow:0 5px 0 #e07d10,0 9px 16px rgba(224,125,16,.3);}50%{box-shadow:0 5px 0 #e07d10,0 0 0 4px #ffe2b0,0 9px 16px rgba(224,125,16,.4);}}
   .dk .badge.star{background:#ffb020;}
+  .act .e svg,.dk .e svg{width:23px;height:23px;display:block;margin:0 auto;}
+  .railbtn .e svg{width:21px;height:21px;display:block;margin:0 auto;}
+  #dock{justify-content:center;}
+  .dk{flex:1 1 0;max-width:96px;}
+  #menuModal .btn{background:#fff !important;color:var(--ink) !important;box-shadow:0 2px 6px rgba(90,70,40,.08) !important;border:1px solid #efe6d6;text-align:left;font-weight:700;font-size:14px;margin-top:7px;padding:12px 14px;}
+  #menuModal .btn:active{transform:translateY(1px);}
+  #menuModal #hardReset{background:#ffe1e1 !important;color:#b03a3a !important;border-color:#f3c0c0;}
+  #menuModal #logoutBtn{background:#eef2f6 !important;color:#4a5560 !important;border-color:#dfe6ec;}
+  .stat .ico svg{width:17px;height:17px;display:block;margin:0 auto;}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -411,11 +420,11 @@
     <button class="growcta" id="growReady" style="display:none">🌟 Ready to grow up!<small>Tap to choose its adult form</small></button>
     <div class="statusicons" id="statusIcons"></div>
     <div id="siderail">
-      <button class="railbtn" id="railJourney" title="Belle's Journey"><span class="e">📜</span><span class="rl">Journey</span><span class="badge" id="railJourneyBadge" style="display:none">!</span></button>
-      <button class="railbtn" id="railDaily" title="Daily check-in"><span class="e">🎁</span><span class="rl">Check-in</span><span class="badge" id="railDailyBadge" style="display:none">!</span></button>
-      <button class="railbtn" id="railDuo" title="Duo challenges" style="display:none"><span class="e">🤝</span><span class="rl">Duo</span><span class="badge" id="railDuoBadge" style="display:none">!</span></button>
-      <button class="railbtn" id="railFellow" title="Fellowship"><span class="e">👥</span><span class="rl">Friends</span></button>
-      <button class="railbtn" id="railEvents" title="Weekly events" style="display:none"><span class="e">⚔️</span><span class="rl">Events</span><span class="badge" id="railEventsBadge" style="display:none">!</span></button>
+      <button class="railbtn" id="railJourney" title="Belle's Journey"><span class="e"><svg viewBox="0 0 24 24"><path d="M6 5l4 2 4-2 4 2v12l-4-2-4 2-4-2Z" fill="#ffd27a"/><path d="M10 7v10M14 5v10" stroke="#c79328" stroke-width="1.3"/></svg></span><span class="rl">Journey</span><span class="badge" id="railJourneyBadge" style="display:none">!</span></button>
+      <button class="railbtn" id="railDaily" title="Daily check-in"><span class="e"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="9" rx="1.5" fill="#ff7eb6"/><rect x="4.5" y="7.5" width="15" height="3.5" rx="1.2" fill="#ff5d8f"/><path d="M12 7.5V19" stroke="#fff" stroke-width="1.6"/><path d="M12 7.5C10 4 6.5 5.5 8 7.5M12 7.5C14 4 17.5 5.5 16 7.5" fill="#ffd0e6"/></svg></span><span class="rl">Check-in</span><span class="badge" id="railDailyBadge" style="display:none">!</span></button>
+      <button class="railbtn" id="railDuo" title="Duo challenges" style="display:none"><span class="e"><svg viewBox="0 0 24 24"><path d="M9 18S3.5 14.5 3.5 10.3A3.4 3.4 0 0 1 9 7.8 3.4 3.4 0 0 1 14.5 10.3C14.5 14.5 9 18 9 18Z" fill="#6fd0e0"/><path d="M16 16s-4-2.6-4-5.6a2.6 2.6 0 0 1 4-2 2.6 2.6 0 0 1 4 2c0 3-4 5.6-4 5.6Z" fill="#ff9f33"/></svg></span><span class="rl">Duo</span><span class="badge" id="railDuoBadge" style="display:none">!</span></button>
+      <button class="railbtn" id="railFellow" title="Fellowship"><span class="e"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3" fill="#8f7fe0"/><path d="M3.5 18c0-3 2.5-5 5.5-5s5.5 2 5.5 5Z" fill="#8f7fe0"/><circle cx="16.5" cy="9" r="2.5" fill="#ff9f33"/><path d="M14 18c0-2.6 2-4.3 4.5-4.3S23 15 23 17.6Z" fill="#ff9f33" opacity=".9"/></svg></span><span class="rl">Friends</span></button>
+      <button class="railbtn" id="railEvents" title="Weekly events" style="display:none"><span class="e"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0Z" fill="#ffd27a"/><path d="M7 5H4.5v1.5A2.5 2.5 0 0 0 7 9M17 5h2.5v1.5A2.5 2.5 0 0 1 17 9" fill="none" stroke="#e0a020" stroke-width="1.4"/><path d="M12 12v4M9 19h6l-1-3h-4Z" fill="#e0a020"/></svg></span><span class="rl">Events</span><span class="badge" id="railEventsBadge" style="display:none">!</span></button>
     </div>
     <div id="ground"></div>
     <div id="sceneDecor"></div>
@@ -439,27 +448,27 @@
   <div id="xpwrap"><i id="xpbar"></i></div>
 
   <div id="stats">
-    <div class="stat"><span class="ico">🍽️</span><span class="lbl">Hunger</span><div class="bar"><i id="b-hunger"></i></div><span class="pct" id="p-hunger"></span></div>
-    <div class="stat"><span class="ico">😊</span><span class="lbl">Happy</span><div class="bar"><i id="b-happy"></i></div><span class="pct" id="p-happy"></span></div>
-    <div class="stat"><span class="ico">⚡</span><span class="lbl">Energy</span><div class="bar"><i id="b-energy"></i></div><span class="pct" id="p-energy"></span></div>
-    <div class="stat"><span class="ico">🫧</span><span class="lbl">Hygiene</span><div class="bar"><i id="b-hygiene"></i></div><span class="pct" id="p-hygiene"></span></div>
-    <div class="stat"><span class="ico">❤️</span><span class="lbl">Health</span><div class="bar"><i id="b-health"></i></div><span class="pct" id="p-health"></span></div>
+    <div class="stat"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 10h16a8 8 0 0 1-16 0Z" fill="#ff8a5b"/><rect x="4" y="8" width="16" height="2.2" rx="1.1" fill="#ff8a5b"/><path d="M9 3c-1 1.4-1 2.6 0 4M12 3c-1 1.4-1 2.6 0 4M15 3c-1 1.4-1 2.6 0 4" stroke="#ffb38f" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg></span><span class="lbl">Hunger</span><div class="bar"><i id="b-hunger"></i></div><span class="pct" id="p-hunger"></span></div>
+    <div class="stat"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#ffcf3f"/><circle cx="9" cy="10.5" r="1.4" fill="#7a5a00"/><circle cx="15" cy="10.5" r="1.4" fill="#7a5a00"/><path d="M8.5 14.5a4 4 0 0 0 7 0" fill="none" stroke="#7a5a00" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="lbl">Happy</span><div class="bar"><i id="b-happy"></i></div><span class="pct" id="p-happy"></span></div>
+    <div class="stat"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="#7ec8ff"/></svg></span><span class="lbl">Energy</span><div class="bar"><i id="b-energy"></i></div><span class="pct" id="p-energy"></span></div>
+    <div class="stat"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3s6.5 7.2 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 10.2 12 3 12 3Z" fill="#9ad36b"/><path d="M9 14a3 3 0 0 0 2 2.6" fill="none" stroke="#eafbe0" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="lbl">Hygiene</span><div class="bar"><i id="b-hygiene"></i></div><span class="pct" id="p-hygiene"></span></div>
+    <div class="stat"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 20S4 14.5 4 9a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 5.5-8 11-8 11Z" fill="#ff6b8a"/></svg></span><span class="lbl">Health</span><div class="bar"><i id="b-health"></i></div><span class="pct" id="p-health"></span></div>
   </div>
 
   <div id="dock">
-    <button class="dk" data-dock="play"><span class="e">🎈</span>Play<span class="badge" id="playBadge" style="display:none">🎁</span></button>
-    <button class="dk" data-dock="garden"><span class="e">🌱</span>Garden</button>
-    <button class="dk" data-dock="fish"><span class="e">🎣</span>Fish</button>
-    <button class="dk" data-dock="grow"><span class="e">🧬</span>Grow<span class="badge star" id="growDockBadge" style="display:none">🌟</span></button>
-    <button class="dk" data-dock="home"><span class="e">🏡</span>Home</button>
+    <button class="dk" data-dock="play"><span class="e"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="9.5" rx="5.5" ry="6.3" fill="#ff7eb6"/><ellipse cx="10" cy="7.5" rx="1.6" ry="2.1" fill="#ffd0e6"/><path d="M12 15.8c0 2 1.2 2.4 1.2 4.2" fill="none" stroke="#c75f93" stroke-width="1.4" stroke-linecap="round"/></svg></span>Play<span class="badge" id="playBadge" style="display:none">🎁</span></button>
+    <button class="dk" data-dock="garden"><span class="e"><svg viewBox="0 0 24 24"><path d="M12 20v-7" stroke="#7a5a2a" stroke-width="2" stroke-linecap="round"/><path d="M12 13C9 13 7 11 7 8c3 0 5 2 5 5Z" fill="#5aa247"/><path d="M12 11c0-3 2-5 5-5 0 3-2 5-5 5Z" fill="#7CC24B"/></svg></span>Garden</button>
+    <button class="dk" data-dock="fish"><span class="e"><svg viewBox="0 0 24 24"><path d="M4 12c3-4 9-5 13-2 1 .7 2 1.3 3 2-1 .7-2 1.3-3 2-4 3-10 2-13-2Z" fill="#6fd0e0"/><path d="M17 10c1.6-1.4 3-1.6 3-1.6s-.2 2.6-1.6 3.6M17 14c1.6 1.4 3 1.6 3 1.6s-.2-2.6-1.6-3.6" fill="#ff9f33"/><circle cx="8" cy="11" r="1.1" fill="#2a3340"/></svg></span>Fish</button>
+    <button class="dk" data-dock="grow"><span class="e"><svg viewBox="0 0 24 24"><path d="M12 4l2 4 4 .6-3 2.8.8 4-3.8-2-3.8 2 .8-4-3-2.8 4-.6Z" fill="#b39cf0"/><path d="M12 14v6M9 17l3 3 3-3" fill="none" stroke="#8f6fe0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Grow<span class="badge star" id="growDockBadge" style="display:none">🌟</span></button>
+    <button class="dk" data-dock="home"><span class="e"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6" fill="none" stroke="#e07d2a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10.5V19h12v-8.5" fill="#ffb86b"/><rect x="10" y="13.5" width="4" height="5.5" rx="1" fill="#fff"/></svg></span>Home</button>
   </div>
 
   <div id="actions">
-    <button class="act" data-act="feed"><span class="e">🍎</span>Feed</button>
-    <button class="act" data-act="clean"><span class="e">🧼</span>Clean</button>
-    <button class="act" data-act="sleep"><span class="e">💤</span>Sleep</button>
-    <button class="act" data-act="heal"><span class="e">💊</span>Heal<span class="badge" id="healBadge" style="display:none">!</span></button>
-    <button class="act" data-act="shop"><span class="e">🛒</span>Shop</button>
+    <button class="act" data-act="feed"><span class="e"><svg viewBox="0 0 24 24"><path d="M12 6c-1-2-4-2.6-5.5-1C4.8 6.7 5 10 7 13c1.2 1.8 2.6 3.2 3.6 3.9.8.5 1.6.5 2.4 0 1-.7 2.4-2.1 3.6-3.9 2-3 2.2-6.3.5-8C15.8 3.4 13 4 12 6Z" fill="#ff6b6b"/><path d="M12 6c.4-1.6 1.8-2.6 3.2-2.4-.2 1.5-1.3 2.6-2.6 2.8" fill="#5aa247"/></svg></span>Feed</button>
+    <button class="act" data-act="clean"><span class="e"><svg viewBox="0 0 24 24"><circle cx="9" cy="13" r="5.5" fill="#7ec8ff"/><circle cx="16" cy="9" r="3.4" fill="#addcff"/><circle cx="7.3" cy="11" r="1.6" fill="#fff" opacity=".85"/><path d="M17 4l.7 1.7L19.4 6l-1.7.7L17 8.4 16.3 6.7 14.6 6l1.7-.3Z" fill="#ffe27a"/></svg></span>Clean</button>
+    <button class="act" data-act="sleep"><span class="e"><svg viewBox="0 0 24 24"><path d="M19 14.5A8 8 0 1 1 9.5 5a6.4 6.4 0 0 0 9.5 9.5Z" fill="#8f7fe0"/><text x="15.5" y="9" font-size="7" font-weight="800" fill="#ffe27a">z</text></svg></span>Sleep</button>
+    <button class="act" data-act="heal"><span class="e"><svg viewBox="0 0 24 24"><path d="M12 20S3.5 14.4 3.5 8.8A4.8 4.8 0 0 1 12 5.7a4.8 4.8 0 0 1 8.5 3.1C20.5 14.4 12 20 12 20Z" fill="#ff6b8a"/><path d="M12 8.2v5M9.5 10.7h5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span>Heal<span class="badge" id="healBadge" style="display:none">!</span></button>
+    <button class="act" data-act="shop"><span class="e"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 11a1.5 1.5 0 0 1-1.5 1.4H8.5A1.5 1.5 0 0 1 7 19L6 8Z" fill="#ff9f33"/><path d="M9 9V7a3 3 0 0 1 6 0v2" fill="none" stroke="#d97d12" stroke-width="1.8" stroke-linecap="round"/></svg></span>Shop</button>
   </div>
 
   <div id="toast"></div>
@@ -2409,7 +2418,7 @@ function render(){const p=pet();
     t.classList.toggle("needs",need);t.classList.toggle("active",t.dataset.pet===G.active);
     t.querySelector(".nm").textContent=pp.name||(t.dataset.pet==="puffy"?"Puffy":"Citrus");});
   const ov=$("#deadOverlay");if(p.dead){ov.classList.add("show");$("#deadMsg").textContent=petName(p)+" lived "+(a/3600).toFixed(1)+"h. "+(p.careMistakes<60?"A wonderful, well-loved life. 💛":"Check in a little more often next time. 💛");}else ov.classList.remove("show");
-  $$('.act[data-act="sleep"]')[0].querySelector('.e').textContent=p.asleep?"☀️":"💤";
+  $$('.act[data-act="sleep"]')[0].querySelector('.e').innerHTML=p.asleep?('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ffd24a"/><g stroke="#ffb020" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"/></g></svg>'):('<svg viewBox="0 0 24 24"><path d="M19 14.5A8 8 0 1 1 9.5 5a6.4 6.4 0 0 0 9.5 9.5Z" fill="#8f7fe0"/><text x="15.5" y="9" font-size="7" font-weight="800" fill="#ffe27a">z</text></svg>');
   {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}{const c=chestReady(),ch=$("#chest");if(ch){if(c>=10&&p.hatched&&!p.dead){ch.style.display="block";$("#chestAmt").textContent=c;}else ch.style.display="none";}}{const pb=$("#playBadge");if(pb)pb.style.display=(expReady()||journeyClaimable())?"flex":"none";}{const jb=$("#journeyBadge");if(jb)jb.style.display=journeyClaimable()?"flex":"none";}{const djb=$("#dockJourneyBadge");if(djb)djb.style.display=journeyClaimable()?"flex":"none";}{var _ready=canGrowUp(p);var _gr=$("#growReady");if(_gr)_gr.style.display=_ready?"block":"none";var _gdb=$("#growDockBadge");if(_gdb)_gdb.style.display=_ready?"flex":"none";var _ev=currentEvent(),_eb=$("#eventBanner");if(_eb){if(_ev&&!_ready){_eb.style.display="block";_eb.textContent=_ev.e+" "+_ev.nm;}else _eb.style.display="none";}}{["play","garden","fish","grow","home"].forEach(function(id){var _db=document.querySelector('.dk[data-dock="'+id+'"]');if(_db)_db.style.display=featUnlocked(id)?"flex":"none";});
  var _L=maxLevel(),_both=G.pets.puffy.hatched&&G.pets.citrus.hatched;
  {var rdj=$("#railDuo");if(rdj)rdj.style.display=(_both&&_L>=6)?"flex":"none";}
