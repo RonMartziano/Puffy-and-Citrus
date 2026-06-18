@@ -11,9 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --panel:#fffdf7; --ink:#3a3340; --muted:#8a8290;
-    --teal:#6fd0e0; --orange:#ff9f33;
-    --hunger:#ff8a5b; --happy:#ffcf3f; --energy:#7ec8ff; --hygiene:#9ad36b; --health:#ff6b8a;
+    --panel:#fdf6ea; --ink:#453d4d; --muted:#9b9088;
+    --teal:#54b6c6; --orange:#ef8f3a;
+    --hunger:#ef8a5d; --happy:#f3c24a; --energy:#6aa6df; --hygiene:#84bf69; --health:#ec6f89;
     --shadow:0 6px 18px rgba(90,70,40,.18);
     --cardsh:0 4px 14px rgba(90,70,40,.10);
     --font:"Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
@@ -254,7 +254,7 @@
   #petWrap.pop{animation:petpop .35s ease;}
   .floatItem{position:absolute;font-size:26px;cursor:pointer;z-index:5;animation:floatRise 6s linear forwards;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
   @keyframes floatRise{0%{transform:translateY(0);opacity:0;}12%{opacity:1;}86%{opacity:1;}100%{transform:translateY(-190px);opacity:0;}}
-  #zzz{position:absolute;left:60%;bottom:58%;font-size:22px;display:none;z-index:5;pointer-events:none;}
+  #zzz{position:absolute;left:57%;bottom:44%;font-size:20px;display:none;z-index:5;pointer-events:none;}
   #zzz.on{display:block;animation:zfloat 2s ease-in-out infinite;}
   @keyframes zfloat{0%{transform:translateY(0);opacity:.3;}50%{opacity:1;}100%{transform:translateY(-26px);opacity:0;}}
   .seedchip{background:#eef6e6;border:1px solid #cfe3b8;border-radius:14px;padding:5px 10px;font-size:12px;font-weight:700;color:#4a6b2a;cursor:pointer;}
@@ -317,7 +317,7 @@
   .famalbum{display:flex;gap:6px;flex-wrap:wrap;padding:2px 0 6px;}
   .famform{width:38px;height:38px;}.famform svg{width:100%;height:100%;overflow:visible;}
   /* ============ premium polish layer ============ */
-  body{background:linear-gradient(160deg,#e8dac6,#d2c2aa);}
+  body{background:linear-gradient(160deg,#e3d3bd,#c9b89f);}
   #app{box-shadow:0 0 60px rgba(60,40,20,.22);}
   .logo,#topbar .logo,h2,.sheet h2,.btn,.tab,.seg,.dk,.act,.chip,.menuhd,.stagebadge,.ordbtn{font-family:var(--display);}
   #topbar{background:linear-gradient(180deg,#fffefb,#fff3e0);}
@@ -393,8 +393,12 @@
   .motep{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 70%);pointer-events:none;z-index:2;animation:mote linear infinite;}
   #scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 80% at 50% 26%,transparent 54%,rgba(10,8,24,.20));z-index:1;}
   body.rm .motep,body.rm #petWrap.waddle svg,body.rm #petWrap{animation:none!important;transition:none!important;}
-  #petWrap.waddle svg{animation:waddle 2.4s ease-in-out;}
-  @keyframes waddle{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg)}55%{transform:rotate(4deg)}80%{transform:rotate(-2deg)}}
+  #petWrap.waddle{animation:waddle 2.2s ease-in-out;}
+  @keyframes waddle{0%,100%{transform:translateX(-50%) rotate(0)}18%{transform:translateX(-50%) rotate(-6deg)}50%{transform:translateX(-50%) rotate(5deg)}78%{transform:translateX(-50%) rotate(-2deg)}}
+  @keyframes lookA{0%,100%{transform:translateX(-50%) rotate(0)}30%{transform:translateX(-58%) rotate(-3deg)}70%{transform:translateX(-42%) rotate(3deg)}}
+  #petWrap.look{animation:lookA 1.8s ease-in-out;}
+  @keyframes wiggle{0%,100%{transform:translateX(-50%) scale(1)}25%{transform:translateX(-50%) scale(1.06,.94)}50%{transform:translateX(-50%) scale(.95,1.05)}75%{transform:translateX(-50%) scale(1.04,.96)}}
+  #petWrap.wiggle{animation:wiggle .7s ease;}
   .visitor{position:absolute;bottom:62px;z-index:7;display:flex;flex-direction:column;align-items:center;cursor:pointer;width:96px;transition:transform .6s cubic-bezier(.2,.9,.3,1.25),opacity .5s;}
   .visitor .vart{width:74px;height:74px;}
   .visitor .vbub{background:#fff;border-radius:13px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--ink);box-shadow:0 5px 14px rgba(90,70,40,.28);max-width:140px;text-align:center;margin-bottom:5px;position:relative;font-family:var(--font);}
@@ -406,6 +410,10 @@
   #cutscene .csBig{font-size:27px;text-shadow:0 2px 22px rgba(255,214,130,.40);}
   #cutscene::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(58% 46% at 50% 36%,rgba(255,255,255,.10),transparent 72%);}
   #cutscene .csFx{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+  #sancLayer{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
+  #sancLayer .sd{position:absolute;font-size:19px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18));}
+  #sancLayer .sd.sway{animation:sdsway 4s ease-in-out infinite;}
+  @keyframes sdsway{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-4px) rotate(4deg)}}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -445,6 +453,7 @@
     </div>
     <div id="ground"></div>
     <div id="sceneDecor"></div>
+    <div id="sancLayer"></div>
     <div id="roomLayer"></div>
     <div id="petWrap" class="bob"></div>
     <div id="speech"></div>
@@ -617,6 +626,12 @@
     <div class="closeRow"><h2>✅ Tasks</h2><button class="iconbtn" data-close>✕</button></div>
     <div class="sub" id="tasksSub"></div>
     <div id="tasksBody"></div>
+  </div></div>
+
+  <div class="modal" id="sancModal"><div class="sheet">
+    <div class="closeRow"><h2>🏝️ Sanctuary</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="sub" id="sancSub"></div>
+    <div id="sancBody"></div>
   </div></div>
 
   <div class="modal" id="hubModal"><div class="sheet">
@@ -920,6 +935,7 @@ const BGS={
   feasthall:{nm:"Ambrosia Hall",cost:null,unlock:"mythicchef",hint:"Cook a mythic dish",sky:"#3a2f1a",g1:"#caa24a",g2:"#6a4a1a",dark:true},
 };
 const MINIGAMES=[
+  {id:"surf",e:"🌊",nm:"Tide Surfer",desc:"Tap to leap rocks, snatch 🪙 mid-air, ride the tide as far as you can!"},
   {id:"bubble",e:"🫧",nm:"Bubble Snack",desc:"Tap the falling treats. Do NOT tap the 💣. Simple. (It's not simple.)"},
   {id:"memory",e:"🃏",nm:"Memory Match",desc:"Flip cards, match pairs, pretend you have a great memory. 🃏"},
   {id:"whack",e:"🔨",nm:"Whack-a-Snack",desc:"Bonk snacks as they pop up. Bombs are not snacks. 🔨"},
@@ -1036,6 +1052,8 @@ const ACHIEVEMENTS=[
   {id:"gachawhale",e:"🪙",t:"High Roller",d:"Roll the capsule 100 times"},
   {id:"jackpot",e:"🌈",t:"JACKPOT!",d:"Hit a 1% legendary capsule"},
   {id:"fusionist",e:"✨",t:"Fusionist",d:"Fuse two forms in the Fusion Lab"},
+  {id:"sanctuary5",e:"🌿",t:"Caretaker",d:"Grow your sanctuary to Level 5"},
+  {id:"sanctuarymax",e:"🏝️",t:"Paradise Found",d:"Grow your sanctuary fully"},
   {id:"bossslayer",e:"⚔️",t:"Boss Slayer",d:"Defeat a weekly raid boss"},
   {id:"bosslord",e:"🛡️",t:"Raid Lord",d:"Defeat 10 weekly raid bosses"},
   {id:"tourneyjoin",e:"🎣",t:"Contender",d:"Enter a fishing tournament"},
@@ -2126,7 +2144,7 @@ function hatSVG(id){var V='<svg viewBox="0 0 60 44" xmlns="http://www.w3.org/200
  starhalo:'<ellipse cx="30" cy="22" rx="20" ry="7" fill="none" stroke="#c7b8ff" stroke-width="2"/>'+[ [10,22],[30,15],[50,22],[20,28],[40,28] ].map(function(q){return '<polygon points="'+q[0]+','+(q[1]-3.5)+' '+(q[0]+1.2)+','+(q[1]-1)+' '+(q[0]+3.5)+','+q[1]+' '+(q[0]+1.2)+','+(q[1]+1)+' '+q[0]+','+(q[1]+3.5)+' '+(q[0]-1.2)+','+(q[1]+1)+' '+(q[0]-3.5)+','+q[1]+' '+(q[0]-1.2)+','+(q[1]-1)+'" fill="#fff7c0"/>';}).join(''),
  jester:'<path d="M12 34 q18 6 36 0 q-3 -8 -18 -8 q-15 0 -18 8 Z" fill="#7CC24B"/><path d="M14 33 Q9 14 5 12 Z" fill="#d65a5a"/><path d="M30 33 Q30 11 30 7 Z" fill="#5fb6ff"/><path d="M46 33 Q51 14 55 12 Z" fill="#ffd24a"/><circle cx="5" cy="12" r="3" fill="#ffe14a"/><circle cx="30" cy="7" r="3" fill="#ffe14a"/><circle cx="55" cy="12" r="3" fill="#ffe14a"/>'
 };return H[id]?(V+H[id]+E):null;}
-function renderPet(){const p=pet(),wrap=$("#petWrap");
+function renderPet(){const p=pet(),wrap=$("#petWrap");if(typeof renderSancLayer==="function")try{renderSancLayer();}catch(e){}
   wrap.innerHTML=petArt(p,moodOf(p));
   const hat=customMeta(p.hat); if(p.hatched&&!p.dead&&p.hat&&p.hat!=="none"&&hat){const slot=hat.slot||"head";const h=document.createElement("div");var sv=hatSVG(p.hat);if(sv){h.className="cust hatv "+slot;h.innerHTML=sv;}else{h.className="cust emo "+slot;h.textContent=hat.e;}wrap.appendChild(h);}
   wrap.classList.toggle("bob",p.hatched&&!p.asleep&&!p.dead);}
@@ -2139,7 +2157,7 @@ let toastT;function toast(msg){const t=$("#toast");t.textContent=msg;t.classList
 
 /* ---------- XP / level ---------- */
 function levelNeed(l){return 45+l*38+Math.floor(l*l*3);}
-function addXP(p,n){n=Math.round(n*xpMul(p));p.xp+=n;let lv=0;
+function addXP(p,n){n=Math.round(n*xpMul(p));p.xp+=n;let lv=0;try{G.sanctuary=G.sanctuary||{pts:0,lv:0};G.sanctuary.pts+=Math.max(1,Math.round(n*0.2));sancCheck();}catch(e){}
   while(p.xp>=levelNeed(p.level)){p.xp-=levelNeed(p.level);p.level++;lv=p.level;}
   if(lv){G.coins+=p.level*5;SFX.level();if(p.level>=10)unlock("lvl10");if(p.level>=15)unlock("centurion");if(p.level>=20)unlock("lvl20");if(p.level>=30)unlock("lvl30");
     const q=rnd(LEVEL_QUOTES);petSay(q);
@@ -2211,9 +2229,8 @@ function showNote(){const msg=rnd(BELLE_NOTES);$("#noteBody").textContent=msg;op
 function maybeEvent(dt){
   if(!G.daily.noteShown && Math.random()<dt*0.004){G.daily.noteShown=true;petSay(rnd(BELLE_NOTES));G.pets.puffy.happy=clamp(G.pets.puffy.happy+4);G.pets.citrus.happy=clamp(G.pets.citrus.happy+4);return;}
   if(Math.random()<dt*0.012)duoChat();
-  if(Math.random()<dt*0.02)petWander();
-  if(Math.random()<dt*0.011)idleQuip();
-  if(Math.random()<dt*0.005)neglectVisit();
+  if(Math.random()<dt*0.16)idleAct();
+  if(Math.random()<dt*0.012)neglectVisit();
   ["puffy","citrus"].forEach(function(k){var p=G.pets[k];if(p&&p.request&&now()-((p.request.made)||0)>300000)p.request=null;});
   if(Math.random()<dt*0.005)makeRequest();
   if(Math.random()<dt*0.002){const ev=rnd(["coins","rainbow","gust","snack"]);
@@ -2642,12 +2659,31 @@ function showGame(id){curGame=id;const g=MINIGAMES.find(x=>x.id===id);$("#mgTitl
   $("#mgMenu").style.display="none";$("#mgPlay").style.display="block";$("#mgArea").innerHTML="";$("#mgScore").textContent="0";$("#mgTime").textContent="";$("#mgStart").style.display="block";$("#mgStart").textContent="Start";}
 function stopGame(){if(mg){if(mg.spawn)clearInterval(mg.spawn);if(mg.timer)clearInterval(mg.timer);if(mg.fall)clearInterval(mg.fall);if(mg._iv)clearInterval(mg._iv);mg=null;}}
 function startGame(){stopGame();$("#mgArea").innerHTML="";$("#mgStart").style.display="none";
-  if(curGame==="bubble")gameBubble();else if(curGame==="whack")gameWhack();else if(curGame==="target")gameTarget();else if(curGame==="catch")gameCatch();else if(curGame==="echo")gameEcho();else if(curGame==="frenzy")gameFrenzy();else gameMemory();}
+  if(curGame==="surf")gameSurf();else if(curGame==="bubble")gameBubble();else if(curGame==="whack")gameWhack();else if(curGame==="target")gameTarget();else if(curGame==="catch")gameCatch();else if(curGame==="echo")gameEcho();else if(curGame==="frenzy")gameFrenzy();else gameMemory();}
 function endGame(score){stopGame();const coins=score*2;G.coins+=coins;const p=pet();p.happy=clamp(p.happy+Math.min(40,score*2));p.energy=clamp(p.energy-8);addXP(p,20+Math.min(70,score*3));
   G.stats.gamesPlayed++;if(G.stats.gamesPlayed>=5)unlock("gamer");if(G.stats.gamesPlayed>=25)unlock("games25");if(G.stats.gamesPlayed>=50)unlock("games50");if(G.stats.gamesPlayed>=100)unlock("games100");if(G.stats.gamesPlayed>=5)unlockSticker("gamer");if(score>(G.stats.high[curGame]||0))G.stats.high[curGame]=score;
   questBump("play",1);fulfillReq("play");if(G.coins>=200)unlock("rich");SFX.level();
   $("#mgArea").innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:6px"><div style="font-size:40px">🎉</div><div style="font-weight:800;font-size:18px">Score: ${score}</div><div style="color:#b07415;font-weight:800">+${coins} 🪙 · +XP · +happiness</div></div>`;
   $("#mgStart").style.display="block";$("#mgStart").textContent="Play again";render();save();}
+function gameSurf(){const area=$("#mgArea");area.innerHTML="";$("#mgScore").textContent=0;$("#mgTime").textContent="0m";
+  var W=area.clientWidth||320,H=area.clientHeight||300,gh=44;
+  area.style.background="linear-gradient(180deg,#bdeefc 0%,#e3f6ff 55%,#7fd0e8 55%,#3f9ec2 100%)";
+  var water=document.createElement("div");water.style.cssText="position:absolute;left:0;right:0;bottom:0;height:"+gh+"px;background:linear-gradient(180deg,#6fc6e0,#3f9ec2);box-shadow:inset 0 3px 0 rgba(255,255,255,.35)";area.appendChild(water);
+  var pe=document.createElement("div");pe.textContent=pet().type==="puffy"?"🐡":"🍊";pe.style.cssText="position:absolute;left:42px;bottom:"+gh+"px;font-size:34px;z-index:3;line-height:1;will-change:transform";area.appendChild(pe);
+  var hint=document.createElement("div");hint.style.cssText="position:absolute;top:8px;left:0;right:0;text-align:center;font-weight:800;color:#0a4a6a;font-size:12px;z-index:4;transition:opacity .5s";hint.textContent="Tap to jump 🪨 · grab 🪙 in the air!";area.appendChild(hint);
+  var score=0,dist=0,py=0,vy=0,onG=true,speed=3.4,spT=60,alive=true,items=[];
+  function jump(){if(alive&&onG){vy=-12.4;onG=false;try{beep(540,.05);}catch(e){}}}
+  area.onclick=jump;
+  function loop(){if(!alive)return;dist+=speed;if(dist>50)hint.style.opacity="0";
+    py+=vy;vy+=0.74;if(py>=0){py=0;vy=0;onG=true;}pe.style.transform="translateY("+py+"px)";
+    speed=Math.min(9.5,3.4+dist/780);
+    spT-=speed;if(spT<=0){var obs=Math.random()<0.58;var el=document.createElement("div");el.dataset.o=obs?1:0;el.textContent=obs?rnd(["🪨","🐚","🦀"]):"🪙";el.style.cssText="position:absolute;z-index:2;font-size:"+(obs?26:22)+"px;bottom:"+(obs?gh:(gh+48+Math.random()*28))+"px";el._x=W+12;el.style.left=el._x+"px";area.appendChild(el);items.push(el);spT=Math.max(46,108-dist/130)+Math.random()*55;}
+    for(var i=items.length-1;i>=0;i--){var it=items[i];it._x-=speed;it.style.left=it._x+"px";
+      if(it._x<78&&it._x>6){if(it.dataset.o==="1"){if(py>-22)alive=false;}else if(py<-18){score++;$("#mgScore").textContent=score;it.remove();items.splice(i,1);try{beep(820,.04);}catch(e){}continue;}}
+      if(it._x<-34){it.remove();items.splice(i,1);}}
+    $("#mgTime").textContent=Math.floor(dist/26)+"m";
+    if(!alive){pe.style.transform="translateY("+py+"px) rotate(54deg)";if(mg&&mg._iv)clearInterval(mg._iv);setTimeout(function(){endGame(score+Math.floor(dist/30));},380);}}
+  mg={_iv:setInterval(loop,33)};}
 function gameFrenzy(){const area=$("#mgArea");let score=0,time=28;$("#mgScore").textContent=0;$("#mgTime").textContent=time+"s";
   const items=[];
   function add(){const bomb=Math.random()<0.16;const el=document.createElement("div");el.style.cssText="position:absolute;font-size:30px;z-index:3;cursor:pointer";el.textContent=bomb?"💣":rnd(["🐟","🐠","🦐","🐡","🦀","⭐","🎏"]);el.dataset.bomb=bomb?"1":"";
@@ -3245,6 +3281,7 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
   openHub("🧬 Grow &amp; Legacy","Shape who your pets become — then pass on the torch.",[
     ["🧬","Evolution",(p.stage==="adult"?"fully grown ✓":"care grade "+grade),openEvolution],
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
+    ["🏝️","Sanctuary",((G.sanctuary&&G.sanctuary.lv)||0)+" grown · build their home",openSanctuary],
     ["🏆","Achievements",(Object.keys(G.ach||{}).length+"/"+ACHIEVEMENTS.length+" unlocked"),openQuests],
     ["👪","Ascension & Legacy","ascend & carry on",openFamily],
     ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")+" to spend"),openPrestige]
@@ -3273,6 +3310,21 @@ function openHome(){if(!guard())return;const p=pet();
     ["🏞️","Habitat",(BGS[p.bg]?BGS[p.bg].nm:"choose scene"),()=>openWardrobe("bg")],
     ["👗","Wardrobe & Looks","costumes, scenes & forms",()=>openWardrobe("hat")]
   ]);}
+
+/* ---------- Sanctuary (long-term care goal) ---------- */
+const SANC_DECOR=[{e:"🌷",x:13,y:9},{e:"🏮",x:80,y:40,sway:1},{e:"🦋",x:30,y:52,sway:1},{e:"🌿",x:90,y:7},{e:"🐦",x:18,y:58,sway:1},{e:"🌸",x:68,y:11,sway:1},{e:"🪷",x:7,y:5},{e:"🐚",x:58,y:5},{e:"⛩️",x:48,y:46},{e:"🦋",x:76,y:56,sway:1},{e:"🌼",x:38,y:8,sway:1},{e:"🕊️",x:12,y:46,sway:1}];
+function ensureSanc(){G.sanctuary=G.sanctuary||{pts:0,lv:0};}
+function sancNeed(lv){return 100+lv*70;}
+function sancCheck(){ensureSanc();var ch=false;while(G.sanctuary.lv<SANC_DECOR.length&&G.sanctuary.pts>=sancNeed(G.sanctuary.lv)){G.sanctuary.pts-=sancNeed(G.sanctuary.lv);G.sanctuary.lv++;ch=true;G.coins+=60+G.sanctuary.lv*25;}
+  if(ch){try{confetti();SFX.level();}catch(e){}toast("🏝️ Your sanctuary grew to Level "+G.sanctuary.lv+"! 🌿");if(G.sanctuary.lv>=5)unlock("sanctuary5");if(G.sanctuary.lv>=SANC_DECOR.length)unlock("sanctuarymax");}}
+function renderSancLayer(){ensureSanc();var L=$("#sancLayer");if(!L)return;if(L._lv===G.sanctuary.lv)return;L._lv=G.sanctuary.lv;var h="";for(var i=0;i<G.sanctuary.lv&&i<SANC_DECOR.length;i++){var d=SANC_DECOR[i];h+='<div class="sd'+(d.sway?" sway":"")+'" style="left:'+d.x+'%;bottom:'+d.y+'%;animation-delay:'+(i*0.3)+'s">'+d.e+'</div>';}L.innerHTML=h;}
+function openSanctuary(){ensureSanc();renderSanc();openModal("sancModal");}
+function renderSanc(){ensureSanc();var lv=G.sanctuary.lv,pts=G.sanctuary.pts,need=sancNeed(lv),pct=Math.min(100,Math.round(pts/need*100));
+  $("#sancSub").innerHTML="🏝️ Sanctuary Level <b>"+lv+"</b> / "+SANC_DECOR.length+" — every act of care helps it grow.";
+  var h='<div style="margin:10px 0"><div class="bar" style="height:14px"><i style="width:'+pct+'%;background:linear-gradient(90deg,#84bf69,#4f9a3a)"></i></div><div style="text-align:center;font-size:11px;font-weight:800;color:#3b8b1f;margin-top:4px">'+pts+" / "+need+" to next 🌿</div></div>";
+  h+='<div class="sub" style="margin:6px 0">A little wild sanctuary you\u2019re growing for Puffy & Citrus. The better you care for them, the more it comes alive. 🌿</div>';
+  h+='<div class="grid">';for(var i=0;i<SANC_DECOR.length;i++){var got=i<lv;h+='<div class="card'+(got?"":" locked")+'"><div class="e" style="font-size:26px">'+(got?SANC_DECOR[i].e:"❔")+'</div><div class="ft" style="font-size:9px;font-weight:800;color:'+(got?"#3b8b1f":"#8a8290")+'">'+(got?"✓ grown":"Lv "+(i+1))+'</div></div>';}h+='</div>';
+  $("#sancBody").innerHTML=h;}
 
 /* ---------- Fellowship / Duo Challenges ---------- */
 function openFellowship(){openHub("👥 Fellowship","Connect with other players. 💞",[
@@ -3538,10 +3590,10 @@ function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="a
 
 /* ---------- Cutscenes / story ---------- */
 const INTRO=[
- {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"A speck in the Pacific",text:"Tuvalu: nine low little islands, about 11,000 people, and more heart per square inch than anywhere on Earth."},
- {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:"💚",big:"Belle sends a parcel",text:"Belle adores those islands. One morning a box turns up at your door: two eggs and a note — ‘Found these by the lagoon. Please don't let them become breakfast.’"},
- {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:"🐡 🍊",big:"Meet Puffy & Citrus",text:"A jittery little pufferfish and an aggressively cheerful orange. Zero survival skills. Total confidence anyway. They're yours now."},
- {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:"🌅",big:"So… no pressure",text:"Feed them, clean up after them, keep them alive. Looking after small things is how we hold onto the ones we love. Ready? 💛"}
+ {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"A speck in the Pacific",snd:"wave",text:"Tuvalu: nine low little islands, about 11,000 people, and more heart per square inch than anywhere on Earth."},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#7a4a3a,#34121f)",art:"💚",big:"Belle sends a parcel",snd:"warm",text:"Belle adores those islands. One morning a box turns up at your door: two eggs and a note — ‘Found these by the lagoon. Please don't let them become breakfast.’"},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#127a86,#06262e)",art:"🐡 🍊",big:"Meet Puffy & Citrus",snd:"meet",text:"A jittery little pufferfish and an aggressively cheerful orange. Zero survival skills. Total confidence anyway. They're yours now."},
+ {bg:"radial-gradient(120% 90% at 50% 30%,#ffae6b,#7a3550)",art:"🌅",big:"So… no pressure",snd:"hope",text:"Feed them, clean up after them, keep them alive. Looking after small things is how we hold onto the ones we love. Ready? 💛"}
 ];
 const CS_TUT_BG="radial-gradient(120% 90% at 50% 25%,#2a6a8a,#0c2436)";
 const CS_LEVEL_BG="radial-gradient(120% 90% at 50% 30%,#6a55c0,#241d4a)";
@@ -3595,13 +3647,21 @@ function chooseEvoPath(tier){const p=pet();if(p.stage==="adult")return;
   else{toast("Raise the care grade first to unlock this path 💪");}}
 let csSlides=null,csIdx=0,csDone=null,csPlaying=false,csHoldT=null;const csQueue=[];
 const CS_DEFAULT_BG="radial-gradient(120% 90% at 50% 30%,#1a2a55,#0b1230)";
+const CS_SND={
+ wave:function(){beep(170,.55,"sine",.06);setTimeout(function(){beep(130,.8,"sine",.05);},200);setTimeout(function(){beep(220,.5,"sine",.04);},420);},
+ warm:function(){[392,494,587].forEach(function(fr,i){setTimeout(function(){beep(fr,.6,"sine",.05);},i*130);});},
+ meet:function(){[523,659,784,1047].forEach(function(fr,i){setTimeout(function(){beep(fr,.3,"triangle",.05);},i*95);});},
+ hope:function(){[440,554,659,880].forEach(function(fr,i){setTimeout(function(){beep(fr,.55,"sine",.05);},i*150);});},
+ sparkle:function(){[784,988,1319].forEach(function(fr,i){setTimeout(function(){beep(fr,.25,"triangle",.05);},i*80);});}
+};
+function csPlaySnd(sl){if(sl&&sl.snd&&G.sound!==false&&CS_SND[sl.snd]){try{CS_SND[sl.snd]();}catch(e){}}}
 function playCutscene(slides,onDone){if(!slides||!slides.length)return;csSlides=slides;csIdx=0;csDone=onDone||null;csPlaying=true;$("#cutscene").classList.add("show");csMotes();csShow();}
 function csShow(){const sl=csSlides[csIdx],art=$("#csArt"),cut=$("#cutscene");
   cut.style.background=sl.bg||CS_DEFAULT_BG;
   if(sl.art&&String(sl.art).indexOf("<svg")===0)art.innerHTML=sl.art;else art.innerHTML='<div class="csArtEmoji">'+(sl.art||"")+'</div>';
   $("#csBig").textContent=sl.big||"";$("#csText").innerHTML=sl.text||"";
   $("#csDots").innerHTML=csSlides.map(function(_,i){return '<i class="'+(i===csIdx?'on':'')+'"></i>';}).join("");
-  cut.classList.remove("anim");void cut.offsetWidth;cut.classList.add("anim");$("#csNextBtn").textContent=(csIdx>=csSlides.length-1)?"Done ✓":"Next ›";clearTimeout(csHoldT);if(sl.hold)csHoldT=setTimeout(csNext,sl.hold);}
+  cut.classList.remove("anim");void cut.offsetWidth;cut.classList.add("anim");csPlaySnd(sl);$("#csNextBtn").textContent=(csIdx>=csSlides.length-1)?"Done ✓":"Next ›";clearTimeout(csHoldT);if(sl.hold)csHoldT=setTimeout(csNext,sl.hold);}
 function csEnd(){clearTimeout(csHoldT);const cut=$("#cutscene");cut.classList.remove("show","anim");csPlaying=false;const d=csDone;csDone=null;csSlides=null;if(d)d();setTimeout(flushCutscenes,40);}
 function csNext(){if(!csPlaying)return;clearTimeout(csHoldT);csIdx++;if(csIdx>=csSlides.length)csEnd();else csShow();}
 function queueCutscene(slides){csQueue.push(slides);flushCutscenes();}
@@ -3761,14 +3821,25 @@ function renderVisit(){const res=$("#frResult");if(!res||!visitTarget)return;con
 const LEVEL_QUOTES=["i'm getting STRONGER 💪","did you SEE that?!","level up! still anxious, but stronger.","ascending — emotionally AND numerically","ooh, i grew. don't make it weird.","new level, same me, more swagger ✨","best caretaker in the whole Pacific 🥰","i contain multitudes now"];
 const PAT_QUOTES=["hehe, that tickles!","do that forever 💕","i will allow this 😌","🫶","you may continue","okay that fixed my entire day"];
 let speechT=null;
-function petSay(t){const e=$("#speech");if(!e)return;e.textContent=t;e.classList.add("show");clearTimeout(speechT);speechT=setTimeout(function(){e.classList.remove("show");},3500);}
+function petSay(t){const e=$("#speech");if(!e)return;var w=$("#petWrap");e.style.left=(w&&w.style.left)?w.style.left:"50%";e.textContent=t;e.classList.add("show");clearTimeout(speechT);speechT=setTimeout(function(){e.classList.remove("show");},3500);}
 
 function bubbleBurst(n){n=n||6;const sc=$("#scene");for(let i=0;i<n;i++){const b=document.createElement("div");b.className="react";b.textContent=rnd(["🫧","✨","💧"]);b.style.left=(28+Math.random()*44)+"%";b.style.bottom=(34+Math.random()*30)+"%";b.style.animationDelay=(i*0.07)+"s";sc.appendChild(b);setTimeout(()=>{if(b.parentNode)b.remove();},1400);}}
 function petBounce(){const w=$("#petWrap");if(!w)return;w.classList.add("pop");setTimeout(function(){w.classList.remove("pop");},360);}
 function petWander(){var w=$("#petWrap"),p=pet();if(!w||!p.hatched||p.dead||p.asleep||p.needsName)return;if(document.querySelector(".modal.open"))return;w.style.left=(30+Math.random()*40)+"%";w.classList.remove("waddle");void w.offsetWidth;w.classList.add("waddle");setTimeout(function(){w.classList.remove("waddle");},2400);}
 const IDLE_QUIPS={puffy:["is the floor… safe today? 😟","just gonna puff up real quick.","i heard a noise. it was probably nothing.","staying alert. always alert. 🫡","do fish dream? asking for me.","i'm fine. totally fine. why?"],citrus:["what a day to be an orange! ☀️","life's all zest and sunshine 🍊","feelin' extra juicy today 😎","ten outta ten, no notes ✨","is it snack o'clock yet? 🫑","just vibing. simply vibing."]};
+function petAnim(cls,ms){var w=$("#petWrap");if(!w)return;if(/t-|pop|waddle|look|wiggle/.test(w.className))return;w.classList.add(cls);setTimeout(function(){w.classList.remove(cls);},ms||800);}
+function selfTrick(p){var kn=(p.tricks||[]).slice();if(!kn.length){petAnim("t-jump",700);return;}var id=rnd(kn),t=TRICKS.find(function(x){return x.id===id;});if(!t)return;petAnim("t-"+(t.anim||"jump"),1200);if(typeof trickFx==="function")try{trickFx(id);}catch(e){}try{SFX.happy();}catch(e){}petSay(rnd(["watch this!","ta-da! "+t.e,"did you see that?! "+t.e,"🎵 "+t.nm+"!","nailed it 😎"]));}
+function idleAct(){var p=pet();if(!p||!p.hatched||p.dead||p.asleep||p.needsName)return;if(document.querySelector(".modal.open"))return;var w=$("#petWrap");if(!w||/t-|pop|waddle|look|wiggle/.test(w.className))return;
+  var r=Math.random();
+  if(r<0.30){petWander();}
+  else if(r<0.44){petAnim("t-jump",700);}
+  else if(r<0.55){petAnim("t-spin",800);}
+  else if(r<0.64){petAnim("look",1800);}
+  else if(r<0.72){petAnim("wiggle",700);react(rnd(["💕","✨","🎵","😊"]));}
+  else if(r<0.86){idleQuip();}
+  else {selfTrick(p);}}
 function idleQuip(){var p=pet();if(!p||!p.hatched||p.dead||p.asleep||p.needsName)return;if(document.querySelector(".modal.open"))return;var q=IDLE_QUIPS[p.type]||[];if(q.length)petSay(rnd(q));}
-function neglectVisit(){if(document.querySelector(".visitor")||document.querySelector(".modal.open"))return;var act=pet();if(!act.hatched||act.dead||act.asleep||act.needsName)return;var ok=G.active==="puffy"?"citrus":"puffy",o=G.pets[ok];if(!o||!o.hatched||o.dead||o.asleep||o.needsName)return;if(!(o.happy<35||o.hunger<30))return;
+function neglectVisit(){if(document.querySelector(".visitor")||document.querySelector(".modal.open"))return;var act=pet();if(!act.hatched||act.dead||act.asleep||act.needsName)return;var ok=G.active==="puffy"?"citrus":"puffy",o=G.pets[ok];if(!o||!o.hatched||o.dead||o.asleep||o.needsName)return;if(!(o.happy<55||o.hunger<50||o.sick))return;
   var lines=ok==="puffy"?["psst… it's lonely over here 🐡","did you forget about me? 🥺","Puffy could use a visit!"]:["over here! it's me! 🍊","i miss you — come say hi? ☀️","Citrus is feeling left out!"];
   var sc=$("#scene");if(!sc)return;var fromLeft=Math.random()<0.5,off=fromLeft?"-140%":"140%";
   var v=document.createElement("div");v.className="visitor";if(fromLeft)v.style.left="6%";else v.style.right="6%";v.style.transform="translateX("+off+")";v.style.opacity="0";
