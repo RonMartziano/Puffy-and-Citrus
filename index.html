@@ -53,7 +53,7 @@
   .wdrop{position:absolute;top:-10px;font-size:14px;animation:falldrop linear infinite;}
   @keyframes falldrop{to{transform:translateY(260px);}}
   #ground{position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,#cdeeb0,#a9da7f);}
-  #petWrap{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);width:200px;height:210px;z-index:4;
+  #petWrap{position:absolute;left:50%;bottom:48px;transform:translateX(-50%);width:200px;height:210px;z-index:4;transition:left 2.4s cubic-bezier(.45,.05,.5,1);
     display:flex;align-items:flex-end;justify-content:center;cursor:pointer;}
   #petWrap.bob{animation:bob 3s ease-in-out infinite;}
   @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-8px);}}
@@ -392,9 +392,20 @@
   @keyframes mote{0%{transform:translate(0,0);opacity:0}12%{opacity:.6}88%{opacity:.6}100%{transform:translate(14px,-46px);opacity:0}}
   .motep{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(255,255,255,0) 70%);pointer-events:none;z-index:2;animation:mote linear infinite;}
   #scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 80% at 50% 26%,transparent 54%,rgba(10,8,24,.20));z-index:1;}
-  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-  #petWrap svg{animation:breathe 3.6s ease-in-out infinite;transform-origin:50% 80%;}
-  body.rm #petWrap svg,body.rm .motep{animation:none!important;}
+  body.rm .motep,body.rm #petWrap.waddle svg,body.rm #petWrap{animation:none!important;transition:none!important;}
+  #petWrap.waddle svg{animation:waddle 2.4s ease-in-out;}
+  @keyframes waddle{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg)}55%{transform:rotate(4deg)}80%{transform:rotate(-2deg)}}
+  .visitor{position:absolute;bottom:62px;z-index:7;display:flex;flex-direction:column;align-items:center;cursor:pointer;width:96px;transition:transform .6s cubic-bezier(.2,.9,.3,1.25),opacity .5s;}
+  .visitor .vart{width:74px;height:74px;}
+  .visitor .vbub{background:#fff;border-radius:13px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--ink);box-shadow:0 5px 14px rgba(90,70,40,.28);max-width:140px;text-align:center;margin-bottom:5px;position:relative;font-family:var(--font);}
+  .visitor .vbub::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0;}
+  #cutscene .csArt{width:196px;height:196px;}
+  #cutscene .csArtEmoji{font-size:94px;}
+  #cutscene.anim .csArt{animation:csKB 9s ease-out both;}
+  @keyframes csKB{0%{transform:scale(.9) translateY(16px);opacity:0}18%{opacity:1}100%{transform:scale(1.13) translateY(-12px)}}
+  #cutscene .csBig{font-size:27px;text-shadow:0 2px 22px rgba(255,214,130,.40);}
+  #cutscene::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(58% 46% at 50% 36%,rgba(255,255,255,.10),transparent 72%);}
+  #cutscene .csFx{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
 </style>
 <script src="config.js" onerror="void 0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -481,6 +492,7 @@
   <div class="buildbar" id="buildBar"></div>
   <div id="cutscene">
     <div class="csBar top"></div><div class="csBar bottom"></div>
+    <div class="csFx" id="csFx"></div>
     <div class="csStage"><div class="csArt" id="csArt"></div><div class="csBig" id="csBig"></div><div class="csText" id="csText"></div></div>
     <button class="csSkip" id="csSkip">skip ›</button>
     <div class="csDots" id="csDots"></div>
@@ -2199,6 +2211,9 @@ function showNote(){const msg=rnd(BELLE_NOTES);$("#noteBody").textContent=msg;op
 function maybeEvent(dt){
   if(!G.daily.noteShown && Math.random()<dt*0.004){G.daily.noteShown=true;petSay(rnd(BELLE_NOTES));G.pets.puffy.happy=clamp(G.pets.puffy.happy+4);G.pets.citrus.happy=clamp(G.pets.citrus.happy+4);return;}
   if(Math.random()<dt*0.012)duoChat();
+  if(Math.random()<dt*0.02)petWander();
+  if(Math.random()<dt*0.011)idleQuip();
+  if(Math.random()<dt*0.005)neglectVisit();
   ["puffy","citrus"].forEach(function(k){var p=G.pets[k];if(p&&p.request&&now()-((p.request.made)||0)>300000)p.request=null;});
   if(Math.random()<dt*0.005)makeRequest();
   if(Math.random()<dt*0.002){const ev=rnd(["coins","rainbow","gust","snack"]);
@@ -3580,7 +3595,7 @@ function chooseEvoPath(tier){const p=pet();if(p.stage==="adult")return;
   else{toast("Raise the care grade first to unlock this path 💪");}}
 let csSlides=null,csIdx=0,csDone=null,csPlaying=false,csHoldT=null;const csQueue=[];
 const CS_DEFAULT_BG="radial-gradient(120% 90% at 50% 30%,#1a2a55,#0b1230)";
-function playCutscene(slides,onDone){if(!slides||!slides.length)return;csSlides=slides;csIdx=0;csDone=onDone||null;csPlaying=true;$("#cutscene").classList.add("show");csShow();}
+function playCutscene(slides,onDone){if(!slides||!slides.length)return;csSlides=slides;csIdx=0;csDone=onDone||null;csPlaying=true;$("#cutscene").classList.add("show");csMotes();csShow();}
 function csShow(){const sl=csSlides[csIdx],art=$("#csArt"),cut=$("#cutscene");
   cut.style.background=sl.bg||CS_DEFAULT_BG;
   if(sl.art&&String(sl.art).indexOf("<svg")===0)art.innerHTML=sl.art;else art.innerHTML='<div class="csArtEmoji">'+(sl.art||"")+'</div>';
@@ -3750,6 +3765,18 @@ function petSay(t){const e=$("#speech");if(!e)return;e.textContent=t;e.classList
 
 function bubbleBurst(n){n=n||6;const sc=$("#scene");for(let i=0;i<n;i++){const b=document.createElement("div");b.className="react";b.textContent=rnd(["🫧","✨","💧"]);b.style.left=(28+Math.random()*44)+"%";b.style.bottom=(34+Math.random()*30)+"%";b.style.animationDelay=(i*0.07)+"s";sc.appendChild(b);setTimeout(()=>{if(b.parentNode)b.remove();},1400);}}
 function petBounce(){const w=$("#petWrap");if(!w)return;w.classList.add("pop");setTimeout(function(){w.classList.remove("pop");},360);}
+function petWander(){var w=$("#petWrap"),p=pet();if(!w||!p.hatched||p.dead||p.asleep||p.needsName)return;if(document.querySelector(".modal.open"))return;w.style.left=(30+Math.random()*40)+"%";w.classList.remove("waddle");void w.offsetWidth;w.classList.add("waddle");setTimeout(function(){w.classList.remove("waddle");},2400);}
+const IDLE_QUIPS={puffy:["is the floor… safe today? 😟","just gonna puff up real quick.","i heard a noise. it was probably nothing.","staying alert. always alert. 🫡","do fish dream? asking for me.","i'm fine. totally fine. why?"],citrus:["what a day to be an orange! ☀️","life's all zest and sunshine 🍊","feelin' extra juicy today 😎","ten outta ten, no notes ✨","is it snack o'clock yet? 🫑","just vibing. simply vibing."]};
+function idleQuip(){var p=pet();if(!p||!p.hatched||p.dead||p.asleep||p.needsName)return;if(document.querySelector(".modal.open"))return;var q=IDLE_QUIPS[p.type]||[];if(q.length)petSay(rnd(q));}
+function neglectVisit(){if(document.querySelector(".visitor")||document.querySelector(".modal.open"))return;var act=pet();if(!act.hatched||act.dead||act.asleep||act.needsName)return;var ok=G.active==="puffy"?"citrus":"puffy",o=G.pets[ok];if(!o||!o.hatched||o.dead||o.asleep||o.needsName)return;if(!(o.happy<35||o.hunger<30))return;
+  var lines=ok==="puffy"?["psst… it's lonely over here 🐡","did you forget about me? 🥺","Puffy could use a visit!"]:["over here! it's me! 🍊","i miss you — come say hi? ☀️","Citrus is feeling left out!"];
+  var sc=$("#scene");if(!sc)return;var fromLeft=Math.random()<0.5,off=fromLeft?"-140%":"140%";
+  var v=document.createElement("div");v.className="visitor";if(fromLeft)v.style.left="6%";else v.style.right="6%";v.style.transform="translateX("+off+")";v.style.opacity="0";
+  v.innerHTML='<div class="vbub">'+rnd(lines)+'</div><div class="vart">'+miniPetSVG(o)+'</div>';
+  v.onclick=function(){G.active=ok;if(v.parentNode)v.remove();render();save();if(pet().needsName)openNameModal();};
+  sc.appendChild(v);void v.offsetWidth;v.style.transform="translateX(0)";v.style.opacity="1";SFX&&SFX.coin&&SFX.coin();
+  setTimeout(function(){if(v.parentNode){v.style.opacity="0";v.style.transform="translateX("+off+")";setTimeout(function(){if(v.parentNode)v.remove();},600);}},6500);}
+function csMotes(){var fx=$("#csFx");if(!fx)return;fx.innerHTML="";for(var i=0;i<14;i++){var d=document.createElement("div");d.className="motep";d.style.left=(Math.random()*100)+"%";d.style.top=(Math.random()*100)+"%";var du=8+Math.random()*8;d.style.animationDuration=du+"s";d.style.animationDelay=(-Math.random()*du)+"s";var sz=2+Math.random()*4;d.style.width=sz+"px";d.style.height=sz+"px";fx.appendChild(d);}}
 function spawnMotes(){var sc=document.getElementById("scene");if(!sc||sc.querySelector(".motep"))return;for(var i=0;i<11;i++){var d=document.createElement("div");d.className="motep";d.style.left=(5+Math.random()*90)+"%";d.style.top=(20+Math.random()*64)+"%";var dur=7+Math.random()*7;d.style.animationDuration=dur+"s";d.style.animationDelay=(-Math.random()*dur)+"s";var sz=3+Math.random()*4;d.style.width=sz+"px";d.style.height=sz+"px";sc.appendChild(d);}}
 function maybeSpawnFloat(){const p=pet();if(!p.hatched||p.dead||p.asleep)return;if(document.querySelectorAll("#scene .floatItem").length>=2)return;if(Math.random()>=0.05)return;
   const items=[["🪙",function(){G.coins+=2;}],["🫧",function(){p.happy=clamp(p.happy+2);}],["⭐",function(){addXP(p,3);}],["💧",function(){p.hygiene=clamp(p.hygiene+2);}]];
