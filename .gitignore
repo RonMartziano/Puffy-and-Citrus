@@ -25,3 +25,8 @@ hats_*.png
 habitat_art_preview*.png
 mythic_detailed_check.png
 mythic_forms_gallery.html
+
+# Playwright MCP (test artifacts, not part of the game)
+.playwright-mcp/
+live_*.png
+polish_*.png
