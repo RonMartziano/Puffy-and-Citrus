@@ -65,6 +65,9 @@ export default function App() {
         javaScriptEnabled
         domStorageEnabled
         setSupportMultipleWindows={false}
+        allowsInlineMediaPlayback
+        mediaPlaybackRequiresUserAction={false}
+        allowsBackForwardNavigationGestures={false}
       />
     </SafeAreaView>
   );

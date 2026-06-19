@@ -3,10 +3,12 @@
     "name": "Puffy & Citrus",
     "slug": "puffy-citrus",
     "version": "1.0.0",
+    "description": "A cozy pufferfish-and-orange pet you raise with gentle daily care — feed, clean, play, and unfold a heartfelt story across the islands of Tuvalu.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "primaryColor": "#ff9f33",
+    "scheme": "puffycitrus",
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#ffd9a0",
@@ -27,6 +29,17 @@
       "package": "com.puffycitrus.app",
       "versionCode": 1,
       "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.INTERNET"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#bfeaf7"

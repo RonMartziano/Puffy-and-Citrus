@@ -3175,6 +3175,7 @@ function renderGarden(){
     g.appendChild(c);});}
 function plotTap(i){const pl=G.garden.plots[i];if(!pl)return;const seed=SEEDS.find(s=>s.crop===pl.crop),gt=growTime(seed),left=gt-(now()-pl.plantedAt)/1000;
   if(!pl.watered){pl.watered=true;pl.plantedAt-=gt*1000*0.20;react("💧");gardenPetHop();SFX.clean();toast("💧 Watered "+seed.nm+" — grows faster!");renderGarden();save();return;}
+  if(pl.fert){toast("🧪 "+seed.nm+" is already fertilized — growing… "+formatDur(left)+" left.");return;}
   if((G.inv.fertilizer||0)>0){G.inv.fertilizer--;pl.fert=true;pl.plantedAt-=gt*1000*0.20;react("🧪");gardenPetHop();SFX.coin();toast("🧪 Fertilizer — grows 20% faster!");renderGarden();save();return;}
   toast(seed.nm+" growing… "+formatDur(left)+" left. (Buy 🧪 Fertilizer in Shop → Garden.)");}
 function plant(i,quiet){if(!selSeed||(G.seeds[selSeed]||0)<=0){if(!quiet)toast("Pick a seed first — buy them in 🛒 Shop → Seeds");return false;}const seed=SEEDS.find(s=>s.crop===selSeed);G.seeds[selSeed]--;G.garden.plots[i]={crop:seed.crop,plantedAt:now(),watered:!!G.garden.raincatcher};if(G.garden.raincatcher)G.garden.plots[i].plantedAt-=growTime(seed)*1000*0.20;if(quiet)return true;SFX.clean();react("🌱");gardenPetHop();toast("Planted "+seed.nm+" 🌱");renderGarden();save();return true;}
@@ -3332,7 +3333,8 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
     ["🏝️","Sanctuary",((G.sanctuary&&G.sanctuary.lv)||0)+" grown · build their home",openSanctuary],
     ["🏆","Achievements",(Object.keys(G.ach||{}).length+"/"+ACHIEVEMENTS.length+" unlocked"),openQuests],
-    ["👪","Ascension & Legacy","ascend & carry on",openFamily]
+    ["👪","Ascension & Legacy","ascend & carry on",openFamily],
+    ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")+" to spend"),openPrestige]
   ]);}
 function openPrestige(){renderPrestige();openModal("prestigeModal");}
 function renderPrestige(){const body=$("#prestigeBody");
@@ -3389,8 +3391,7 @@ function openExtras(){openHub("🎲 Extras &amp; mini-events","Optional side act
   ["⚔️","Boss Raid",(function(){try{ensureBoss();return G.boss.defeated?"defeated ✓":(bossVictoryReady()?"victory ready!":bossHpPct()+"% HP");}catch(e){return "weekly";}})(),openBoss],
   ["🏆","Tournament",((G.tourney&&G.tourney.best)?("best "+G.tourney.best+" pts"):"weekly"),openTourney],
   ["🤝","Duo Challenges",((G.duoShards||0)+" 🔮 shards"),openDuo],
-  ["🎰","Lucky Capsule","spin for rare prizes",openGacha],
-  ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")),openPrestige]
+  ["🎰","Lucky Capsule","spin for rare prizes",openGacha]
 ]);}
 function openFellowship(){openHub("👥 Fellowship","Connect with other players. 💞",[
   ["👋","Friends","visit & gift friends",openFriends],
