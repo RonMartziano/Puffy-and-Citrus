@@ -5,10 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#ffd9a0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%90%A1%3C/text%3E%3C/svg%3E">
 <title>Puffy &amp; Citrus — A Tamaguchi Game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* juice: tactile button press */
+.btn,.ordbtn,.iconbtn,.dockbtn,.railbtn,.chip{transition:transform .08s ease, filter .08s ease, box-shadow .12s ease;}
+.btn:active,.ordbtn:active,.iconbtn:active,.dockbtn:active,.railbtn:active{transform:scale(.94);filter:brightness(1.04);}
+.card:active{transform:scale(.97);}
+@keyframes coinPop{0%{opacity:0;transform:translateY(2px) scale(.7);}18%{opacity:1;transform:translateY(-4px) scale(1.12);}100%{opacity:0;transform:translateY(-30px) scale(1);}}
+.coinPop{position:fixed;z-index:9999;pointer-events:none;font-weight:800;font-size:16px;color:#f0a823;text-shadow:0 1px 0 #fff,0 2px 6px rgba(0,0,0,.18);animation:coinPop 1s ease forwards;}
+@media (prefers-reduced-motion:reduce){.btn:active,.ordbtn:active,.iconbtn:active,.dockbtn:active,.railbtn:active{transform:none;}}
+</style>
 <style>
   :root{
     --panel:#fbeed8; --ink:#473c46; --muted:#9a8d80;
@@ -445,11 +455,9 @@
     <button class="growcta" id="growReady" style="display:none">🌟 Ready to grow up!<small>Tap to choose its adult form</small></button>
     <div class="statusicons" id="statusIcons"></div>
     <div id="siderail">
-      <button class="railbtn" id="railJourney" title="Belle's Journey"><span class="e"><svg viewBox="0 0 24 24"><path d="M6 5l4 2 4-2 4 2v12l-4-2-4 2-4-2Z" fill="#ffd27a"/><path d="M10 7v10M14 5v10" stroke="#c79328" stroke-width="1.3"/></svg></span><span class="rl">Journey</span><span class="badge" id="railJourneyBadge" style="display:none">!</span></button>
+      <button class="railbtn" id="railJourney" title="Belle's Story"><span class="e"><svg viewBox="0 0 24 24"><path d="M6 5l4 2 4-2 4 2v12l-4-2-4 2-4-2Z" fill="#ffd27a"/><path d="M10 7v10M14 5v10" stroke="#c79328" stroke-width="1.3"/></svg></span><span class="rl">Story</span><span class="badge" id="railJourneyBadge" style="display:none">!</span></button>
       <button class="railbtn" id="railDaily" title="Daily check-in"><span class="e"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="9" rx="1.5" fill="#ff7eb6"/><rect x="4.5" y="7.5" width="15" height="3.5" rx="1.2" fill="#ff5d8f"/><path d="M12 7.5V19" stroke="#fff" stroke-width="1.6"/><path d="M12 7.5C10 4 6.5 5.5 8 7.5M12 7.5C14 4 17.5 5.5 16 7.5" fill="#ffd0e6"/></svg></span><span class="rl">Check-in</span><span class="badge" id="railDailyBadge" style="display:none">!</span></button>
-      <button class="railbtn" id="railDuo" title="Duo challenges" style="display:none"><span class="e"><svg viewBox="0 0 24 24"><path d="M9 18S3.5 14.5 3.5 10.3A3.4 3.4 0 0 1 9 7.8 3.4 3.4 0 0 1 14.5 10.3C14.5 14.5 9 18 9 18Z" fill="#6fd0e0"/><path d="M16 16s-4-2.6-4-5.6a2.6 2.6 0 0 1 4-2 2.6 2.6 0 0 1 4 2c0 3-4 5.6-4 5.6Z" fill="#ff9f33"/></svg></span><span class="rl">Duo</span><span class="badge" id="railDuoBadge" style="display:none">!</span></button>
       <button class="railbtn" id="railFellow" title="Fellowship"><span class="e"><svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3" fill="#8f7fe0"/><path d="M3.5 18c0-3 2.5-5 5.5-5s5.5 2 5.5 5Z" fill="#8f7fe0"/><circle cx="16.5" cy="9" r="2.5" fill="#ff9f33"/><path d="M14 18c0-2.6 2-4.3 4.5-4.3S23 15 23 17.6Z" fill="#ff9f33" opacity=".9"/></svg></span><span class="rl">Friends</span></button>
-      <button class="railbtn" id="railEvents" title="Weekly events" style="display:none"><span class="e"><svg viewBox="0 0 24 24"><path d="M7 4h10v3a5 5 0 0 1-10 0Z" fill="#ffd27a"/><path d="M7 5H4.5v1.5A2.5 2.5 0 0 0 7 9M17 5h2.5v1.5A2.5 2.5 0 0 1 17 9" fill="none" stroke="#e0a020" stroke-width="1.4"/><path d="M12 12v4M9 19h6l-1-3h-4Z" fill="#e0a020"/></svg></span><span class="rl">Events</span><span class="badge" id="railEventsBadge" style="display:none">!</span></button>
     </div>
     <div id="ground"></div>
     <div id="sceneDecor"></div>
@@ -727,7 +735,7 @@
   </div></div>
 
   <div class="modal" id="journeyModal"><div class="sheet">
-    <div class="closeRow"><h2>🗺️ Belle’s Journey</h2><button class="iconbtn" data-close>✕</button></div>
+    <div class="closeRow"><h2>📖 Belle’s Story</h2><button class="iconbtn" data-close>✕</button></div>
     <div class="sub" id="journeySub"></div>
     <div id="journeyBody"></div>
   </div></div>
@@ -761,12 +769,15 @@
     <button class="btn" id="soundBtn">🔊 Sound: On</button>
     <button class="btn" id="musicBtn" style="background:#bfe0a0">🎵 Music: On</button>
     <button class="btn" id="notifyBtn" style="background:#f0c98a">🔕 Reminders: Off</button>
+    <button class="btn" id="hapticBtn" style="background:#f0d0c0">📳 Vibration: On</button>
     <button class="btn" id="motionBtn" style="background:#cfd8e0">🎞️ Motion: On</button>
     <button class="btn" id="textBtn" style="background:#cfe0d8">🔤 Larger text: Off</button>
     <button class="btn" id="cbBtn" style="background:#e0d8cf">🌈 Colorblind aid: Off</button>
     <div class="menuhd">Pet &amp; progress</div>
     <button class="btn" id="achBtn" style="background:#ffd27a">🏆 Achievements &amp; quests</button>
     <button class="btn" id="almanacBtn" style="background:#9ed8c0">📊 Almanac &amp; goals</button>
+    <button class="btn" id="extrasBtn" style="background:#d8cdf0">🎲 Mini-events &amp; extras</button>
+    <button class="btn" id="aboutBtn" style="background:#bfe0ea">🌊 About Belle &amp; the islands</button>
     <button class="btn" id="shareBtn" style="background:#f0b9d0">📸 Photo / share card</button>
     <button class="btn" id="renameBtn" style="background:#9ad36b">✏️ Rename current pet</button>
     <div class="menuhd">Story &amp; help</div>
@@ -1297,11 +1308,12 @@ function beep(freq=440,dur=.08,type="sine",vol=.05){
   const o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=freq;
   o.connect(g);g.connect(actx.destination);g.gain.value=vol;o.start();
   g.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+dur);o.stop(actx.currentTime+dur);}catch(e){}}
-const SFX={happy:()=>{beep(660,.07);setTimeout(()=>beep(880,.09),70);},
-  eat:()=>beep(520,.06,"triangle"),clean:()=>beep(700,.05,"sine"),
-  coin:()=>{beep(900,.05,"square",.04);setTimeout(()=>beep(1200,.06,"square",.04),60);},
-  level:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.1,"triangle"),i*90));},
-  sad:()=>beep(220,.18,"sawtooth",.04)};
+function haptic(pat){try{if(G&&G.haptics!==false&&!G.reducedMotion&&navigator.vibrate)navigator.vibrate(pat);}catch(e){}}
+const SFX={happy:()=>{beep(660,.07);setTimeout(()=>beep(880,.09),70);haptic(12);},
+  eat:()=>{beep(520,.06,"triangle");haptic(10);},clean:()=>{beep(700,.05,"sine");haptic(10);},
+  coin:()=>{beep(900,.05,"square",.04);setTimeout(()=>beep(1200,.06,"square",.04),60);haptic(8);},
+  level:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.1,"triangle"),i*90));haptic([0,14,40,18]);},
+  sad:()=>{beep(220,.18,"sawtooth",.04);haptic(30);}};
 /* ---- Traits, events, music, juice, notifications ---- */
 const TRAITS=[
  {id:"foodie",e:"🍴",nm:"Foodie",d:"Loves eating — extra happiness from food."},
@@ -1359,6 +1371,11 @@ function prestigeDepOk(u){if(!u.dep)return true;return prestigeLevel(u.dep)>=1;}
 function prestigeLevel(id){return (G.prestigeUp&&G.prestigeUp[id])||0;}
 function prestigeSpent(){var t=0;for(var id in (G.prestigeUp||{})){var u=PRESTIGE_UPGRADES.find(function(x){return x.id===id;});if(u)t+=u.cost*G.prestigeUp[id];}return t;}
 function prestigeAvail(){return (G.prestige||0)-prestigeSpent();}
+var ASC_CHARGE_SECS=4*3600; // real seconds to fully charge at perfect care
+var ASC_MIN_LV=20;
+function ascCharge(p){return Math.max(0,Math.min(100,p.ascCharge||0));}
+function ascBlock(p){if(!p||p.stage!=="adult")return "Let them grow up first";if((p.level||1)<ASC_MIN_LV)return "Reach Level "+ASC_MIN_LV+" (now Lv "+(p.level||1)+")";if(ascCharge(p)<100)return "Ascension Energy "+Math.floor(ascCharge(p))+"%";return "";}
+function canAscend(p){return ascBlock(p)==="";}
 function ascBonus(){return Math.min(1,0.05*(G.ascensions||0));}
 function coinMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("coinboost");if(ev&&ev.coin)m*=ev.coin;if(p&&p.trait==="curious")m*=1.15;if(wornFusionPerk()==="coin")m*=1.15;m*=1+cozyCoinBonus()+furnitureSets().coin;return m;}
 function xpMul(p){var ev=currentEvent(),m=1+ascBonus()+0.05*prestigeLevel("xpboost");if(ev&&ev.xp)m*=ev.xp;if(p&&p.trait==="playful")m*=1.25;if(wornFusionPerk()==="xp")m*=1.15;m*=1+habitatXpBonus()+furnitureSets().xp;return m;}
@@ -2285,11 +2302,14 @@ function simulate(p,dt,away){
   else if(p.hunger>50&&p.happy>50&&p.hygiene>50)p.careGood+=dt;
   if(away&&p.health<12)p.health=12;
   if(p.health<5)p.health=5;
+  // Ascension Energy: builds only once grown; rate scales with care quality; stalls if stats bottom out
+  if(p.stage==="adult"){var _cq=(p.hunger+p.happy+p.energy+p.hygiene+p.health)/500;var _m=_cq<=0.2?0:(_cq-0.2)/0.8;p.ascCharge=Math.max(0,Math.min(100,(p.ascCharge||0)+dt*(100/ASC_CHARGE_SECS)*_m*(away?0.5:1)));}
   p.lastTick=now();}
 function tickAll(away){for(const k in G.pets){const p=G.pets[k];let dt=(now()-p.lastTick)/1000;if(dt<0)dt=0;if(dt>12*3600)dt=12*3600;
   while(dt>0){const step=Math.min(dt,30);simulate(p,step,away);dt-=step;}}
   ["puffy","citrus"].forEach(function(_k){recordAchievable(G.pets[_k]);});checkHomeAch();
   if(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")unlock("bothgrown");if((G.pets.puffy.level||1)>=20&&(G.pets.citrus.level||1)>=20)unlock("bothlv20");
+  ["puffy","citrus"].forEach(function(_k){var _p=G.pets[_k];if(canAscend(_p)){if(!_p._ascReadyToast){_p._ascReadyToast=true;if(!away){react("✨");toast("✨ "+petName(_p)+" is ready to ascend!");}}}else{_p._ascReadyToast=false;}});
   if(pet().hunger>=100)unlock("fullbelly");if(G.coins>=200)unlock("rich");if(G.coins>=500)unlock("rich2");if(G.coins>=1000)unlock("rich3");
   if(!away){maybeEvent(1);const _a=G.pets.puffy,_b=G.pets.citrus;if(_a.hatched&&_b.hatched&&!_a.dead&&!_b.dead&&_a.happy>55&&_b.happy>55)addBond(0.05);checkStory();checkMail();maybeSpawnFloat();} render();save();flushCutscenes();}
 
@@ -2456,12 +2476,8 @@ function render(){const p=pet();if(!window._motesInit){window._motesInit=1;try{s
   $$('.act[data-act="sleep"]')[0].querySelector('.e').innerHTML=p.asleep?('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#ffd24a"/><g stroke="#ffb020" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.5M12 19v2.5M2.5 12h2.5M19 12h2.5M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"/></g></svg>'):('<svg viewBox="0 0 24 24"><path d="M19 14.5A8 8 0 1 1 9.5 5a6.4 6.4 0 0 0 9.5 9.5Z" fill="#8f7fe0"/><text x="15.5" y="9" font-size="7" font-weight="800" fill="#ffe27a">z</text></svg>');
   {const hb=$("#healBadge");if(hb)hb.style.display=(p.sick||p.health<30)?"flex":"none";}{const z=$("#zzz");if(z)z.classList.toggle("on",p.asleep&&p.hatched&&!p.dead);}{const c=chestReady(),ch=$("#chest");if(ch){if(c>=10&&p.hatched&&!p.dead){ch.style.display="block";$("#chestAmt").textContent=c;}else ch.style.display="none";}}{const pb=$("#playBadge");if(pb)pb.style.display=(expReady()||journeyClaimable())?"flex":"none";}{const jb=$("#journeyBadge");if(jb)jb.style.display=journeyClaimable()?"flex":"none";}{const djb=$("#dockJourneyBadge");if(djb)djb.style.display=journeyClaimable()?"flex":"none";}{var _ready=canGrowUp(p);var _gr=$("#growReady");if(_gr)_gr.style.display=_ready?"block":"none";var _gdb=$("#growDockBadge");if(_gdb)_gdb.style.display=_ready?"flex":"none";var _ev=currentEvent(),_eb=$("#eventBanner");if(_eb){if(_ev&&!_ready){_eb.style.display="block";_eb.textContent=_ev.e+" "+_ev.nm;}else _eb.style.display="none";}}{["play","garden","fish","grow","home"].forEach(function(id){var _db=document.querySelector('.dk[data-dock="'+id+'"]');if(_db)_db.style.display=featUnlocked(id)?"flex":"none";});
  var _L=maxLevel(),_both=G.pets.puffy.hatched&&G.pets.citrus.hatched;
- {var rdj=$("#railDuo");if(rdj)rdj.style.display=(_both&&_L>=6)?"flex":"none";}
- {var re2=$("#railEvents");if(re2)re2.style.display=(_L>=6)?"flex":"none";}
  {var rdb=$("#railDailyBadge");if(rdb)rdb.style.display=(typeof dailyClaimable==="function"&&dailyClaimable())?"flex":"none";}
- {var rdub=$("#railDuoBadge");if(rdub){var _dz=false;try{_dz=(typeof duoClaimable==="function"&&_both&&duoClaimable());}catch(e){}rdub.style.display=_dz?"flex":"none";}}
  {var rjb=$("#railJourneyBadge");if(rjb)rjb.style.display=(typeof journeyClaimable==="function"&&journeyClaimable())?"flex":"none";}
- {var reb=$("#railEventsBadge");if(reb){var _ev=false;try{_ev=(typeof bossVictoryReady==="function"&&bossVictoryReady())||(typeof tourneyReady==="function"&&tourneyReady());}catch(e){}reb.style.display=(_L>=6&&_ev)?"flex":"none";}}
  checkReveals();}
   updateQuests();renderCompanion();renderRoom();renderPet();{var mb=$("#mailBadge");if(mb)mb.style.display=unreadMail()>0?"flex":"none";}{var rb=$("#reqBubble"),ri=reqInfo();if(rb){if(ri&&pet().hatched&&!pet().dead&&!pet().asleep){rb.style.display="block";rb.innerHTML=ri.e+" <b>wish:</b> "+ri.say.replace(/ ?[\u{1F300}-\u{1FAFF}\u2600-\u27BF]$/u,"");}else rb.style.display="none";}}
   if(p.needsName&&!$("#nameModal").classList.contains("open"))openNameModal();}
@@ -2510,14 +2526,15 @@ let shopTab="food";
 function openShop(){shopTab="food";$$("#shopModal .seg").forEach(s=>s.classList.toggle("on",s.dataset.shoptab==="food"));renderShop();openModal("shopModal");}
 function renderShop(){const grid=$("#shopGrid");grid.innerHTML="";grid.style.gridTemplateColumns="";const disc=G.daily.discount<1;
   var SHOPFEAT={food:0,care:0,seed:2,gard:3,fish:3,hat:4,gacha:5,form:5,room:6,bg:6},_SL=maxLevel(),_ASC=(G.ascensions||0)>0;
-  $$("#shopModal .seg").forEach(function(sg){sg.style.display=(_ASC||(SHOPFEAT[sg.dataset.shoptab]||0)<=_SL)?"":"none";});
+  $$("#shopModal .seg").forEach(function(sg){var t=sg.dataset.shoptab;sg.style.display=(t!=="gacha"&&(_ASC||(SHOPFEAT[t]||0)<=_SL))?"":"none";});
   if(!_ASC&&(SHOPFEAT[shopTab]||0)>_SL){shopTab="food";$$("#shopModal .seg").forEach(function(x){x.classList.toggle("on",x.dataset.shoptab==="food");});}
   $("#shopSub").innerHTML=(disc?"🛍️ <b>Today: 30% off!</b> ":"")+"You have "+G.coins+" 🪙";
   const price=c=>Math.round(c*G.daily.discount);
   if(shopTab==="food"){grid.className="grid";const season=G.weather.season;
-    Object.keys(FOODS).forEach(id=>{const f=FOODS[id];if(f.dish)return;if(f.season&&f.season!==season)return;
+    $("#shopSub").innerHTML+=' · <span style="font-size:11px;color:var(--muted)">🌱 grow crops in the Garden</span>';
+    Object.keys(FOODS).forEach(id=>{const f=FOODS[id];if(f.dish)return;if(f.season&&f.season!==season)return;if(SEEDS.find(function(sd){return sd.crop===id;}))return;
       const c=document.createElement("div");c.className="card"+(G.coins<price(f.cost)?" locked":"");
-      c.innerHTML=`<div class="e">${f.e}</div><div class="nm">${f.nm}</div><div class="meta">🍽️+${f.hunger}${f.season?" · "+f.season:""}</div><div class="price">🪙 ${price(f.cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
+      c.innerHTML=`<div class="e">${f.e}</div><div class="nm">${f.nm}</div><div class="meta">🍽️+${f.hunger}${f.happy?" 😊+"+f.happy:""}${f.energy?" ⚡+"+f.energy:""}${f.health>0?" ❤️+"+f.health:(f.health<0?" 💔"+f.health:"")}${f.cure?" 💊cure":""}${f.season?" · "+f.season:""}</div><div class="price">🪙 ${price(f.cost)}</div><div class="own">have ${G.inv[id]||0}</div>`;
       c.onclick=()=>buyFood(id,price(f.cost));grid.appendChild(c);});}
   else if(shopTab==="care"){grid.className="grid";
     [["medicine","💊","Medicine",25,"Cures sickness, +40 health"],["soap","🧴","Soap",15,"Full clean + 30m shine (slower mess)"],["bubblebath","🛁","Bubble Bath",45,"Deluxe clean + happy + 60m shine"],["vitamin","💉","Vitamins",35,"Restores health & energy"],["brush","🪮","Grooming Brush",20,"+hygiene & happiness anytime"]].forEach(([id,e,nm,cost,meta])=>{
@@ -3286,8 +3303,7 @@ function openGrow(){if(!guard())return;const p=pet();const grade=p.hatched?careG
     ["📖","Collection",found+"/"+total+" forms found",openCollection],
     ["🏝️","Sanctuary",((G.sanctuary&&G.sanctuary.lv)||0)+" grown · build their home",openSanctuary],
     ["🏆","Achievements",(Object.keys(G.ach||{}).length+"/"+ACHIEVEMENTS.length+" unlocked"),openQuests],
-    ["👪","Ascension & Legacy","ascend & carry on",openFamily],
-    ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")+" to spend"),openPrestige]
+    ["👪","Ascension & Legacy","ascend & carry on",openFamily]
   ]);}
 function openPrestige(){renderPrestige();openModal("prestigeModal");}
 function renderPrestige(){const body=$("#prestigeBody");
@@ -3333,6 +3349,20 @@ function renderSanc(){ensureSanc();var lv=G.sanctuary.lv,pts=G.sanctuary.pts,nee
   $$("#sancBody .card[data-sd]").forEach(function(c){c.onclick=function(){var idx=+c.dataset.sd;G.sanctuary.off=G.sanctuary.off||{};if(G.sanctuary.off[idx])delete G.sanctuary.off[idx];else G.sanctuary.off[idx]=1;renderSancLayer();renderSanc();save();};});}
 
 /* ---------- Fellowship / Duo Challenges ---------- */
+function openGacha(){if(!guard())return;shopTab="gacha";renderShop();openModal("shopModal");}
+const ABOUT_BELLE=[
+ {bg:"radial-gradient(120% 90% at 50% 20%,#10518f,#061a33)",art:"🌊",big:"A real little place",text:"Puffy & Citrus is a love letter to Tuvalu — nine tiny atolls in the Pacific, home to around 11,000 people, and some of the lowest-lying land on Earth.",snd:"wave"},
+ {bg:"radial-gradient(120% 90% at 50% 25%,#1f7fb0,#072540)",art:"🏝️",big:"A home worth keeping",text:"It's one of the places most exposed to the rising sea. People there plant, build, and care for what they love with extraordinary patience and hope.",snd:"warm"},
+ {bg:"radial-gradient(120% 90% at 50% 28%,#8a5530,#341626)",art:"💚",big:"Why we care",text:"Belle is inspired by everyone holding onto a fragile, beloved home. Every small act of care here is a tiny echo of theirs. Thank you for playing. 💛",snd:"hope"}
+];
+function openAbout(){closeModals();if(typeof playCutscene==="function")playCutscene(ABOUT_BELLE);}
+function openExtras(){openHub("🎲 Extras &amp; mini-events","Optional side activities — the cozy story & care stay up front. 🌿",[
+  ["⚔️","Boss Raid",(function(){try{ensureBoss();return G.boss.defeated?"defeated ✓":(bossVictoryReady()?"victory ready!":bossHpPct()+"% HP");}catch(e){return "weekly";}})(),openBoss],
+  ["🏆","Tournament",((G.tourney&&G.tourney.best)?("best "+G.tourney.best+" pts"):"weekly"),openTourney],
+  ["🤝","Duo Challenges",((G.duoShards||0)+" 🔮 shards"),openDuo],
+  ["🎰","Lucky Capsule","spin for rare prizes",openGacha],
+  ["✨","Prestige",(prestigeAvail()+" point"+(prestigeAvail()===1?"":"s")),openPrestige]
+]);}
 function openFellowship(){openHub("👥 Fellowship","Connect with other players. 💞",[
   ["👋","Friends","visit & gift friends",openFriends],
   ["🏆","Hall of Fame","global leaderboard",openDashboard]
@@ -3382,7 +3412,9 @@ function dailyClaimable(){ensureLoginCal();return G.loginCal.last!==dayKey();}
 function openDaily(){ensureLoginCal();renderDaily();openModal("dailyModal");}
 function renderDaily(){ensureLoginCal();var idx=G.loginCal.day%7,claimable=dailyClaimable();
   $("#dailySub").innerHTML=claimable?("🎁 Day <b>"+(idx+1)+"</b> reward is ready! · "+G.loginCal.day+" claimed total"):"✓ Claimed today — come back tomorrow! 🌙";
-  var h='<div class="dayc">';for(var i=0;i<7;i++){var r=LOGINCAL[i];var cls=(i<idx||(!claimable&&i===idx))?"claimed":((claimable&&i===idx)?"today":"");if(i===6)cls+=" big";h+='<div class="d '+cls+'"><div class="dn">Day '+(i+1)+'</div><div class="de">'+r.e+'</div><div class="dt">'+r.t+'</div></div>';}h+='</div>';
+  var _dn=Math.floor(Date.now()/86400000),note=BELLE_NOTES[_dn%BELLE_NOTES.length];
+  var h='<div style="background:linear-gradient(180deg,#fff,#fdf2e2);border:1px solid #f0e0c4;border-radius:14px;padding:12px 13px;margin-bottom:12px;box-shadow:var(--cardsh)"><div style="font-family:var(--display);font-weight:800;font-size:13px;color:#8a5a2a">💌 Today\u2019s note from Belle</div><div style="font-size:13px;line-height:1.6;margin-top:5px">'+note+'</div><div style="font-size:11px;color:var(--muted);margin-top:8px;font-style:italic">Take a breath. You showed up today — that\u2019s what matters. 🌿</div></div>';
+  h+='<div class="dayc">';for(var i=0;i<7;i++){var r=LOGINCAL[i];var cls=(i<idx||(!claimable&&i===idx))?"claimed":((claimable&&i===idx)?"today":"");if(i===6)cls+=" big";h+='<div class="d '+cls+'"><div class="dn">Day '+(i+1)+'</div><div class="de">'+r.e+'</div><div class="dt">'+r.t+'</div></div>';}h+='</div>';
   $("#dailyGrid").innerHTML=h;
   var b=$("#dailyClaim");if(claimable){b.style.display="block";b.textContent="Claim Day "+(idx+1)+" 🎁";b.onclick=claimDaily;}else b.style.display="none";}
 function claimDaily(){ensureLoginCal();if(!dailyClaimable()){toast("Already claimed today 🌙");return;}var idx=G.loginCal.day%7;LOGINCAL[idx].fn();if(idx===6)G.inv.cake=(G.inv.cake||0)+1;G.loginCal.day=G.loginCal.day+1;G.loginCal.last=dayKey();SFX.coin();confetti();react("🎁");toast("Day "+(idx+1)+" reward: "+LOGINCAL[idx].e+" "+LOGINCAL[idx].t+"!");renderDaily();render();save();}
@@ -3449,6 +3481,44 @@ const ASCENSION_STORY=[
  {art:"🕊️",big:"Boundless Sky",text:"The fourteenth life lifts the very horizon. Belle realizes there is no edge to how far love can grow."},
  {art:"♾️",big:"Forever & Always",text:"The fifteenth ascension writes your pets into the legend of the islands. Whatever comes next, Belle knows: this story never truly ends. 💛"}
 ];
+const CAMP_STORY={
+ c1:{t:"Two little lives",s:"They're really here. I sent those eggs across an ocean hoping you'd say yes — thank you for saying yes. 💛"},
+ c2:{t:"Finding their feet",s:"Look at them go! The little ones on the atoll learn fast too — they have to. You're giving yours all the time in the world."},
+ c3:{t:"Full bellies",s:"Twenty-five meals! Food is precious where I am; nothing's ever wasted. Watching you feed them so freely makes me smile."},
+ c4:{t:"From the soil",s:"Your first harvest! We coax pulaka from salt and sand in pits here. A full basket is a small victory, every single time."},
+ c5:{t:"Just play",s:"You let them PLAY. People forget how much that matters. The kids here build whole worlds from a stick and a grin."},
+ c6:{t:"Two of a kind",s:"Puffy and Citrus actually like each other now. Took us a while too, didn't it? Keep them close. 🫶"},
+ c7:{t:"All grown up",s:"They grew up. I'm not crying, you're crying. You did that — patiently, every day, when it would've been easier not to."},
+ c8:{t:"Little wonders",s:"Six forms discovered! Curiosity is its own kind of hope. Never stop wondering what they might become."},
+ c9:{t:"By the water",s:"Fifteen catches! Our fishers read the sea like a face. Sitting, waiting, hoping — it's basically a prayer here."},
+ c10:{t:"Steady hands",s:"Level 12 — you're really good at this. Some days I wish you were beside me, helping us hold the line against the tide."},
+ c11:{t:"A taste of home",s:"You're cooking! When I'm homesick I picture a kitchen that smells like this one must. Tastes like belonging."},
+ c12:{t:"Show-offs",s:"Six tricks?! The kids here would adore these two. Maybe one day they'll meet. ✨"},
+ c13:{t:"A shining one",s:"A radiant SS form! Beautiful things still grow, even out here on the edge of the map."},
+ c14:{t:"An orchard",s:"Sixty crops — you could feed a village. Here we say abundance shared is abundance doubled."},
+ c15:{t:"Far, together",s:"Level 18, and you're still showing up. That quiet, steady showing-up is the whole thing. Thank you, friend."},
+ c16:{t:"A full notebook",s:"Sixteen forms! Your little codex is getting beautiful."},
+ c17:{t:"A new beginning",s:"A new generation. Here the elders pass their stories down so nothing is ever truly lost — you're doing the same."},
+ c18:{t:"Near-perfect",s:"An SSS form — flawless care. I'm so proud of how gentle you are with them."},
+ c19:{t:"Quarter-century",s:"Level 25! Honestly, unstoppable."},
+ c20:{t:"The master's table",s:"A Master dish! Save me a plate, would you?"},
+ c21:{t:"Legendary",s:"A UR form — the rarest light there is. Frame it. Tell everyone."},
+ c22:{t:"Five lifetimes",s:"Five new beginnings, and still you return. The tide always comes home here. So do you."},
+ c23:{t:"Twenty-eight wonders",s:"Your codex overflows with little miracles now."},
+ c24:{t:"A mythic kitchen",s:"A Mythic dish! The whole atoll would feast on that."},
+ c25:{t:"A living legend",s:"A Mythic friend?! The rarest thing in any world. But you're still the rarest in mine."},
+ c26:{t:"Ten lifetimes",s:"Ten ascensions — a true legend, all the way out across the sea."},
+ c27:{t:"Pure luck",s:"The rarest luck found you. (I once won a single coconut in a raffle. We are not the same.) 🍀"},
+ c28:{t:"Side by side",s:"Five duo quests — they do everything together now. Best friends, like us."},
+ c29:{t:"Lazy afternoons",s:"Twenty-five hangouts. The slow, good days. Hold onto those — they go quick."},
+ c30:{t:"Many little homes",s:"Ten habitats! You've built them a whole little world."},
+ c31:{t:"A home, well-loved",s:"Twenty-five pieces placed — it looks so loved in there."},
+ c32:{t:"The patient sea",s:"Five hundred catches. The fishers here would adopt you on the spot."},
+ c33:{t:"Feeding many",s:"Fifty dishes — you'd feed the whole island and then some."},
+ c34:{t:"Almost everything",s:"Forty-five forms. You're so close to all of them I can feel it."},
+ c35:{t:"The whole world",s:"Every single form. Nothing left to find — except how much more there is to love tomorrow. 🌈"},
+ c36:{t:"Forever & always",s:"Fifteen ascensions. Whatever the tide brings next, this story never truly ends. 💛"}
+};
 const CAMPAIGN=[
  {id:"c1",d:"Hatch both little ones",t:2,cur:()=>(G.pets.puffy.hatched?1:0)+(G.pets.citrus.hatched?1:0),reward:{coins:30}},
  {id:"c2",d:"Raise a pet to Level 5",t:5,cur:()=>Math.max(G.pets.puffy.level,G.pets.citrus.level),reward:{coins:50}},
@@ -3491,18 +3561,25 @@ function campCur(m){try{return Math.min(m.t,m.cur());}catch(e){return 0;}}
 function rewardText(r){const a=[];if(r.coins)a.push(r.coins+"🪙");if(r.seeds)a.push("🌱 rare seeds");if(r.hat)a.push("👒 "+((HATS[r.hat]&&HATS[r.hat].nm)||"hat"));if(r.form)a.push("✨ a special form");return a.join(", ");}
 function journeyClaimable(){const step=G.campaign.step||0;if(step>=CAMPAIGN.length)return false;return campCur(CAMPAIGN[step])>=CAMPAIGN[step].t;}
 function openJourney(){renderJourney();openModal("journeyModal");}
-function renderJourney(){const step=G.campaign.step||0,el=$("#journeyBody");let html="";
-  CAMPAIGN.forEach((m,i)=>{if(i<step){html+='<div class="quest done"><div class="qt"><div class="qd">✓ '+m.d+'</div></div><div class="qr">✓</div></div>';}
-    else if(i===step){const cur=campCur(m),can=cur>=m.t;html+='<div class="quest"><div class="qt"><div class="qd">'+m.d+'</div><div class="qbar"><i style="width:'+(cur/m.t*100)+'%"></i></div><div style="font-size:10px;color:var(--muted);margin-top:3px">'+cur+'/'+m.t+' · reward: '+rewardText(m.reward)+'</div></div><button class="ordbtn" id="campClaim"'+(can?"":" disabled")+'>Claim</button></div>';}
-    else{html+='<div class="quest" style="opacity:.45"><div class="qt"><div class="qd">🔒 '+m.d+'</div></div></div>';}});
-  if(step>=CAMPAIGN.length)html+='<div class="order done">🎉 Journey complete — a true champion!</div>';
-  el.innerHTML=html;const b=$("#campClaim");if(b)b.onclick=claimCamp;
-  $("#journeySub").textContent="A grand adventure with Belle — "+Math.min(step,CAMPAIGN.length)+"/"+CAMPAIGN.length+" chapters done.";}
+function renderJourney(){const step=G.campaign.step||0,el=$("#journeyBody");let html="";var cur=CAMPAIGN[step];
+  if(cur){var cs=CAMP_STORY[cur.id]||{t:"The story goes on",s:"Belle is so glad you're here. Keep caring — the next page is yours to write. 💛"};var prog=campCur(cur),can=prog>=cur.t;
+    html+='<div style="background:linear-gradient(180deg,#fff,#fdf2e2);border:1px solid #f0e0c4;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--cardsh)">'+
+      '<div style="font-family:var(--display);font-weight:800;font-size:15px;color:#8a5a2a">Chapter '+(step+1)+" · "+cs.t+'</div>'+
+      '<div style="font-size:13px;line-height:1.65;color:var(--ink);margin:7px 0 10px">\u201C'+cs.s+'\u201D<div style="font-size:11px;color:var(--muted);margin-top:4px">\u2014 Belle 💌</div></div>'+
+      '<div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px">Your part</div>'+
+      '<div style="font-size:13px;font-weight:700;margin:2px 0 4px">'+cur.d+'</div>'+
+      '<div class="bar" style="height:10px"><i style="width:'+Math.min(100,prog/cur.t*100)+'%;background:linear-gradient(90deg,#f3c24a,#ef8f3a)"></i></div>'+
+      '<div style="font-size:10px;color:var(--muted);margin:3px 0 2px">'+Math.min(prog,cur.t)+" / "+cur.t+' · '+rewardText(cur.reward)+'</div>'+
+      '<button class="btn orange" id="campClaim" style="margin-top:8px"'+(can?"":" disabled")+'>'+(can?"📖 Continue the story":"Keep caring…")+'</button></div>';
+  } else { html+='<div class="order done" style="text-align:center;padding:16px">📖 You\u2019ve reached the end of Belle\u2019s story — for now. Thank you for every small kindness. 💛</div>'; }
+  if(step>0){html+='<div class="menuhd">Earlier chapters</div>';for(var i=step-1;i>=0;i--){var pcs=CAMP_STORY[CAMPAIGN[i].id]||{t:CAMPAIGN[i].d};html+='<div class="quest done"><div class="qt"><div class="qd">✓ Ch '+(i+1)+" · "+(pcs.t||CAMPAIGN[i].d)+'</div></div><div class="qr">✓</div></div>';}}
+  el.innerHTML=html;var b=$("#campClaim");if(b)b.onclick=claimCamp;
+  $("#journeySub").innerHTML="💛 A cozy story you unfold by caring — chapter <b>"+Math.min(step+1,CAMPAIGN.length)+"</b> of "+CAMPAIGN.length;}
 function claimCamp(){const step=G.campaign.step||0,m=CAMPAIGN[step];if(!m)return;if(campCur(m)<m.t){toast("Not finished yet!");return;}
   const r=m.reward;if(r.coins)G.coins+=r.coins;if(r.seeds)for(const k in r.seeds)G.seeds[k]=(G.seeds[k]||0)+r.seeds[k];
   if(r.hat)G.hatsOwned[r.hat]=1;
   if(r.form){const t=(SHOP_FORMS.puffy.find(x=>x.k===r.form))?"puffy":"citrus";G.boughtForms[t]=G.boughtForms[t]||[];if(G.boughtForms[t].indexOf(r.form)<0)G.boughtForms[t].push(r.form);}
-  addXP(pet(),40);G.campaign.step=step+1;unlock("journey1");if(G.campaign.step>=CAMPAIGN.length)unlock("journeydone");SFX.level();react("🎁");toast("Chapter reward: "+rewardText(r)+"! 🎁");renderJourney();render();save();}
+  addXP(pet(),40);G.campaign.step=step+1;unlock("journey1");if(G.campaign.step>=CAMPAIGN.length)unlock("journeydone");SFX.level();react("💌");var _cs=CAMP_STORY[m.id];if(_cs&&typeof queueCutscene==="function"){queueCutscene([{art:"💌",big:"Chapter "+(step+1)+" — "+_cs.t,text:"\u201C"+_cs.s+"\u201D  \u2014 Belle",bg:CS_LEVEL_BG,snd:"warm"}]);}toast("Chapter complete! "+rewardText(r)+" 🎁");renderJourney();render();save();}
 
 /* ---------- Room builder ---------- */
 const FURNITURE=[
@@ -3576,15 +3653,17 @@ function placeFurn(e){if(!buildMode||!buildSel)return;
 
 /* ---------- Family / generations ---------- */
 function openFamily(){renderFamily();openModal("familyModal");}
-function renderFamily(){const el=$("#familyBody");let h='<div class="sub">✨ Ascensions: <b>'+(G.ascensions||0)+'</b> · permanent bonus <b>+'+Math.round(ascBonus()*100)+'%</b> coins &amp; XP.<br>Ascending keeps each pet\u2019s tricks, traits &amp; a head start — and you keep all your coins, seeds, garden &amp; items.</div>';
-  ["puffy","citrus"].forEach(k=>{const p=G.pets[k],leg=(G.legacy&&G.legacy[k])||[];
-    h+='<div class="famrow"><div><b>'+petName(p)+'</b> · Gen '+(p.gen||1)+' · '+(p.stage==="adult"?"grown 🌟":(p.hatched?p.stage:"egg"))+'</div><button class="ordbtn" id="ng_'+k+'"'+(p.stage==="adult"?"":" disabled")+'>✨ Ascend</button></div>';
+function renderFamily(){const el=$("#familyBody");let h='<div class="sub">✨ Ascensions: <b>'+(G.ascensions||0)+'</b> · permanent bonus <b>+'+Math.round(ascBonus()*100)+'%</b> coins &amp; XP.<br><b>Ascension Energy</b> fills the better you care for them — it slows when they\u2019re unhappy and <b>stops</b> if their stats bottom out. Ascend at <b>Lv '+ASC_MIN_LV+'+</b> with a full charge.</div>';
+  ["puffy","citrus"].forEach(k=>{const p=G.pets[k],leg=(G.legacy&&G.legacy[k])||[];const rdy=canAscend(p),blk=ascBlock(p),ch=ascCharge(p);
+    h+='<div class="famrow"><div><b>'+petName(p)+'</b> · Gen '+(p.gen||1)+' · Lv '+(p.level||1)+' · '+(p.stage==="adult"?"grown 🌟":(p.hatched?p.stage:"egg"))+'</div><button class="ordbtn" id="ng_'+k+'"'+(rdy?"":" disabled")+'>✨ Ascend</button></div>';
+    h+='<div class="bar" style="height:9px;margin:2px 0 1px"><i style="width:'+ch+'%;background:linear-gradient(90deg,#b98cff,#7a5cf0);transition:width .4s"></i></div>';
+    h+='<div style="font-size:10px;color:var(--muted);margin-bottom:6px">'+(rdy?'✨ <b style="color:#7a5cf0">Ready to ascend!</b>':('⚡ '+Math.floor(ch)+'% charged · '+blk))+'</div>';
     if(leg.length)h+='<div class="famalbum">'+leg.map(f=>'<span class="famform">'+artFor(k,"adult",f)+'</span>').join("")+'</div>';});
-  const both=G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult";
+  const both=canAscend(G.pets.puffy)&&canAscend(G.pets.citrus);
   h+='<button class="btn" id="famGen"'+(both?"":" disabled")+' style="margin-top:12px">✨ Ascend Both</button>';
   h+='<div class="sub" style="margin-top:8px;font-size:11px">Tip: ascending a grown pet records its form in your album and begins a stronger new generation. You keep everything else — coins, seeds, garden, items &amp; unlocked features.</div>';
   el.innerHTML=h;["puffy","citrus"].forEach(k=>{const b=$("#ng_"+k);if(b)b.onclick=function(){nextGen(k);};});const fb=$("#famGen");if(fb)fb.onclick=familyGen;}
-function nextGen(k){const p=G.pets[k];if(p.stage!=="adult"){toast("Only a grown-up can pass on its legacy!");return;}
+function nextGen(k){const p=G.pets[k];if(!canAscend(p)){toast("Not ready yet — "+ascBlock(p)+".");return;}
   G.legacy=G.legacy||{};G.legacy[k]=G.legacy[k]||[];if(p.form){G.legacy[k].push(p.form);G.dex[p.form]=true;}
   const gen=(p.gen||1)+1,tricks=(p.tricks||[]).slice(),nm=p.name;
   G.pets[k]=freshPet(k);const np=G.pets[k];np.gen=gen;np.tricks=tricks;np.name=nm;np.needsName=false;np.careGood=1+gen*40;np.discipline=30+Math.min(45,gen*6);
@@ -3592,7 +3671,7 @@ function nextGen(k){const p=G.pets[k];if(p.stage!=="adult"){toast("Only a grown-
   queueCutscene([{art:"✨",big:"Ascension!",text:(nm||"Your pet")+" ascends to Generation "+gen+"! They keep "+tricks.length+" tricks, their traits and a head start — and your coins, seeds, garden & items all carry over. Ascension bonus is now +"+Math.round(ascBonus()*100)+"% coins & XP.",bg:CS_LEVEL_BG}]);
   while((G.ascStoryStep||0)<Math.min(ASCENSION_STORY.length,G.ascensions)){const ch=ASCENSION_STORY[G.ascStoryStep||0];G.ascStoryStep=(G.ascStoryStep||0)+1;queueCutscene([{art:ch.art,big:ch.big,text:ch.text,bg:CS_LEVEL_BG}]);}
   toast("✨ "+(nm||"New egg")+" ascended — Generation "+gen+"!");render();save();}
-function familyGen(){if(!(G.pets.puffy.stage==="adult"&&G.pets.citrus.stage==="adult")){toast("Both pets must be grown up!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("✨ Ascended both — bonus now +"+Math.round(ascBonus()*100)+"%!");renderFamily();save();}
+function familyGen(){if(!(canAscend(G.pets.puffy)&&canAscend(G.pets.citrus))){toast("Both need to be Lv "+ASC_MIN_LV+"+ and fully charged!");return;}nextGen("puffy");nextGen("citrus");G.familyLevel=(G.familyLevel||1)+1;unlock("dynasty");toast("✨ Ascended both — bonus now +"+Math.round(ascBonus()*100)+"%!");renderFamily();save();}
 
 /* ---------- Cutscenes / story ---------- */
 const INTRO=[
@@ -3900,6 +3979,7 @@ function neglectVisit(){if(document.querySelector(".visitor")||document.querySel
   setTimeout(function(){if(v.parentNode){v.style.opacity="0";v.style.transform="translateX("+off+")";setTimeout(function(){if(v.parentNode)v.remove();},600);}},6500);}
 function csMotes(){var fx=$("#csFx");if(!fx)return;fx.innerHTML="";for(var i=0;i<14;i++){var d=document.createElement("div");d.className="motep";d.style.left=(Math.random()*100)+"%";d.style.top=(Math.random()*100)+"%";var du=8+Math.random()*8;d.style.animationDuration=du+"s";d.style.animationDelay=(-Math.random()*du)+"s";var sz=2+Math.random()*4;d.style.width=sz+"px";d.style.height=sz+"px";fx.appendChild(d);}}
 function spawnMotes(){var sc=document.getElementById("scene");if(!sc||sc.querySelector(".motep"))return;for(var i=0;i<11;i++){var d=document.createElement("div");d.className="motep";d.style.left=(5+Math.random()*90)+"%";d.style.top=(20+Math.random()*64)+"%";var dur=7+Math.random()*7;d.style.animationDuration=dur+"s";d.style.animationDelay=(-Math.random()*dur)+"s";var sz=3+Math.random()*4;d.style.width=sz+"px";d.style.height=sz+"px";sc.appendChild(d);}}
+function coinFloat(amt){try{if(G.reducedMotion)return;var chip=document.getElementById("coinChip");if(!chip)return;var r=chip.getBoundingClientRect();var el=document.createElement("div");el.className="coinPop";el.textContent="+"+amt+" 🪙";el.style.left=(r.left+r.width/2-14)+"px";el.style.top=(r.bottom-2)+"px";document.body.appendChild(el);setTimeout(function(){el.remove();},1000);}catch(e){}}
 function maybeSpawnFloat(){const p=pet();if(!p.hatched||p.dead||p.asleep)return;if(document.querySelectorAll("#scene .floatItem").length>=2)return;if(Math.random()>=0.05)return;
   const items=[["🪙",function(){G.coins+=2;}],["🫧",function(){p.happy=clamp(p.happy+2);}],["⭐",function(){addXP(p,3);}],["💧",function(){p.hygiene=clamp(p.hygiene+2);}]];
   const it=rnd(items),el=document.createElement("div");el.className="floatItem";el.textContent=it[0];
@@ -4055,10 +4135,11 @@ $("#mgBack").onclick=()=>{stopGame();openGame();};
 $("#nameConfirm").onclick=confirmName;
 $("#belleMascot").onclick=openMailbox;$("#chest").onclick=claimChest;$("#scene").addEventListener("click",placeFurn);
 $("#coinChip").onclick=openShop;$("#lvlChip").onclick=openCollection;
-$("#railJourney").onclick=openJourney;$("#railDaily").onclick=openDaily;$("#railDuo").onclick=openDuo;$("#railFellow").onclick=openFellowship;$("#railEvents").onclick=openEvents;$("#dailyTasksBtn").onclick=openTasks;$("#evoGrowBtn").onclick=growUpNow;
+$("#railJourney").onclick=openJourney;$("#railDaily").onclick=openDaily;$("#railFellow").onclick=openFellowship;$("#dailyTasksBtn").onclick=openTasks;$("#evoGrowBtn").onclick=growUpNow;{var _xb=$("#extrasBtn");if(_xb)_xb.onclick=function(){closeModals();openExtras();};}{var _ab=$("#aboutBtn");if(_ab)_ab.onclick=openAbout;}
 $("#stageBadge").onclick=openEvolution;$("#stageBadge").style.cursor="pointer";$("#growReady").onclick=()=>{closeModals();openEvolution();};
 $("#resetBtn").onclick=()=>{$("#menuInfo").innerHTML="Puffy &amp; Citrus 💚 for Belle Pepper<br>"+(cloudUser?("☁️ Synced to the cloud — play anywhere!"):(cloudConfigured()?"Not logged in — saving on this device only.":"Progress saves on this device."));$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";$("#musicBtn").textContent=musicLabel();$("#notifyBtn").textContent=notifyLabel();$("#motionBtn").textContent=G.reducedMotion?"🎞️ Motion: Reduced":"🎞️ Motion: On";$("#textBtn").textContent=G.bigText?"🔤 Larger text: On":"🔤 Larger text: Off";$("#cbBtn").textContent=G.cbMode?"🌈 Colorblind aid: On":"🌈 Colorblind aid: Off";$("#logoutBtn").style.display=cloudUser?"block":"none";openModal("menuModal");};
 $("#soundBtn").onclick=()=>{G.sound=!G.sound;$("#soundBtn").textContent=G.sound?"🔊 Sound: On":"🔇 Sound: Off";if(G.sound){SFX.happy();startMusic();}else stopMusic();save();};
+{var _hb=$("#hapticBtn");if(_hb){_hb.textContent=(G.haptics!==false)?"📳 Vibration: On":"📴 Vibration: Off";_hb.onclick=function(){G.haptics=(G.haptics===false);_hb.textContent=(G.haptics!==false)?"📳 Vibration: On":"📴 Vibration: Off";if(G.haptics!==false)haptic(15);save();};}}
 $("#musicBtn").onclick=()=>{G.music=!G.music;$("#musicBtn").textContent=musicLabel();if(G.music){startMusic();}else stopMusic();save();};
 $("#notifyBtn").onclick=toggleNotify;
 $("#eventBanner").onclick=()=>{var ev=currentEvent();if(ev)toast(ev.e+" "+ev.nm+" — "+ev.d);};
@@ -4091,7 +4172,7 @@ else if(!G.tutorialSeen){G.tutorialSeen=true;save();setTimeout(()=>playCutscene(
 if(G.music===undefined)G.music=true;if(G.notify===undefined)G.notify=false;
 setInterval(()=>{ensureDaily();tickAll();maybeNotify();G.lastSeen=now();
   G.stats=G.stats||{};if(!document.hidden)G.stats.playMs=(G.stats.playMs||0)+1000;
-  if(G._lastCoins==null)G._lastCoins=G.coins;if(G.coins>G._lastCoins)G.stats.coinsEarned=(G.stats.coinsEarned||0)+(G.coins-G._lastCoins);G._lastCoins=G.coins;
+  if(G._lastCoins==null)G._lastCoins=G.coins;if(G.coins>G._lastCoins){var _d=G.coins-G._lastCoins;G.stats.coinsEarned=(G.stats.coinsEarned||0)+_d;if(!document.hidden)coinFloat(_d);}G._lastCoins=G.coins;
 },1000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){ensureDaily();tickAll();G.lastSeen=now();if(cloudUser){cloudLoad(true);fetchGifts();}}else{flushSave();}});
 cloudInit();
