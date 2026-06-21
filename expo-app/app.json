@@ -47,6 +47,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9e2bda71-1631-419d-93c1-8da14108498e"
+      }
+    },
+    "owner": "miniron3"
   }
 }

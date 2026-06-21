@@ -137,9 +137,11 @@ If you ship the offline-only build with cloud sync disabled, you may instead sel
 
 ## 8. Support & marketing URLs (both stores ask)
 
-- Privacy Policy URL: `https://bellepepper.org/privacy.html` (host the `privacy.html` we created)
-- Support URL: `https://bellepepper.org` (or a simple contact page)
-- Marketing URL (optional): `https://bellepepper.org`
+- Privacy Policy URL: `https://ronmartziano.github.io/puffy-citrus-privacy/` (the dedicated privacy repo — permanent, survives bellepepper.org going away)
+- Support URL: `https://ronmartziano.github.io/puffy-citrus-privacy/` (the same page lists a contact email) — or use `mailto:miniron3@gmail.com`
+- Marketing URL (optional): leave blank, or your store page once live
+
+> NOTE: the URL above assumes GitHub username **RonMartziano** and repo **puffy-citrus-privacy**. If your username differs, the real URL is `https://<your-username>.github.io/puffy-citrus-privacy/` — adjust before submitting.
 
 ## 9. "What's New" (version 1.0.0)
 

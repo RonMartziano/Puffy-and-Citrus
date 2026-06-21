@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GAME_HTML from './gameHtml';
@@ -11,11 +11,13 @@ const SAVE_KEY = 'puffyCitrus_v2';
 // (Same values as your GitHub secrets. Leave blank to keep the app local-only.)
 const SUPABASE = { url: '', anonKey: '' };
 
-export default function App() {
+function Game() {
+  // Insets = the space taken by the status bar (top) and gesture nav / notch.
+  // We pad the game by these so the system bars never overlap the UI.
+  const insets = useSafeAreaInsets();
   const [saved, setSaved] = useState(null); // null = still loading
   const lastWrite = useRef('');
 
-  // Load saved progress from device storage before showing the game
   useEffect(() => {
     (async () => {
       try {
@@ -35,13 +37,11 @@ export default function App() {
     );
   }
 
-  // Inject the saved game state so the web game can pick it up on boot
   const inject =
     (saved ? `window.__INITIAL_SAVE__ = ${JSON.stringify(saved)};` : '') +
     (SUPABASE.url ? `window.__SUPABASE__ = ${JSON.stringify(SUPABASE)};` : '') +
     'true;';
 
-  // The game posts its full state on every save; we persist it to the device
   const onMessage = (e) => {
     const data = e.nativeEvent.data;
     if (data && data !== lastWrite.current) {
@@ -51,8 +51,18 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fffdf7" />
+    <View
+      style={[
+        styles.safe,
+        {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          paddingLeft: insets.left,
+          paddingRight: insets.right,
+        },
+      ]}
+    >
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <WebView
         originWhitelist={['*']}
         source={{ html: GAME_HTML }}
@@ -69,7 +79,15 @@ export default function App() {
         mediaPlaybackRequiresUserAction={false}
         allowsBackForwardNavigationGestures={false}
       />
-    </SafeAreaView>
+    </View>
+  );
+}
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <Game />
+    </SafeAreaProvider>
   );
 }
 
