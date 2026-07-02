@@ -2311,8 +2311,8 @@ function simulate(p,dt,away){
   if(p.hatched&&!p.trait)p.trait=TRAITS[Math.floor(Math.random()*TRAITS.length)].id;
   if(!p.hatched){if(ageSec(p)>=BABY_END/4){p.hatched=true;p.stage="baby";p.needsName=!p.name;p.asleep=false;unlock("hatch");unlockSticker("hatch");
     p.trait=p.trait||TRAITS[Math.floor(Math.random()*TRAITS.length)].id;SFX.happy();toast((p.type==="puffy"?"Puffy hatched! 🐡":"Citrus sprouted! 🍊"));}p.lastTick=now();return;}
-  const a=ageSec(p),ns=stageForAge(a);
-  if(ns!=="adult"&&ns!==p.stage){p.stage=ns;if(!away)queueCutscene([{art:petArt(p,"happy"),big:petName(p)+" is growing!",text:STAGE_STORY[ns]||"Getting bigger every day!"}]);}
+  const a=ageSec(p);let ns=stageForAge(a);if(ns==="adult")ns="teen"; // auto-growth caps at teen even if the pet aged past TEEN_END while still young (e.g. app closed 90min+ after hatching/ascension); adult is manual via Grow Up
+  if(p.stage!=="adult"&&ns!==p.stage){p.stage=ns;if(!away)queueCutscene([{art:petArt(p,"happy"),big:petName(p)+" is growing!",text:STAGE_STORY[ns]||"Getting bigger every day!"}]);}
   // Teen no longer auto-evolves — once the teen stage completes, the player taps "Grow Up" (growUpNow) to choose the adult form.
   // birthday milestones (every 24h of age)
   const days=Math.floor(a/86400);if(days>p.birthdays&&p.hatched){p.birthdays=days;unlock("birthday");unlockSticker("bday");if(days>=7)unlock("devoted");
